@@ -1,0 +1,33 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class GetObject : MonoBehaviour
+{
+    private RaycastHit2D hit;
+
+    void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            hit = Physics2D.Raycast(pos, Vector2.zero, 0f);
+
+            // 마우스 포지션에서 레이를 던져서 잡힌 오브젝트를 hit에 저장
+            if(hit.collider != null)
+            {
+                switch(hit.collider.tag){
+                    case "Enemy":
+                        Debug.Log(hit.collider.transform.GetChild(0));
+                        hit.collider.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+                        GameManager.instance.target = hit.collider.gameObject;
+                        break;
+                }
+            }
+            else{
+                Debug.Log("Nothing");
+            }
+        }
+    }
+}
