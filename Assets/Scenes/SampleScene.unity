@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 59903916}
   - component: {fileID: 59903915}
   - component: {fileID: 59903917}
+  - component: {fileID: 59903918}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -153,11 +154,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7068b7cd807b5994cae1e36284dff00a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Palette: {fileID: 1995579604}
+  _SpawnManager: {fileID: 0}
   state: 0
   isLive: 0
   health: 0
   maxHealth: 100
+  shield: 0
   player: {fileID: 821215748}
+  EnemyInfo: 00000000000000000000000000000000
   target: {fileID: 0}
   EnemyArr: []
   red_SkillData:
@@ -193,6 +198,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 325b9a9c444cdf94fa9cfb57a1e2438d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &59903918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59903914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5b38cbae7cae4446bba18917eb05dfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position:
+  - {fileID: 154076108}
+  - {fileID: 1928474655}
+  enemyPrefebArr:
+  - {fileID: 7438148013805046451, guid: 6b86007fd2d864349b9f6f84a81ba645, type: 3}
+  enemyPrefeb: {fileID: 0}
+  Enemy: {fileID: 0}
 --- !u!1 &71378646
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +675,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &323911130
 RectTransform:
   m_ObjectHideFlags: 0
@@ -778,12 +802,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b38cbae7cae4446bba18917eb05dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Position:
-  - {fileID: 154076108}
-  - {fileID: 1928474655}
-  Dummy_Monster: {fileID: 7438148013805046451, guid: 6b86007fd2d864349b9f6f84a81ba645, type: 3}
-  Monster_01: {fileID: 0}
-  Monster_02: {fileID: 0}
+  position: []
+  enemyPrefebArr: []
+  enemyPrefeb: {fileID: 0}
+  Enemy: {fileID: 0}
 --- !u!1 &409830190
 GameObject:
   m_ObjectHideFlags: 0
@@ -4361,12 +4383,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIArr:
-  - {fileID: 224839211}
-  - {fileID: 1490384797}
-  - {fileID: 1648386810}
-  - {fileID: 1983305430}
-  - {fileID: 701338222}
-  imageComponentArr:
+  - {fileID: 536716182}
+  - {fileID: 935524408}
+  - {fileID: 1560478859}
+  - {fileID: 2017299361}
+  - {fileID: 893631116}
+  imageArr:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

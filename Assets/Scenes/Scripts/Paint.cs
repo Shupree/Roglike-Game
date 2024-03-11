@@ -22,17 +22,16 @@ public class Paint : MonoBehaviour
         GameObject clickObject = EventSystem.current.currentSelectedGameObject;
         switch (clickObject.name) {
             case "RedPaint":
-                GameManager.instance._PaintManager.AddPaint(1);
-                Debug.Log("OOK");
+                GameManager.instance.AddColor(1);
                 break;
             case "BluePaint":
-                GameManager.instance._PaintManager.AddPaint(2);
+                GameManager.instance.AddColor(2);
                 break;
             case "YellowPaint":
-                GameManager.instance._PaintManager.AddPaint(3);
+                GameManager.instance.AddColor(3);
                 break;
             case "BlackPaint":
-                GameManager.instance._PaintManager.AddPaint(4);
+                GameManager.instance.AddColor(4);
                 break;
         }
     }

@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 1마리 처치 시 즉시 전투가 종료되는 오류 발생!!!!
-// 버그 픽스할 것!
+// 플레이어 사망 시 추가
+// 이펙트 제작 중이었음.
 public class GameManager : MonoBehaviour
 {
     // static을 통해 메모리에 정보를 저장 후 타 스크립트에서 사용 가능.
     public static GameManager instance;
 
+    public GameObject _Palette;
+    public SpawnManager _SpawnManager;
     public PaintManager _PaintManager = new PaintManager();
     public PlayerInfo _PlayerInfo = new PlayerInfo();
 
@@ -23,9 +25,13 @@ public class GameManager : MonoBehaviour
     public bool isLive;  // 적 생존 여부
     public float health;
     public float maxHealth = 100;
+    public float shield;
+    // 화상, 중독, 감전, 추위, 빙결, 집중
+    public int[] effectArr = new int[6];
     public Player player;
+    public int[] EnemyInfo = new int[4];    // 적 정보
     public GameObject target;
-    public List<GameObject> EnemyArr;   // 적 정보
+    public List<GameObject> EnemyArr;   // 적 오브젝트
     //public int EnemyNum;    // 적 수
     public SkillData[] red_SkillData;
     public SkillData[] blue_SkillData;
@@ -36,6 +42,13 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         instance = this;
+        _SpawnManager = gameObject.GetComponent<SpawnManager>();
+        Debug.Log(gameObject.GetComponent<SpawnManager>());
+
+        for (int i = 0; i < 4; i++)
+        {
+            EnemyInfo[i] = 0;
+        }
 
         state = State.start;    // 전투 시작 알림
 
@@ -48,6 +61,26 @@ public class GameManager : MonoBehaviour
     {
         // 시작 시 HP 설정
         health = maxHealth;
+        shield = 0;
+    }
+
+    // 페인트 추가
+    public void AddColor(int colorType)
+    {
+        if (_PaintManager.order <= _PaintManager.limit) {
+            _PaintManager.AddPaint(colorType);
+            _Palette.GetComponent<PaletteManager>().ConvertImage(colorType);
+        }
+        else {
+            Debug.Log("팔레트가 이미 꽉 찼어!");
+        }
+    }
+
+    // 페인트 초기화
+    public void ClearColor()
+    {
+        _PaintManager.ClearPaint();
+        _Palette.GetComponent<PaletteManager>().ClearPalette();
     }
 
     void BattleStart()
@@ -55,6 +88,11 @@ public class GameManager : MonoBehaviour
         isLive = true;
         Debug.Log(isLive);
         // 전투 시작 시 캐릭터 등장 애니메이션 등 효과 넣기
+
+        // int EnemyId
+        EnemyInfo[0] = 1;
+        EnemyInfo[1] = 1;
+        _SpawnManager.EnemySpawn(EnemyInfo);
 
             // 플레이어나 적에게 턴 넘기기
         state = State.playerTurn;
@@ -101,16 +139,42 @@ public class GameManager : MonoBehaviour
                 Debug.Log(UsingSkill.skillName);
                 break;
             default:
+                // 애초에 버튼 클릭이 안되도록 수정할 것!
                 Debug.Log("페인트를 선택하지 않았습니다.");
                 break;
         }
 
         // 공격 type에 따라 분류할 것!
-        target.GetComponent<Enemy>().health = target.GetComponent<Enemy>().health - UsingSkill.baseDamage;
-        Debug.Log("플레이어의 공격! "+target.name+"에게"+UsingSkill.baseDamage+"의 데미지!");
+        switch (UsingSkill.attackType) {
+            case "Single":
+                break;
+            case "Multiple":
+                break;
+            case "Splash":
+                break;
+        }
 
-        // 팔레트 초기화
-        _PaintManager.ClearPaint();
+        // 데미지 연산 : 기본 데미지 + 화상 데미지 + 집중 효과
+        target.GetComponent<Enemy>().health -= 
+            UsingSkill.baseDamage + target.GetComponent<Enemy>().effectArr[0] + effectArr[5];
+        Debug.Log("플레이어의 공격! "+target.name+"에게"+UsingSkill.baseDamage + target.GetComponent<Enemy>().effectArr[0]+"의 데미지!");
+
+        shield += UsingSkill.baseShield;
+        Debug.Log("플레이어는 "+UsingSkill.baseShield+"의 보호막을 얻었다!");
+
+        if (UsingSkill.effectType != 0 && UsingSkill.effectType <= 4 ) {
+            target.GetComponent<Enemy>().effectArr[UsingSkill.effectType - 1] += UsingSkill.baseEffect;
+        }
+        else if (UsingSkill.effectType > 4) {
+            effectArr[UsingSkill.effectType - 1] += UsingSkill.baseEffect;
+        }
+
+        ClearColor();
+
+        // 감전 효과 연산
+        target.GetComponent<Enemy>().ElectricShock();
+        // 추위 효과 연산
+        target.GetComponent<Enemy>().Coldness();
 
         // 적 죽었으면 전투 종료
         if(EnemyArr.Count == 0)
@@ -141,10 +205,19 @@ public class GameManager : MonoBehaviour
         // 적 공격 코드
         for(int i = 0; i < EnemyArr.Count; i++)
         {
+            // 빙결 상태 확인
+            if (EnemyArr[i].GetComponent<Enemy>().effectArr[4] > 0) {
+                EnemyArr[i].GetComponent<Enemy>().effectArr[4] -= 1;
+                continue;
+            }
+
             EnemyArr[i].GetComponent<Enemy>().TakeActInfo();
             health = health - EnemyArr[i].GetComponent<Enemy>().damage;
 
             Debug.Log(EnemyArr[i].name+"의 공격! 플레이어에게"+EnemyArr[i].GetComponent<Enemy>().damage+"의 데미지!");
+
+            // 중독 효과
+            EnemyArr[i].GetComponent<Enemy>().Poison();
         }
 
         // 적 공격 끝났으면 플레이어에게 턴 넘기기
@@ -164,8 +237,9 @@ public class GameManager : MonoBehaviour
 public class PaintManager
 {
     // 배열보다도 큐를 써볼 것!
-    int limit = 2;
-    int order = 0;
+    // 최대 페인트 수
+    public int limit = 2;
+    public int order = 0;
     public int[] paints = new int[5];
     // white = 0, red = 1, blue = 2, yellow = 3, black = 4
     public PaintManager() {
@@ -177,24 +251,17 @@ public class PaintManager
     }
 
     public void AddPaint(int num) {
-        if (order <= limit) {
-            paints[order] = num;
-            order++;
-
-            // 팔레트 UI 교체
-            
-        }
-        else{
-            Debug.Log("이미 팔레트가 꽉찼어!");
-        }
+        paints[order] = num;
+        order++;
     }
 
+    // 저장된 색 초기화
     public void ClearPaint() {
-        paints[0] = 0;
-        paints[1] = 0;
-        paints[2] = 0;
-        paints[3] = 0;
-        paints[4] = 0;
+        for (int i = 0; i < 5; i++)
+        {
+            order = 0;
+            paints[i] = 0;
+        }
     }
 }
 

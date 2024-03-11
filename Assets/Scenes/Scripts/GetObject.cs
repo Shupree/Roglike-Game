@@ -26,7 +26,7 @@ public class GetObject : MonoBehaviour
                 }
             }
             else{
-                Debug.Log("Nothing");
+                
             }
         }
     }

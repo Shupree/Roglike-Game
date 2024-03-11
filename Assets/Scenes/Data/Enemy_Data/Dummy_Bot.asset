@@ -17,7 +17,7 @@ MonoBehaviour:
   enemyName: "\uD6C8\uB828\uC6A9 \uBD07"
   enemyDesc: 
   enemyModel: {fileID: 0}
-  maxHealth: 20
+  maxHealth: 15
   effectType: 
   attackDamage_01: 10
   attackEffect_01: 1
