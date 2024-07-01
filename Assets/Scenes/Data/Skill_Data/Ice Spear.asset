@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75fffb14871e4c0429a65bfdb9d4f3f4, type: 3}
   m_Name: Ice Spear
   m_EditorClassIdentifier: 
-  skillType: 0
+  skillType: 1
+  attackType: Single
   skillId: 2
   skillName: "\uC544\uC774\uC2A4 \uC2A4\uD53C\uC5B4"
   skillDesc: 
   skillIcon: {fileID: -1786786079, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
   baseDamage: 8
+  baseShield: 0
   baseCount: 0
+  effectType: 0
   baseEffect: 1
-  damages:
-  - 2
-  - 3
-  - 3
-  - 4
+  damages: 02000000030000000300000004000000
+  shields: 
   counts: 00000000000000000000000000000000
   effects: 00000000000000000000000000000000

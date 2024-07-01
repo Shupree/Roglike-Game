@@ -5,31 +5,31 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // 플레이어 사망 시 추가
-// 이펙트 제작 중이었음.
+// StateUpdate 전부 리스트로 바꿀 것!
 public class GameManager : MonoBehaviour
 {
     // static을 통해 메모리에 정보를 저장 후 타 스크립트에서 사용 가능.
     public static GameManager instance;
 
+    public Camera _MainCamera;
     public GameObject _Palette;
+    public GameObject[] _NextStageUI;
+    public GameObject[] _PaintUI;
+    // 비활성화 상태
     public SpawnManager _SpawnManager;
     public PaintManager _PaintManager = new PaintManager();
+    public StageManager _StageManager = new StageManager();
     public PlayerInfo _PlayerInfo = new PlayerInfo();
 
     public enum State
     {
-        start, playerTurn, enemyTurn, win
+        rest, start, playerTurn, enemyTurn, win, defeat
     }
 
     public State state;
     public bool isLive;  // 적 생존 여부
-    public float health;
-    public float maxHealth = 100;
-    public float shield;
-    // 화상, 중독, 감전, 추위, 빙결, 집중
-    public int[] effectArr = new int[6];
     public Player player;
-    public int[] EnemyInfo = new int[4];    // 적 정보
+    public int[] enemyInfo = new int[4];    // 적 정보
     public GameObject target;
     public List<GameObject> EnemyArr;   // 적 오브젝트
     //public int EnemyNum;    // 적 수
@@ -37,43 +37,48 @@ public class GameManager : MonoBehaviour
     public SkillData[] blue_SkillData;
     public SkillData[] yellow_SkillData;
     private SkillData UsingSkill;
+    public MonsterStageData[] EnemySetData;
+    private int randomSetNum;
+    private int damage;
+    private int map;
 
     // 초기화
     void Awake()
     {
         instance = this;
         _SpawnManager = gameObject.GetComponent<SpawnManager>();
-        Debug.Log(gameObject.GetComponent<SpawnManager>());
 
-        for (int i = 0; i < 4; i++)
-        {
-            EnemyInfo[i] = 0;
-        }
+        // 테스트 맵
+        map = 0;
 
-        state = State.start;    // 전투 시작 알림
-
-        // 적 정보 가져오는 코드
+        enemyInfo[0] = 1;
 
         BattleStart();
     }
 
+    private void Update() 
+    {
+        if (player.health <= 0) {
+            state = State.defeat;
+        }
+    }
+
     void Start()
     {
-        // 시작 시 HP 설정
-        health = maxHealth;
-        shield = 0;
+
+    }
+
+    // _MapManager
+    public void Map()
+    {
+        //_MainCamera.transform.position = 
     }
 
     // 페인트 추가
     public void AddColor(int colorType)
     {
-        if (_PaintManager.order <= _PaintManager.limit) {
-            _PaintManager.AddPaint(colorType);
-            _Palette.GetComponent<PaletteManager>().ConvertImage(colorType);
-        }
-        else {
-            Debug.Log("팔레트가 이미 꽉 찼어!");
-        }
+        _PaintManager.AddPaint(colorType);
+        _Palette.GetComponent<PaletteManager>().ConvertSprite(colorType);
     }
 
     // 페인트 초기화
@@ -83,18 +88,79 @@ public class GameManager : MonoBehaviour
         _Palette.GetComponent<PaletteManager>().ClearPalette();
     }
 
+    public void SetCurrntStage(int stageType)
+    {
+        // 스테이지 정보 입력
+        _StageManager.stageInfo = stageType;
+
+        // 버튼 비활성화
+        _NextStageUI[0].SetActive(false);
+        _NextStageUI[1].SetActive(false);
+        _NextStageUI[2].SetActive(false);
+
+        switch (stageType) {
+            // 일반 몹 스테이지
+            case 1:
+                // 적 정보 획득 및 적용
+                randomSetNum = UnityEngine.Random.Range(0, 3);
+                Debug.Log(randomSetNum);
+                enemyInfo[0] = EnemySetData[randomSetNum].monster01;
+                enemyInfo[1] = EnemySetData[randomSetNum].monster02;
+                enemyInfo[2] = EnemySetData[randomSetNum].monster03;
+                enemyInfo[3] = EnemySetData[randomSetNum].monster04;
+                break;
+        }
+
+        state = State.start;
+        BattleStart();
+    }
+
+    public void SetNextStageUI()
+    {
+        _StageManager.SetNextStageInfo();
+
+        // 버튼 활성화
+        _NextStageUI[0].SetActive(true);
+        _NextStageUI[1].SetActive(true);
+        _NextStageUI[2].SetActive(true);
+
+        // 버튼 정보 수정
+        _NextStageUI[0].GetComponent<NextStageUI>().GetStageInfo(_StageManager.nextStageInfo[0]);
+        _NextStageUI[1].GetComponent<NextStageUI>().GetStageInfo(_StageManager.nextStageInfo[1]);
+        _NextStageUI[2].GetComponent<NextStageUI>().GetStageInfo(_StageManager.nextStageInfo[2]);
+    }
+
     void BattleStart()
     {
+        state = State.start;    // 전투 시작 알림
+
+        for (int i = 0; i < 3; i++)
+        {
+            _PaintUI[i].GetComponent<Paint>().FillUpPaint();
+        }
+
+        // 적 정보 가져오는 코드
+
+        // 적 정보 리셋
+        /*for (int i = 0; i < 4; i++)
+        {
+            enemyInfo[i] = 0;
+        }*/
+
         isLive = true;
         Debug.Log(isLive);
+
         // 전투 시작 시 캐릭터 등장 애니메이션 등 효과 넣기
 
-        // int EnemyId
-        EnemyInfo[0] = 1;
-        EnemyInfo[1] = 1;
-        _SpawnManager.EnemySpawn(EnemyInfo);
+        // 적 스폰
+        _SpawnManager.EnemySpawn(enemyInfo);
 
-            // 플레이어나 적에게 턴 넘기기
+        for (int i = 0; i < 3; i++)
+        {
+            _PaintUI[i].GetComponent<Paint>().canUsePaint = true;
+        }
+
+        // 플레이어나 적에게 턴 넘기기
         state = State.playerTurn;
     }
 
@@ -105,6 +171,11 @@ public class GameManager : MonoBehaviour
     public void PlayerAttackBtn()
     {
         // 공격 스킬, 데미지 등 코드 작성
+
+        for (int i = 0; i < 3; i++)
+        {
+            _PaintUI[i].GetComponent<Paint>().canUsePaint = false;
+        }
 
                 // 버튼이 계속 눌리는 거 방지하기 위함
         if(state != State.playerTurn)
@@ -144,32 +215,63 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        // 공격 type에 따라 분류할 것!
+        damage = UsingSkill.baseDamage;
+
+        // 공격 type에 따른 분류
         switch (UsingSkill.attackType) {
+            // 단타 공격
             case "Single":
+                target.GetComponent<Enemy>().health -= 
+                    damage + target.GetComponent<Enemy>().effectArr[0] + player.effectArr[5];
+
+                if (UsingSkill.effectType != 0 && UsingSkill.effectType <= 10) {
+                    target.GetComponent<Enemy>().effectArr[UsingSkill.effectType - 1] += UsingSkill.baseEffect;
+                }
+                Debug.Log("적은 "+UsingSkill.baseDamage+"의 데미지를 입었다.");
                 break;
+            // 다단 히트
             case "Multiple":
+                for (int i = 0; i < UsingSkill.baseCount; i++) {
+                    target.GetComponent<Enemy>().health -= 
+                        damage + target.GetComponent<Enemy>().effectArr[0] + player.effectArr[5];
+
+                    if (UsingSkill.effectType != 0 && UsingSkill.effectType <= 4) {
+                        target.GetComponent<Enemy>().effectArr[UsingSkill.effectType - 1] += UsingSkill.baseEffect;
+                    }
+                }
                 break;
+            // 전체 공격
             case "Splash":
+                for(int i = 0; i < EnemyArr.Count; i++) {
+                    EnemyArr[i].GetComponent<Enemy>().health -=
+                        damage + target.GetComponent<Enemy>().effectArr[0] + player.effectArr[5];
+
+                    if (UsingSkill.effectType != 0 && UsingSkill.effectType <= 4) {
+                        EnemyArr[i].GetComponent<Enemy>().effectArr[UsingSkill.effectType - 1] += UsingSkill.baseEffect;
+                    }
+                }
                 break;
         }
-
         // 데미지 연산 : 기본 데미지 + 화상 데미지 + 집중 효과
-        target.GetComponent<Enemy>().health -= 
-            UsingSkill.baseDamage + target.GetComponent<Enemy>().effectArr[0] + effectArr[5];
-        Debug.Log("플레이어의 공격! "+target.name+"에게"+UsingSkill.baseDamage + target.GetComponent<Enemy>().effectArr[0]+"의 데미지!");
+        // 적 디버프
 
-        shield += UsingSkill.baseShield;
+        // 플레이어 보호막
+        player.shield += UsingSkill.baseShield;
         Debug.Log("플레이어는 "+UsingSkill.baseShield+"의 보호막을 얻었다!");
 
-        if (UsingSkill.effectType != 0 && UsingSkill.effectType <= 4 ) {
-            target.GetComponent<Enemy>().effectArr[UsingSkill.effectType - 1] += UsingSkill.baseEffect;
-        }
-        else if (UsingSkill.effectType > 4) {
-            effectArr[UsingSkill.effectType - 1] += UsingSkill.baseEffect;
+        // 플레이어 버프
+        if (UsingSkill.effectType > 4) {
+            player.effectArr[UsingSkill.effectType - 1] += UsingSkill.baseEffect;
         }
 
+        // 색 초기화
         ClearColor();
+
+        // 합산 데미지 초기화
+        damage = 0;
+
+        // 플레이어 중독 효과 연산
+        player.Poison();
 
         // 감전 효과 연산
         target.GetComponent<Enemy>().ElectricShock();
@@ -180,12 +282,19 @@ public class GameManager : MonoBehaviour
         if(EnemyArr.Count == 0)
         {
             isLive = false;
+
+            // 적 정보 리셋
+            for (int i = 0; i < 4; i++)
+            {
+                enemyInfo[i] = 0;
+            }
+
             state = State.win;
             EndBattle();
-            // 적 살았으면 적에게 턴 넘기기
         }
         else
         {
+            // 적 살았으면 적에게 턴 넘기기
             state = State.enemyTurn;
             StartCoroutine(EnemyTurn());
             Debug.Log("적의 턴입니다.");
@@ -196,6 +305,9 @@ public class GameManager : MonoBehaviour
     void EndBattle()
     {
         Debug.Log("전투 종료");
+        state = State.rest;
+
+        SetNextStageUI();
     }
 
     IEnumerator EnemyTurn()
@@ -204,32 +316,168 @@ public class GameManager : MonoBehaviour
 
         // 적 공격 코드
         for(int i = 0; i < EnemyArr.Count; i++)
-        {
+        {  
+            // 적 보호막 리셋
+            EnemyArr[i].GetComponent<Enemy>().shield = 0;
+
             // 빙결 상태 확인
             if (EnemyArr[i].GetComponent<Enemy>().effectArr[4] > 0) {
                 EnemyArr[i].GetComponent<Enemy>().effectArr[4] -= 1;
                 continue;
             }
 
+            // 적 행동 확정
             EnemyArr[i].GetComponent<Enemy>().TakeActInfo();
-            health = health - EnemyArr[i].GetComponent<Enemy>().damage;
 
-            Debug.Log(EnemyArr[i].name+"의 공격! 플레이어에게"+EnemyArr[i].GetComponent<Enemy>().damage+"의 데미지!");
+            // 공격 연산
+            damage = EnemyArr[i].GetComponent<Enemy>().damage + EnemyArr[i].GetComponent<Enemy>().effectArr[5];
+            if (player.shield != 0) {
+                if (player.shield >= damage) {
+                    player.shield -= damage;
+                    damage = 0;
+                }
+                else {
+                    damage -= player.shield;
+                    player.shield = 0;
+                }
+            }
+            player.health = player.health - damage;
 
-            // 중독 효과
+            // 효과 연산
+            if (EnemyArr[i].GetComponent<Enemy>().effectType != 0 && EnemyArr[i].GetComponent<Enemy>().effectType < 10) {
+                player.effectArr[EnemyArr[i].GetComponent<Enemy>().effectType - 1] += EnemyArr[i].GetComponent<Enemy>().effectNum;
+            }
+
+            Debug.Log(EnemyArr[i].name+"의 공격! 플레이어에게"+damage+"의 데미지!");
+
+            // 합산 데미지 초기화
+            damage = 0;
+
+            // 적 중독 효과
             EnemyArr[i].GetComponent<Enemy>().Poison();
+
+            // 플레이어 빙결 효과
+            player.Coldness();
+            // 플레이어 감전 효과
+            player.ElectricShock();
         }
 
-        // 적 공격 끝났으면 플레이어에게 턴 넘기기
+        // 승리 시
         if(EnemyArr.Count == 0)
         {
             isLive = false;
             state = State.win;
             EndBattle();
         }
+        // 적 공격 끝났으면 플레이어에게 턴 넘기기
+        else {
+            for (int i = 0; i < 3; i++)
+            {
+                _PaintUI[i].GetComponent<Paint>().FillPaint();
+            }
 
-        state = State.playerTurn;
-        Debug.Log("플레이어의 턴입니다.");
+            if(player.effectArr[4] > 0)
+            {
+                player.effectArr[4] = 0;
+                Debug.Log("빙결!");
+
+                state = State.enemyTurn;
+                StartCoroutine(EnemyTurn());
+                Debug.Log("적의 턴입니다.");
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    _PaintUI[i].GetComponent<Paint>().canUsePaint = true;
+                }
+
+                state = State.playerTurn;
+                Debug.Log("플레이어의 턴입니다.");
+            }
+        }
+    }
+}
+
+// 스테이지 정보 관리
+public class StageManager
+{
+    // 현재 스테이지 수
+    public int stageNum = 0;
+    // 현재 스테이지 정보 (0비어있음, 1일반몹, 2엘리트몹, 3보스몹, 4상자, 5이벤트, 6상점)
+    public int stageInfo = 0;
+    public int randomNum = 0;
+    public int[] nextStageInfo = new int[3];
+
+    //초기화
+    public StageManager() {
+        nextStageInfo[0] = 0;
+        nextStageInfo[1] = 0;
+        nextStageInfo[2] = 0;
+    }
+
+    public void SetNextStageInfo() {
+        // 일반몹 스테이지 강제
+        if (stageNum == 1) {
+            nextStageInfo[0] = 1;
+            nextStageInfo[1] = 1;
+            nextStageInfo[2] = 0;
+        }
+        // 엘리트몹 스테이지 강제
+        else if (stageNum == 3) {
+            nextStageInfo[0] = 2;
+            nextStageInfo[1] = 2;
+            nextStageInfo[2] = 0;
+        }
+        // 상점 스테이지 선택
+        else if (stageNum == 5) {
+            nextStageInfo[0] = 1;
+            nextStageInfo[1] = 6;
+            nextStageInfo[2] = 0;
+        }
+        // 보스몹 스테이지 강제
+        else if (stageNum == 6) {
+            nextStageInfo[0] = 3;
+            nextStageInfo[1] = 0;
+            nextStageInfo[2] = 0;
+        }
+        // 스테이지 랜덤 설정
+        else {
+            randomNum = UnityEngine.Random.Range(1, 7);
+
+            switch (randomNum) {
+                case 1:
+                    nextStageInfo[0] = 1;
+                    nextStageInfo[1] = 4;
+                    nextStageInfo[2] = 0;
+                    break;
+                case 2:
+                    nextStageInfo[0] = 1;
+                    nextStageInfo[1] = 5;
+                    nextStageInfo[2] = 0;
+                    break;
+                case 3:
+                    nextStageInfo[0] = 1;
+                    nextStageInfo[1] = 5;
+                    nextStageInfo[2] = 0;
+                    break;
+                case 4:
+                    nextStageInfo[0] = 1;
+                    nextStageInfo[1] = 4;
+                    nextStageInfo[2] = 5;
+                    break;
+                case 5:
+                    nextStageInfo[0] = 1;
+                    nextStageInfo[1] = 6;
+                    nextStageInfo[2] = 0;
+                    break;
+                case 6:
+                    nextStageInfo[0] = 1;
+                    nextStageInfo[1] = 5;
+                    nextStageInfo[2] = 6;
+                    break;
+            }
+        }
     }
 }
 

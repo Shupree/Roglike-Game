@@ -7,17 +7,17 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    public float[] enemyAct = new float[2];
-    public string effectType;
+    public int[] enemyAct = new int[3];
+    public int effectType;
     public int effectNum;
     public int turn;
     public EnemyData data;
-    public float health;
-    public float maxHealth;
-    public float shield;
-    // 화상, 중독, 감전, 추위, 빙결, 집중
+    public int health;
+    public int maxHealth;
+    public int shield;
+    // 0화상, 1중독, 2감전, 3추위, 4빙결, 5집중
     public int[] effectArr = new int[6];
-    public float damage;
+    public int damage;
 
     public bool isLive;
     
@@ -30,14 +30,6 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate() 
     {
-        // 감전 효과 (보호막 무시 데미지)
-        /*if (effectArr[2] >= 5)
-        {
-            health -= 7;
-            Debug.Log(gameObject.name+"은(는) 감전으로 7의 데미지를 입었다!");
-            effectArr[2] -= 5;
-        }*/
-
         if (health <= 0)
         {
             Debug.Log("적 처치");
@@ -54,23 +46,53 @@ public class Enemy : MonoBehaviour
     {
         turn++;
         // 몬스터에 따른 공격 방식 선정
-        switch(data.enemyId) 
-        {
-            case 0:
-                enemyAct = GetComponent<DummyBot>().Pattern(turn);
+        switch (data.enemyId) {
+            // DummyBot
+            case 1:
+                enemyAct = GetComponent<DummyBot>().SetPattern(turn);
+                break;
+
+            // DummyBot2
+            case 2:
+                enemyAct = GetComponent<DummyBot2>().SetPattern(turn);
                 break;
         }
 
-        // 공격(Attack)일 경우
-        if(enemyAct[0] == 1)
-        {
-            damage = enemyAct[1];
+        // 스킬 데미지 확정
+        if (enemyAct[0] != 0) {
+            damage = enemyAct[0];
         }
-
-        // 효과(Effect)일 경우
-        else if(enemyAct[0] == 1)
-        {
-
+        
+        // 효과 없음
+        if (enemyAct[1] == 0) {
+            effectType = 0;
+            effectNum = 0;
+        }
+        // 디버프 효과
+        else if (enemyAct[1] <= 10) {
+            effectType = enemyAct[1];
+            effectNum = enemyAct[2];
+        }
+        // 버프 효과
+        else if (enemyAct[1] > 10) {
+            switch (enemyAct[1]) {
+                // 회복
+                case 11:
+                    health += enemyAct[2];
+                    if (maxHealth < health) {
+                        health = maxHealth;
+                    }
+                    break;
+                
+                // 보호막
+                case 12:
+                    shield += enemyAct[2];
+                    break;
+                // 집중
+                case 13:
+                    effectArr[5] += enemyAct[2];
+                    break;
+            }
         }
     }
 

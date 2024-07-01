@@ -21,8 +21,8 @@ MonoBehaviour:
   baseDamage: 10
   baseShield: 5
   baseCount: 0
-  effectType: 3
-  baseEffect: 6
+  effectType: 0
+  baseEffect: 0
   damages: 
   shields: 
   counts: 

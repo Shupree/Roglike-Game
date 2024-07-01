@@ -8,11 +8,10 @@ public class SpawnManager : MonoBehaviour
     public GameObject[] enemyPrefebArr;
     public GameObject enemyPrefeb;
     public GameObject Enemy;
-    private int positionNum;
 
     void Awake()
     {
-        positionNum = 0;
+        
     }
 
     public void EnemySpawn(int[] EnemyID)
@@ -23,15 +22,13 @@ public class SpawnManager : MonoBehaviour
                 // 적이 존재하지 않음.
             } 
             else {
-                // 해당 적 정보 수집    (주의. EnemyID와 (enemyPrefebArr 순서 - 1) 은 같아야 함.)
+                // 해당 적 정보 수집    (주의. 'enemyID - 1와 'enemyPrefebArr'의 순서는 같아야 함.)
                 enemyPrefeb = enemyPrefebArr[EnemyID[i] - 1];
 
-                Enemy = Instantiate(enemyPrefeb, position[positionNum].transform.position, Quaternion.Euler(0, 0, 0));
-                Enemy.transform.parent = position[positionNum].transform;
+                Enemy = Instantiate(enemyPrefeb, position[i].transform.position, Quaternion.Euler(0, 0, 0));
+                Enemy.transform.parent = position[i].transform;
                 Enemy.name = Enemy.GetComponent<Enemy>().data.enemyName;
                 GameManager.instance.EnemyArr.Add(Enemy);
-
-                positionNum++;
             }
         }
     }

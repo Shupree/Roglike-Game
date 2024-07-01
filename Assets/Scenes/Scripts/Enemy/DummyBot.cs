@@ -6,30 +6,32 @@ using UnityEngine.UI;
 public class DummyBot : MonoBehaviour
 {
     public EnemyData data;
-    public float shield;
-    public float damage;
-    public float[] dataArr;
+    public int[] dataArr;
 
     void Awake()
     {
-        dataArr = new float[2];
+        dataArr = new int[3];
     }
 
-    //dataArr[0] = 행동 타입(공격, 효과 등), dataArr[1] = 수치
-    public float[] Pattern(int turn) 
+    //dataArr[] 0:공격력, 1:효과타입 2:효과수치
+    // 00없음, 01화상, 02중독, 03감전, 04추위, 05빙결
+    // 11회복 12보호막 13집중
+    public int[] SetPattern(int turn) 
     {
-        if(0 == turn % 2)
+        // 홀수 턴 _ 뼈다귀치기(10공격)
+        if(0 != turn % 2)
         {
-            damage = data.attackDamage_01;
-            dataArr[0] = 1f;
-            dataArr[1] = damage;
+            dataArr[0] = data.attackDamage_01;
+            dataArr[1] = data.attackEffect_01;
+            dataArr[2] = data.effectNum_01;
             return dataArr;
         }
+        // 짝수 턴 _ 재구성(2회복)
         else
         {
-            damage = data.attackDamage_01;
-            dataArr[0] = 1f;
-            dataArr[1] = damage;
+            dataArr[0] = data.attackDamage_02;
+            dataArr[1] = data.attackEffect_02;
+            dataArr[2] = data.effectNum_02;
             return dataArr;
         }
     }

@@ -12,8 +12,8 @@ public class HUD : MonoBehaviour
     Text myText;
     Slider mySlider;
 
-    float curHealth;
-    float maxHealth;
+    int curHealth;
+    int maxHealth;
 
     // 초기화
     void Awake()
@@ -26,9 +26,9 @@ public class HUD : MonoBehaviour
     void LateUpdate() {
         switch (type) {
             case InfoType.Health:
-                curHealth = GameManager.instance.health;
-                maxHealth = GameManager.instance.maxHealth;
-                mySlider.value = curHealth / maxHealth;
+                curHealth = GameManager.instance.player.health;
+                maxHealth = GameManager.instance.player.maxHealth;
+                mySlider.value = curHealth / (float)maxHealth;
                 break;
             case InfoType.Shield:
 
@@ -36,7 +36,7 @@ public class HUD : MonoBehaviour
             case InfoType.Enemy_Health:
                 curHealth = target.GetComponent<Enemy>().health;
                 maxHealth = target.GetComponent<Enemy>().maxHealth;
-                mySlider.value = curHealth / maxHealth;
+                mySlider.value = curHealth / (float)maxHealth;
                 break;
             case InfoType.Enemy_Shield:
 
