@@ -13,18 +13,17 @@ MonoBehaviour:
   m_Name: Thunder
   m_EditorClassIdentifier: 
   skillType: 2
+  attackType: 
   skillId: 3
   skillName: "\uBCBC\uB77D"
   skillDesc: 
-  skillIcon: {fileID: -1002307068, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  skillIcon: {fileID: 1997828774, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
   baseDamage: 5
+  baseShield: 0
   baseCount: 0
+  effectType: 0
   baseEffect: 0
-  damages:
-  - 0
-  - 0.6
-  - 0.9
-  - 1.2
-  - 1.5
+  damages: 0000000000000000000000000100000001000000
+  shields: 
   counts: 0100000001000000010000000200000002000000
   effects: 

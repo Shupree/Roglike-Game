@@ -8,6 +8,7 @@ public class Paint : MonoBehaviour
 {
     public int maxNum;
     public int currentNum;
+    private int usedColorNum;
     public bool canUsePaint = false;
     public GameObject colorUI;
     Image icon;
@@ -20,6 +21,7 @@ public class Paint : MonoBehaviour
         maxNum = 5;
         currentNum = maxNum;
         icon.fillAmount = 1;
+        usedColorNum = 0;
     }
 
     private void FixedUpdate() 
@@ -51,11 +53,24 @@ public class Paint : MonoBehaviour
                 case "YellowPaint":
                     GameManager.instance.AddColor(3);
                     break;
-                case "BlackPaint":
-                    GameManager.instance.AddColor(4);
-                    break;
+                //case "BlackPaint":
+                //    GameManager.instance.AddColor(4);
+                //    break;
             }
+
+            usedColorNum += 1;
             currentNum--;
+        }
+    }
+
+    // 취소 버튼 클릭 시 페인트 반환
+    public void ReturnPaint()
+    {
+        currentNum += usedColorNum;
+        usedColorNum = 0;
+
+        if (maxNum < currentNum) {
+            currentNum = maxNum;
         }
     }
 

@@ -349,6 +349,7 @@ MonoBehaviour:
   - {fileID: 2143699460}
   - {fileID: 718527220}
   - {fileID: 789233896}
+  _CanvasUI: {fileID: 1454091560}
   _PaintUI:
   - {fileID: 1359008118}
   - {fileID: 1167545010}
@@ -469,15 +470,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: -1010605625, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -658,7 +659,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 59903915}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: PlayerEraseBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5971,8 +5972,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ba7c0b98ecc294fab69fa4b145cd85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: b86b138b1e8a0564d92ea33a63f06553, type: 2}
   level: 0
+  basicSprite: {fileID: -1010605625, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
 --- !u!1 &1490384797
 GameObject:
   m_ObjectHideFlags: 0

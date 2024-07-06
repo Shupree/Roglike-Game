@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
     public Camera _MainCamera;
     public GameObject _Palette;
     public GameObject[] _NextStageUI;
+    public GameObject _CanvasUI;
     public GameObject[] _PaintUI;
     // 비활성화 상태
     public SpawnManager _SpawnManager;
@@ -77,6 +79,23 @@ public class GameManager : MonoBehaviour
     // 페인트 추가
     public void AddColor(int colorType)
     {
+        if (_PaintManager.order == 0) {
+            switch (colorType) {
+            // Red 타입 스킬
+            case 1:
+                UsingSkill = red_SkillData[_PlayerInfo.skillArr[0]];
+                break;
+            // blue 타입 스킬
+            case 2:
+                UsingSkill = blue_SkillData[_PlayerInfo.skillArr[1]];
+                break;
+            // yellow 타입 스킬
+            case 3:
+                UsingSkill = yellow_SkillData[_PlayerInfo.skillArr[2]];
+                break;
+            }
+            _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(UsingSkill);
+        }
         _PaintManager.AddPaint(colorType);
         _Palette.GetComponent<PaletteManager>().ConvertSprite(colorType);
     }
@@ -170,8 +189,12 @@ public class GameManager : MonoBehaviour
     // 공격 버튼
     public void PlayerAttackBtn()
     {
-        // 공격 스킬, 데미지 등 코드 작성
+        // 물감 선택X 시
+        if (_PaintManager.order == 0) {
+            return;
+        }
 
+        // 물감 버튼 Off
         for (int i = 0; i < 3; i++)
         {
             _PaintUI[i].GetComponent<Paint>().canUsePaint = false;
@@ -185,7 +208,16 @@ public class GameManager : MonoBehaviour
         StartCoroutine(PlayerAttack());
     }
 
-    // 
+    public void PlayerEraseBtn()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            _PaintUI[i].GetComponent<Paint>().ReturnPaint();
+        }
+        _PaintManager.ClearPaint();
+        _Palette.GetComponent<PaletteManager>().ClearPalette();
+        _CanvasUI.GetComponent<CanvasScript>().ClearSprite();
+    }
 
     IEnumerator PlayerAttack()
     {
@@ -193,27 +225,32 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("플레이어 공격");
         // 공격 스킬, 데미지 등 코드 작성
-        switch (_PaintManager.paints[0]) {
+        /*switch (_PaintManager.paints[0]) {
             // Red 타입 스킬
             case 1:
                 UsingSkill = red_SkillData[_PlayerInfo.skillArr[0]];
+                _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(UsingSkill);
                 Debug.Log(UsingSkill.skillName);
                 break;
             // blue 타입 스킬
             case 2:
                 UsingSkill = blue_SkillData[_PlayerInfo.skillArr[1]];
+                _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(UsingSkill);
                 Debug.Log(UsingSkill.skillName);
                 break;
             // yellow 타입 스킬
             case 3:
                 UsingSkill = yellow_SkillData[_PlayerInfo.skillArr[2]];
+                _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(UsingSkill);
                 Debug.Log(UsingSkill.skillName);
                 break;
             default:
                 // 애초에 버튼 클릭이 안되도록 수정할 것!
                 Debug.Log("페인트를 선택하지 않았습니다.");
                 break;
-        }
+        }*/
+        Debug.Log(UsingSkill.skillName);
+        _CanvasUI.GetComponent<CanvasScript>().ClearSprite();
 
         damage = UsingSkill.baseDamage;
 

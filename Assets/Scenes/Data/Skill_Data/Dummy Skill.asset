@@ -17,7 +17,7 @@ MonoBehaviour:
   skillId: 0
   skillName: "\uD14C\uC2A4\uD2B8 \uC2A4\uD0AC"
   skillDesc: "\uD14C\uC2A4\uD2B8\uC6A9 \uC2A4\uD0AC\uC785\uB2C8\uB2E4."
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 1807624531, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
   baseDamage: 10
   baseShield: 5
   baseCount: 0

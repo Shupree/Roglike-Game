@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CanvasScript : MonoBehaviour
 {
-    public SkillData data;
+    private SkillData skillData;
     public int level;
+    public Sprite basicSprite;
 
     Image icon;
     Text explanation;
@@ -14,7 +16,6 @@ public class CanvasScript : MonoBehaviour
     void Awake()
     {
         icon = GetComponentsInChildren<Image>()[1];
-        icon.sprite = data.skillIcon;
 
         Text[] texts = GetComponentsInChildren<Text>();
         explanation = texts[0];
@@ -23,6 +24,17 @@ public class CanvasScript : MonoBehaviour
     void LateUpdate() 
     {
         explanation.text = "Enforced." + (level + 1);
+    }
+
+    public void ConvertSprite(SkillData data)
+    {
+        skillData = data;
+        icon.sprite = data.skillIcon;
+    }
+
+    public void ClearSprite()
+    {
+        icon.sprite = basicSprite;
     }
 
     public void OnClick()
