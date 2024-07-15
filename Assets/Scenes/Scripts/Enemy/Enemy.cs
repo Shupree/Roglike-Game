@@ -15,8 +15,10 @@ public class Enemy : MonoBehaviour
     public int health;
     public int maxHealth;
     public int shield;
-    // 0화상, 1중독, 2감전, 3추위, 4빙결, 5집중
-    public int[] effectArr = new int[6];
+    // 00화상, 01중독, 02감전, 03추위, 04빙결, 05기절 06공포, 07위압, 08부식
+    // 00철갑 보호막, 01집중, 02흡수, 03가시
+    public int[] debuffArr = new int[9];
+    public int[] buffArr = new int[4];
     public int damage;
 
     public bool isLive;
@@ -90,7 +92,7 @@ public class Enemy : MonoBehaviour
                     break;
                 // 집중
                 case 13:
-                    effectArr[5] += enemyAct[2];
+                    buffArr[1] += enemyAct[2];
                     break;
             }
         }
@@ -99,13 +101,13 @@ public class Enemy : MonoBehaviour
     // 감전 효과 확인
     public void ElectricShock()
     {
-        if (effectArr[2] >= 5)
+        if (debuffArr[2] >= 5)
         {
             // 감전 데미지 연산
             health -= 7;
             Debug.Log(gameObject.name+"은(는) 감전으로 7의 데미지를 입었다!");
             // 감전 효과 - 5
-            effectArr[2] -= 5;
+            debuffArr[2] -= 5;
         }
     }
 
@@ -113,20 +115,20 @@ public class Enemy : MonoBehaviour
     public void Poison()
     {
         // 중독 데미지 연산
-        health -= effectArr[1];
+        health -= debuffArr[1];
         // 중독 효과를 절반으로 상실
-        effectArr[1] -= effectArr[1] / 2;
+        debuffArr[1] -= debuffArr[1] / 2;
     }
 
     // 추위 효과 확인
     public void Coldness()
     {
         // 추위 효과
-        if (effectArr[3] >= 6) {
+        if (debuffArr[3] >= 6) {
             // 즉시 추위 스택을 0으로 치환
-            effectArr[3] = 0;
+            debuffArr[3] = 0;
             // 빙결 효과 추가
-            effectArr[4] = 1;
+            debuffArr[4] = 1;
         }
     }
 }
