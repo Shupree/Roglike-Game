@@ -1704,7 +1704,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 14.9375
+  orthographic size: 14.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2377,8 +2377,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetType: 0
-  target: {fileID: 0}
-  order: 0
   effectArr: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   spriteArr:
   - {fileID: 154122315, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
@@ -3631,7 +3629,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6242f27b848a4f741a37a5b0cd20d0f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _StateScript: {fileID: 0}
   health: 0
   maxHealth: 100
   shield: 0

@@ -320,6 +320,8 @@ public class GameManager : MonoBehaviour
         // 추위 효과 연산
         target.GetComponent<Enemy>().Coldness();
 
+        yield return new WaitForSeconds(1f);
+
         // 적 죽었으면 전투 종료
         if(EnemyArr.Count == 0)
         {
@@ -359,6 +361,10 @@ public class GameManager : MonoBehaviour
         // 적 공격 코드
         for(int i = 0; i < EnemyArr.Count; i++)
         {
+            if (!EnemyArr[i]) {
+                continue;
+            }
+
             // 적 보호막 리셋
             EnemyArr[i].GetComponent<Enemy>().shield = 0;
 
@@ -407,6 +413,8 @@ public class GameManager : MonoBehaviour
             player.ElectricShock();
         }
 
+        yield return new WaitForSeconds(1f);
+
         // 승리 시
         if(EnemyArr.Count == 0)
         {
@@ -416,9 +424,20 @@ public class GameManager : MonoBehaviour
         }
         // 적 공격 끝났으면 플레이어에게 턴 넘기기
         else {
+            // 플레이어 물감 회복
             for (int i = 0; i < 3; i++)
             {
                 _PaintUI[i].GetComponent<Paint>().FillPaint();
+            }
+
+            // 턴에 따른 버프/디버프 감소
+            player.DecStatusEffect();
+            for(int i = 0; i < EnemyArr.Count; i++)
+            {
+                if (!EnemyArr[i]) {
+                    continue;
+                }
+                EnemyArr[i].GetComponent<Enemy>().DecStatusEffect();
             }
 
             // 플레이어 빙결 효과

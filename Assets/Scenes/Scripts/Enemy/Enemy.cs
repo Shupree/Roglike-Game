@@ -98,6 +98,29 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    // 매턴마다 버프/디버프 감소
+    public void DecStatusEffect()
+    {
+        debuffArr[0] /= 2;
+        debuffArr[1] /= 2;
+        debuffArr[6] -= 1;
+        debuffArr[7] -= 1;
+        debuffArr[8] -= 1;
+        buffArr[0] -= 1;
+        buffArr[1] = 0;
+        buffArr[2] = 0;
+        buffArr[3] = 0;
+
+        for (int i = 0; i < debuffArr.Length; i++) {
+            if (debuffArr[i] < 0) {
+                debuffArr[i] = 0;
+            }
+            if (i < buffArr.Length && buffArr[i] < 0) {
+                buffArr[i] = 0;
+            }
+        }
+    }
+
     // 감전 효과 확인
     public void ElectricShock()
     {
@@ -116,8 +139,8 @@ public class Enemy : MonoBehaviour
     {
         // 중독 데미지 연산
         health -= debuffArr[1];
-        // 중독 효과를 절반으로 상실
-        debuffArr[1] -= debuffArr[1] / 2;
+
+        Debug.Log(gameObject.name+"은(는) 중독으로 "+debuffArr[1]+"의 데미지를 입었다!");
     }
 
     // 추위 효과 확인

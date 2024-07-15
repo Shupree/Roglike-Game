@@ -26,12 +26,12 @@ public class DummyBot : MonoBehaviour
             dataArr[2] = 2;
             return dataArr;
         }
-        // 짝수 턴 _ 재구성(4화상)
+        // 짝수 턴 _ 재구성(6중독)
         else
         {
             dataArr[0] = 0;
-            dataArr[1] = 1;
-            dataArr[2] = 4;
+            dataArr[1] = 2;
+            dataArr[2] = 6;
             return dataArr;
         }
     }

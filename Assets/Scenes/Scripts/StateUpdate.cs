@@ -8,9 +8,8 @@ public class StateUpdate : MonoBehaviour
 {
     public enum TargetInfo { Player, Enemy }
     public TargetInfo targetType;
-    public GameObject target;
     private bool IsConvert;
-    public int order;   // stateUI 현재 순서
+    private int order;   // stateUI 현재 순서
     private Image[] UIArr = new Image[6];   // 상태이상 UI 배열 (stateUI)
     private TextMeshProUGUI[] textArr = new TextMeshProUGUI[6]; // 상태이상 수치 UI 배열
     // stateUI에 따른 이펙트 타입 정보 (ImageArr의 순서와 EffectType의 순서가 일치해야 함.)
@@ -37,7 +36,6 @@ public class StateUpdate : MonoBehaviour
 
         for (int i = 0; i < UIOrderArr.Length; i++) {
             UIOrderArr[i] = -1;
-            Debug.Log(UIOrderArr[i]);
         }
 
         order = 0;
@@ -58,64 +56,75 @@ public class StateUpdate : MonoBehaviour
                 {
                     effectArr[i] = GameManager.instance.player.buffArr[i - 9];
                 }
-
-                // 현재 모든 Effect값에서 존재하는 값 확인
-                for (int i = 0; i < effectArr.Length; i++) 
+                break;
+            case TargetInfo.Enemy:
+                // 모든 버프/디버프 불러오기
+                for (int i = 0; i < transform.parent.parent.gameObject.GetComponent<Enemy>().debuffArr.Length; i++) 
                 {
-                    // 이미 생성된 UI가 있는지 확인
-                    for (int a = 0; a < UIOrderArr.Length; a++)
-                    {
-                        if (UIOrderArr[a] == i) {
-                            // 이미 생성된 UI가 있는 경우 _ UI 업데이트
-                            if (effectArr[i] > 0) {
-                                textArr[a].text = effectArr[i].ToString();
-                                IsConvert = true;
-                                break;
-                            }
-                            // 이미 생성된 UI가 있는 경우 _ 사라진 버프/디버프 UI 제거
-                            else {
-                                for (int b = 0; b <= UIOrderArr.Length - a; b++)
-                                {
-                                    if (!UIArr[a + b].enabled || b == UIOrderArr.Length - a) {
-                                        UIOrderArr[a + b - 1] = -1;
-                                        UIArr[a + b - 1].enabled = false;
-                                        textArr[a + b - 1].enabled = false;
-                                        break;
-                                    }
-                                    UIOrderArr[a + b] = UIOrderArr[a + b + 1];
-                                    UIArr[a + b] = UIArr[a + b + 1];
-                                    textArr[a + b] = textArr[a + b + 1];
-                                }
-                                order--;
-                            }
-                        }
-                    }
-                    // 생성된 UI가 없는 경우 _ UI 생성
-                    if (effectArr[i] > 0) 
-                    {
-                        if (IsConvert == false) {
-                            if (order >= 6) {
-                            // UI 꽉참.
-                            Debug.Log("UI가 전부 찼습니다.");
-                            }
-                            else {
-                                UIOrderArr[order] = i;
-                                Debug.Log(UIOrderArr);
-
-                                // UI 활성화
-                                UIArr[order].enabled = true;
-                                textArr[order].enabled = true;
-
-                                UIArr[order].sprite = spriteArr[i];
-                                textArr[order].text = GameManager.instance.player.debuffArr[i].ToString();
-
-                                order++;
-                            }
-                        }
-                    }
-                    IsConvert = false;
+                    effectArr[i] = transform.parent.parent.gameObject.GetComponent<Enemy>().debuffArr[i];
+                }
+                for (int i = 9; i < transform.parent.parent.gameObject.GetComponent<Enemy>().buffArr.Length + 9; i++) 
+                {
+                    effectArr[i] = transform.parent.parent.gameObject.GetComponent<Enemy>().buffArr[i - 9];
                 }
                 break;
+        }
+
+        // 현재 모든 Effect값에서 존재하는 값 확인
+        for (int i = 0; i < effectArr.Length; i++) 
+        {
+            // 이미 생성된 UI가 있는지 확인
+            for (int a = 0; a < UIOrderArr.Length; a++)
+            {
+                if (UIOrderArr[a] == i) {
+                    // 이미 생성된 UI가 있는 경우 _ UI 업데이트
+                    if (effectArr[i] > 0) {
+                        textArr[a].text = effectArr[i].ToString();
+                        IsConvert = true;
+                        break;
+                    }
+                    // 이미 생성된 UI가 있는 경우 _ 사라진 버프/디버프 UI 제거
+                    else {
+                        for (int b = 0; b <= UIOrderArr.Length - a; b++)
+                        {
+                            // UI가 비활성화되어 있는 경우 || UI가 마지막인 경우
+                            if (!UIArr[a + b].enabled || b == UIOrderArr.Length - a) {
+                                UIOrderArr[a + b - 1] = -1;
+                                UIArr[a + b - 1].enabled = false;
+                                textArr[a + b - 1].enabled = false;
+                                break;
+                            }
+                            UIOrderArr[a + b] = UIOrderArr[a + b + 1];
+                            UIArr[a + b].sprite = UIArr[a + b + 1].sprite;
+                            textArr[a + b].text = textArr[a + b + 1].text;
+                        }
+                        order--;
+                    }
+                }
             }
+            // 생성된 UI가 없는 경우 _ UI 생성
+            if (effectArr[i] > 0) 
+            {
+                if (IsConvert == false) {
+                    if (order >= 6) {
+                    // UI 꽉참.
+                    Debug.Log("UI가 전부 찼습니다.");
+                    }
+                    else {
+                        UIOrderArr[order] = i;
+
+                        // UI 활성화
+                        UIArr[order].enabled = true;
+                        textArr[order].enabled = true;
+
+                        UIArr[order].sprite = spriteArr[i];
+                        textArr[order].text = GameManager.instance.player.debuffArr[i].ToString();
+
+                        order++;
+                    }
+                }
+            }
+            IsConvert = false;
+        }
     }
 }
