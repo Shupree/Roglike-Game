@@ -1193,8 +1193,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetType: 1
-  target: {fileID: 0}
-  order: 0
   effectArr: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   spriteArr:
   - {fileID: 154122315, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
@@ -1594,7 +1592,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1357416705
   m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!114 &461781227239627155
@@ -1848,8 +1846,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1390324303
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 702470333, guid: 4104ee12b4d54f54b91b3ba875787837, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

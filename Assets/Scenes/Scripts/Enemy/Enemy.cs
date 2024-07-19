@@ -30,8 +30,21 @@ public class Enemy : MonoBehaviour
         health = maxHealth;
     }
 
-    void FixedUpdate() 
+    void Update() 
     {
+        if (gameObject == GameManager.instance.target) {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+        }
+        else {
+            if (GameManager.instance.usingSkill.attackType == "Splash") {
+                transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+            }
+            else {
+                transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            }
+        }
+
+        // 적 처치
         if (health <= 0)
         {
             Debug.Log("적 처치");
@@ -62,7 +75,7 @@ public class Enemy : MonoBehaviour
 
         // 스킬 데미지 확정
         if (enemyAct[0] != 0) {
-            damage = enemyAct[0];
+            damage = enemyAct[0] + buffArr[1] + GameManager.instance._player.debuffArr[0];
         }
         
         // 효과 없음
@@ -137,10 +150,12 @@ public class Enemy : MonoBehaviour
     // 중독 효과 확인
     public void Poison()
     {
-        // 중독 데미지 연산
-        health -= debuffArr[1];
+        if (debuffArr[1] > 0) {
+            // 중독 데미지 연산
+            health -= debuffArr[1];
 
-        Debug.Log(gameObject.name+"은(는) 중독으로 "+debuffArr[1]+"의 데미지를 입었다!");
+            Debug.Log(gameObject.name+"은(는) 중독으로 "+debuffArr[1]+"의 데미지를 입었다!");
+        }
     }
 
     // 추위 효과 확인
@@ -152,6 +167,8 @@ public class Enemy : MonoBehaviour
             debuffArr[3] = 0;
             // 빙결 효과 추가
             debuffArr[4] = 1;
+
+            Debug.Log("빙결!");
         }
     }
 }

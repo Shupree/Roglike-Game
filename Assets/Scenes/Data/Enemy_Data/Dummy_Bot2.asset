@@ -18,12 +18,12 @@ MonoBehaviour:
   enemyDesc: "\uB354\uBBF8 \uC2A4\uCF08\uB808\uD1A4\uC785\uB2C8\uB2E4."
   enemyModel: {fileID: 0}
   maxHealth: 15
-  attackDamage_01: 12
+  attackDamage_01: 5
   attackEffect_01: 0
   effectNum_01: 0
   attackDamage_02: 0
-  attackEffect_02: 13
-  effectNum_02: 1
+  attackEffect_02: 3
+  effectNum_02: 4
   attackDamage_03: 0
   attackEffect_03: 0
   effectNum_03: 0

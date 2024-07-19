@@ -26,8 +26,8 @@ public class HUD : MonoBehaviour
     void LateUpdate() {
         switch (type) {
             case InfoType.Health:
-                curHealth = GameManager.instance.player.health;
-                maxHealth = GameManager.instance.player.maxHealth;
+                curHealth = GameManager.instance._player.health;
+                maxHealth = GameManager.instance._player.maxHealth;
                 mySlider.value = curHealth / (float)maxHealth;
                 break;
             case InfoType.Shield:

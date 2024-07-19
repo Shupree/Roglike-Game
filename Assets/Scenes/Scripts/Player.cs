@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     // 00철갑 보호막, 01집중, 02흡수, 03가시
     public int[] debuffArr = new int[9];
     public int[] buffArr = new int[4];
+    public int[] itemArr = new int[6];      // 사용 중인 장신구
 
     public void Awake()
     {
@@ -21,6 +22,14 @@ public class Player : MonoBehaviour
 
         // _StateScript = transform.Find("Canvas").gameObject.transform.Find("StateUI").gameObject.GetComponent<StateUpdate>();
     }
+
+    public void ChangeSkill()
+    {
+        //switch () {
+
+        //}
+    }
+
 
     // 매턴마다 버프/디버프 감소
     public void DecStatusEffect()
@@ -61,8 +70,12 @@ public class Player : MonoBehaviour
     // 중독 효과 확인
     public void Poison()
     {
-        // 중독 데미지 연산
-        health -= debuffArr[1];
+        if (debuffArr[1] > 0) {
+            // 중독 데미지 연산
+            health -= debuffArr[1];
+
+            Debug.Log("플레이어는 중독으로 "+debuffArr[1]+"의 데미지를 입었다!");
+        }
     }
 
     // 추위 효과 확인
@@ -74,6 +87,8 @@ public class Player : MonoBehaviour
             debuffArr[3] = 0;
             // 빙결 효과 추가
             debuffArr[4] = 1;
+
+            Debug.Log("빙결!");
         }
     }
 }

@@ -53,9 +53,9 @@ public class Paint : MonoBehaviour
                 case "YellowPaint":
                     GameManager.instance.AddColor(3);
                     break;
-                //case "BlackPaint":
-                //    GameManager.instance.AddColor(4);
-                //    break;
+                case "WhitePaint":
+                    GameManager.instance.AddColor(4);
+                    break;
             }
 
             usedColorNum += 1;

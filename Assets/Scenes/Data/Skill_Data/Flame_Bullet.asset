@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75fffb14871e4c0429a65bfdb9d4f3f4, type: 3}
   m_Name: Flame_Bullet
   m_EditorClassIdentifier: 
-  skillType: 1
-  attackType: 
+  skillType: 0
+  attackType: Multiple
   skillId: 1
   skillName: "\uBD88\uAF43 \uD0C4\uD658"
   skillDesc: 
   skillIcon: {fileID: -537537479, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
   baseDamage: 1
   baseShield: 0
-  baseCount: 2
-  effectType: 0
+  baseCount: 4
+  effectType: 1
   baseEffect: 1
-  damages: 00000000010000000000000000000000
+  damages: 0000000000000000010000000000000000000000
   shields: 
-  counts: 00000000000000000100000000000000
-  effects: 01000000000000000000000001000000
+  counts: 0000000000000000010000000000000000000000
+  effects: 0100000000000000000000000100000001000000

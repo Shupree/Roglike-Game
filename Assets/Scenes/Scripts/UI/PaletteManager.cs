@@ -14,7 +14,7 @@ public class PaletteManager : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             imageArr[i] = UIArr[i].GetComponent<Image>();
-            imageArr[i].color = Color.white;
+            imageArr[i].color = Color.gray;
         }
 
         paletteNum = 0;
@@ -39,6 +39,11 @@ public class PaletteManager : MonoBehaviour
                 imageArr[paletteNum].color = Color.yellow;
                 paletteNum++;
                 break;
+            // 하양
+            case 4:
+                imageArr[paletteNum].color = Color.white;
+                paletteNum++;
+                break;
             default:
                 Debug.Log("Palette 시스템에 문제가 발생했습니다.");
                 break;
@@ -51,7 +56,7 @@ public class PaletteManager : MonoBehaviour
         // 팔레트 이미지 초기화
         for (int i = 0; i < 5; i++)
         {
-            imageArr[i].color = Color.white;
+            imageArr[i].color = Color.gray;
         }
 
         paletteNum = 0;

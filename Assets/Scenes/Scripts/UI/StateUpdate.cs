@@ -48,13 +48,13 @@ public class StateUpdate : MonoBehaviour
         switch (targetType) {
             case TargetInfo.Player:
                 // 모든 버프/디버프 불러오기
-                for (int i = 0; i < GameManager.instance.player.debuffArr.Length; i++) 
+                for (int i = 0; i < GameManager.instance._player.debuffArr.Length; i++) 
                 {
-                    effectArr[i] = GameManager.instance.player.debuffArr[i];
+                    effectArr[i] = GameManager.instance._player.debuffArr[i];
                 }
-                for (int i = 9; i < GameManager.instance.player.buffArr.Length + 9; i++) 
+                for (int i = 9; i < GameManager.instance._player.buffArr.Length + 9; i++) 
                 {
-                    effectArr[i] = GameManager.instance.player.buffArr[i - 9];
+                    effectArr[i] = GameManager.instance._player.buffArr[i - 9];
                 }
                 break;
             case TargetInfo.Enemy:
@@ -118,7 +118,7 @@ public class StateUpdate : MonoBehaviour
                         textArr[order].enabled = true;
 
                         UIArr[order].sprite = spriteArr[i];
-                        textArr[order].text = GameManager.instance.player.debuffArr[i].ToString();
+                        textArr[order].text = GameManager.instance._player.debuffArr[i].ToString();
 
                         order++;
                     }

@@ -18,20 +18,20 @@ public class DummyBot : MonoBehaviour
     // 11회복 12보호막 13집중
     public int[] SetPattern(int turn) 
     {
-        // 홀수 턴 _ 뼈다귀치기(6공격, 2감전)
+        // 홀수 턴 _ 뼈다귀치기(6공격, 4중독)
         if(0 != turn % 2)
         {
-            dataArr[0] = 6;
-            dataArr[1] = 3;
-            dataArr[2] = 2;
+            dataArr[0] = data.attackDamage_01;
+            dataArr[1] = data.attackEffect_01;
+            dataArr[2] = data.effectNum_01;
             return dataArr;
         }
-        // 짝수 턴 _ 재구성(6중독)
+        // 짝수 턴 _ 재구성(4회복)
         else
         {
-            dataArr[0] = 0;
-            dataArr[1] = 2;
-            dataArr[2] = 6;
+            dataArr[0] = data.attackDamage_02;
+            dataArr[1] = data.attackEffect_02;
+            dataArr[2] = data.effectNum_02;
             return dataArr;
         }
     }

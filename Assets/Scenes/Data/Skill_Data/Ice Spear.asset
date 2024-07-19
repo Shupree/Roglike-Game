@@ -18,12 +18,12 @@ MonoBehaviour:
   skillName: "\uC544\uC774\uC2A4 \uC2A4\uD53C\uC5B4"
   skillDesc: 
   skillIcon: {fileID: 1737672109, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
-  baseDamage: 2
+  baseDamage: 5
   baseShield: 0
   baseCount: 0
   effectType: 4
   baseEffect: 2
-  damages: 02000000030000000300000004000000
+  damages: 0500000005000000050000000500000005000000
   shields: 
   counts: 00000000000000000000000000000000
   effects: 00000000000000000000000000000000
