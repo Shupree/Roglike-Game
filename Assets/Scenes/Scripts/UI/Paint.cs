@@ -11,7 +11,7 @@ public class Paint : MonoBehaviour
     private int usedColorNum;
     public bool canUsePaint = false;
     public GameObject colorUI;
-    Image icon;
+    private Image icon;
 
     void Awake()
     {

@@ -45,7 +45,7 @@ public class BagManager : MonoBehaviour
         use_SkillData[3] = have_SkillData[3];
     }
 
-    private void BagBtn()
+    public void BagBtn()
     {
         if (isOpend == false) {
             UIObject.SetActive(true);

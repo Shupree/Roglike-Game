@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Enemy", menuName = "Scriptble Object/EnemyData")]
 public class EnemyData : ScriptableObject
 {
-    // 몬스터 테이블
+    // 몬스터 스크립터블 오브젝트
     public enum EnemyType { Normal, Elite, Boss }
 
     [Header("# Main Info")]

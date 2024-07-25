@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 // 플레이어 사망 시 추가
 // StateUpdate 전부 리스트로 바꿀 것!
+
+// _PaintUI, EnemyArr를 전부 하위 컴포넌트 대상으로 하는 Arr로 바꿔야할듯..
 public class GameManager : MonoBehaviour
 {
     // static을 통해 메모리에 정보를 저장 후 타 스크립트에서 사용 가능.
@@ -16,8 +18,7 @@ public class GameManager : MonoBehaviour
     public GameObject _Palette;
     public GameObject[] _NextStageUI;
     public GameObject _CanvasUI;
-    public GameObject[] _PaintUI;
-    // 비활성화 상태
+    public GameObject[] _PaintUI;   // [0]빨강 [1]파랑 [2]노랑 [3]하양
     public SpawnManager _SpawnManager;
     public BagManager _BagManager;
     public PaintManager _PaintManager = new PaintManager();
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
     private int damage;
     //private int map;
     public SkillData usingSkill;
+    public MasterPieceData MP_Data;
 
     // 초기화
     void Awake()
@@ -166,7 +168,7 @@ public class GameManager : MonoBehaviour
         state = State.start;    // 전투 시작 알림
 
         // 물감 최대치로 보충
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
             _PaintUI[i].GetComponent<Paint>().FillUpPaint();
         }
@@ -190,7 +192,7 @@ public class GameManager : MonoBehaviour
         // 적 스폰
         _SpawnManager.EnemySpawn(enemyInfo);
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
             _PaintUI[i].GetComponent<Paint>().canUsePaint = true;
         }
@@ -211,22 +213,29 @@ public class GameManager : MonoBehaviour
         }
 
         // 물감 버튼 Off
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
             _PaintUI[i].GetComponent<Paint>().canUsePaint = false;
         }
 
-                // 버튼이 계속 눌리는 거 방지하기 위함
+        // 버튼이 계속 눌리는 거 방지하기 위함
         if(state != State.playerTurn)
         {
             return;
         }
+
+        _PaintManager.stack += _PaintManager.order;     // 사용한 물감 수만큼 스택 적립
+        if (MP_Data.cost < _PaintManager.stack) {
+            _PaintManager.stack = MP_Data.cost;
+        }
+
+        // 공격 단계로
         StartCoroutine(PlayerAttack());
     }
 
     public void PlayerEraseBtn()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
             _PaintUI[i].GetComponent<Paint>().ReturnPaint();
         }
@@ -325,10 +334,13 @@ public class GameManager : MonoBehaviour
         // 플레이어 중독 효과 연산
         _player.Poison();
 
-        // 감전 효과 연산
-        target.GetComponent<Enemy>().ElectricShock();
-        // 추위 효과 연산
-        target.GetComponent<Enemy>().Coldness();
+        for(int i = 0; i < EnemyArr.Count; i++) {
+            // 감전 효과 연산
+            EnemyArr[i].GetComponent<Enemy>().ElectricShock();
+            // 추위 효과 연산
+            EnemyArr[i].GetComponent<Enemy>().Coldness();
+
+        }
 
         // 스킬 리셋
         usingSkill = _BagManager.noneData;
@@ -426,6 +438,14 @@ public class GameManager : MonoBehaviour
             _player.ElectricShock();
         }
 
+        for(int i = 0; i < EnemyArr.Count; i++) {
+            // 감전 효과 연산
+            EnemyArr[i].GetComponent<Enemy>().ElectricShock();
+            // 추위 효과 연산
+            EnemyArr[i].GetComponent<Enemy>().Coldness();
+
+        }
+
         yield return new WaitForSeconds(1f);
 
         // 승리 시
@@ -438,7 +458,7 @@ public class GameManager : MonoBehaviour
         // 적 공격 끝났으면 플레이어에게 턴 넘기기
         else {
             // 플레이어 물감 회복
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
                 _PaintUI[i].GetComponent<Paint>().FillPaint();
             }
@@ -465,7 +485,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     _PaintUI[i].GetComponent<Paint>().canUsePaint = true;
                 }
@@ -567,6 +587,7 @@ public class PaintManager
     public int order = 0;
     public int[] paints = new int[5];
     // none = 0, red = 1, blue = 2, yellow = 3, white = 4
+    public int stack;   // 물감 사용 스택 수
     public PaintManager() {
         paints[0] = 0;
         paints[1] = 0;
@@ -580,7 +601,7 @@ public class PaintManager
         order++;
     }
 
-    // 저장된 색 초기화
+    // 페인트 초기화
     public void ClearPaint() {
         for (int i = 0; i < 5; i++)
         {
