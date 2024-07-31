@@ -1,45 +1,69 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {
-    public enum InfoType { Health, Shield, Enemy_Health, Enemy_Shield }
+    public enum InfoType { Player, Enemy }
     public InfoType type;
     public GameObject target;
+    private Enemy enemyScript;
     
-    Text myText;
-    Slider mySlider;
+    Slider HP_Slider;
+    GameObject shield_UI;
+    //Image shield_Img;
+    TextMeshProUGUI shield_Text;
 
     int curHealth;
     int maxHealth;
+    int shield;
 
     // 초기화
     void Awake()
     {
-        //myText = GetComponent<Text>();
-        mySlider = GetComponent<Slider>();
+        HP_Slider = transform.GetChild(0).GetComponent<Slider>();
+        shield_UI = transform.GetChild(1).gameObject;
+        //shield_Img = shield_UI.GetComponent<Image>();
+        shield_Text = shield_UI.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+        if (target != null) {
+            enemyScript = target.GetComponent<Enemy>();
+        }
     }
 
     // 데이터 갱신
     void LateUpdate() {
         switch (type) {
-            case InfoType.Health:
+            case InfoType.Player:
                 curHealth = GameManager.instance._player.health;
                 maxHealth = GameManager.instance._player.maxHealth;
-                mySlider.value = curHealth / (float)maxHealth;
-                break;
-            case InfoType.Shield:
+                HP_Slider.value = curHealth / (float)maxHealth;
 
+                shield = GameManager.instance._player.shield;
+                if (shield == 0) {
+                    shield_UI.SetActive(false);
+                }
+                else {
+                    shield_UI.SetActive(true);
+                    shield_Text.text = shield.ToString();
+                }
                 break;
-            case InfoType.Enemy_Health:
-                curHealth = target.GetComponent<Enemy>().health;
-                maxHealth = target.GetComponent<Enemy>().maxHealth;
-                mySlider.value = curHealth / (float)maxHealth;
-                break;
-            case InfoType.Enemy_Shield:
 
+            case InfoType.Enemy:
+                curHealth = enemyScript.health;
+                maxHealth = enemyScript.maxHealth;
+                HP_Slider.value = curHealth / (float)maxHealth;
+
+                shield = enemyScript.shield;
+                if (shield == 0) {
+                    shield_UI.SetActive(false);
+                }
+                else {
+                    shield_UI.SetActive(true);
+                    shield_Text.text = shield.ToString();
+                }
                 break;
         }
     }

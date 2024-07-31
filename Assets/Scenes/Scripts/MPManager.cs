@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 // MasterPiece(걸작) Manager
 public class MPManager : MonoBehaviour
@@ -20,6 +21,11 @@ public class MPManager : MonoBehaviour
     private int effect;
     private int addValue;
 
+    public GameObject MP_BtnUI;
+    //private Image MP_BtnEmptyImg;
+    //private Image MP_BtnImg;
+    private Image MP_BtnImg;
+
     private bool isOpend;
 
     void Awake()
@@ -29,7 +35,6 @@ public class MPManager : MonoBehaviour
 
         // 테스트용 걸작 데이터 획득
         have_MPData[0] = all_MPData[0];
-        Debug.Log(1);
         use_MPData = have_MPData[0];
 
         // 걸작 세팅
@@ -37,6 +42,21 @@ public class MPManager : MonoBehaviour
 
         _player = GameManager.instance._player;
         _PaintScripts = GameManager.instance._PaintScripts;
+
+        // 걸작 사용 버튼 세팅
+        //MP_BtnEmptyImg = MP_BtnUI.transform.GetChild(0).GetComponent<Image>();
+        //MP_BtnImg = MP_BtnUI.transform.GetChild(1).GetComponent<Image>();
+        MP_BtnImg = MP_BtnUI.transform.GetChild(1).GetComponent<Image>();
+    }
+
+    public void LateUpdate()
+    {
+        if (use_MPData.condition == "Cost") {
+            MP_BtnImg.fillAmount = GameManager.instance._PaintManager.stack / (float)use_MPData.maximumCondition;
+        }
+        else {
+            MP_BtnImg.fillAmount = GameManager.instance._PaintManager.stack / (float)use_MPData.cost;
+        }
     }
 
     public void MPFunction()
@@ -79,12 +99,12 @@ public class MPManager : MonoBehaviour
                 else if (use_MPData.conditionColor == "W") {
                     i = 3;
                 }
-                Debug.Log("으아아악!");
 
                 // 제한 없음.   (물감 1당 1스택)
                 if (use_MPData.maximumCondition == -1) {
                     addValue = _PaintScripts[i].currentNum;
                     _PaintScripts[i].currentNum = 0;   // 물감 전부 제거
+                    GameManager.instance._PaintManager.stack = 0;
                 }
                 // 조건: n만큼의 물감
                 else {
@@ -228,10 +248,5 @@ public class MPManager : MonoBehaviour
             UIObject.SetActive(false);
             isOpend = false;
         }
-    }
-
-    public void ConvertImage()
-    {
-
     }
 }

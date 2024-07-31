@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public MPManager _MasterPieceManager;
     public PaintManager _PaintManager = new PaintManager();
     public StageManager _StageManager = new StageManager();
+    public Player _player;
 
     public enum State
     {
@@ -29,19 +30,25 @@ public class GameManager : MonoBehaviour
     }
 
     public State state;
+
     public bool isLive;  // 적 생존 여부
-    public Player _player;
     public int[] enemyID = new int[4];    // 적 정보
     public GameObject target;
     public Enemy targetInfo;   // 타겟의 Enemy 스크립트
     public List<GameObject> EnemyList;   // 적 오브젝트
     public List<Enemy> EnemyInfoList;    // 적 Enemy 스크립트
+
     public MonsterStageData[] EnemySetData;
     private int randomSetNum;
-    private int damage;
+
     //private int map;
     public SkillData usingSkill;
     public MasterPieceData MP_Data;
+
+    
+    private int damage;
+    private int shield;
+    private int effect;
 
     // 초기화
     void Awake()
@@ -107,8 +114,12 @@ public class GameManager : MonoBehaviour
             _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(usingSkill);
         }
         else if (_PaintManager.order > 0) {
-            damage += usingSkill.damages[_PaintManager.order];
-            Debug.Log("현재 데미지" + damage);
+            damage += usingSkill.incDamage * _PaintManager.order;
+            Debug.Log("현재 데미지" + damage + "\n현재 보호막" + shield + "\n현재 버프/디버프" + effect);
+
+            shield += usingSkill.incShield * _PaintManager.order;
+
+            effect += usingSkill.incEffect * _PaintManager.order;
         }
         _PaintManager.AddPaint(colorType);
         _Palette.GetComponent<PaletteManager>().ConvertSprite(colorType);
@@ -286,10 +297,10 @@ public class GameManager : MonoBehaviour
                 // 적 디버프
                 if (usingSkill.effectType > 0) {
                     if (usingSkill.effectType < 10) {
-                        targetInfo.debuffArr[usingSkill.effectType - 1] += usingSkill.baseEffect;
+                        targetInfo.debuffArr[usingSkill.effectType - 1] += effect;
                     }
                     else if (usingSkill.effectType < 20) {
-                        targetInfo.debuffArr[usingSkill.effectType - 11] += usingSkill.baseEffect;
+                        targetInfo.debuffArr[usingSkill.effectType - 11] += effect;
                     }
                 }
                 Debug.Log("적은 "+usingSkill.baseDamage+"의 데미지를 입었다.");
@@ -303,10 +314,10 @@ public class GameManager : MonoBehaviour
                     // 적 디버프
                     if (usingSkill.effectType > 0) {
                         if (usingSkill.effectType < 10) {
-                            targetInfo.debuffArr[usingSkill.effectType - 1] += usingSkill.baseEffect;
+                            targetInfo.debuffArr[usingSkill.effectType - 1] += effect;
                         }
                         else if (usingSkill.effectType < 20) {
-                            targetInfo.debuffArr[usingSkill.effectType - 11] += usingSkill.baseEffect;
+                            targetInfo.debuffArr[usingSkill.effectType - 11] += effect;
                         }
                     }
                     Debug.Log("적은 "+usingSkill.baseDamage+"의 데미지를 입었다.");
@@ -321,10 +332,10 @@ public class GameManager : MonoBehaviour
                     // 적 디버프
                     if (usingSkill.effectType > 0) {
                         if (usingSkill.effectType < 10) {
-                            EnemyInfoList[i].debuffArr[usingSkill.effectType - 1] += usingSkill.baseEffect;
+                            EnemyInfoList[i].debuffArr[usingSkill.effectType - 1] += effect;
                         }
                         else if (usingSkill.effectType < 20) {
-                            EnemyInfoList[i].debuffArr[usingSkill.effectType - 11] += usingSkill.baseEffect;
+                            EnemyInfoList[i].debuffArr[usingSkill.effectType - 11] += effect;
                         }
                     }
                 }
@@ -334,12 +345,12 @@ public class GameManager : MonoBehaviour
         // 데미지 연산 : 기본 데미지 + 화상 데미지 + 집중 효과
 
         // 플레이어 보호막
-        _player.shield += usingSkill.baseShield;
-        Debug.Log("플레이어는 "+usingSkill.baseShield+"의 보호막을 얻었다!");
+        _player.shield += shield;
+        Debug.Log("플레이어는 "+shield+"의 보호막을 얻었다!");
 
         // 플레이어 버프
         if (usingSkill.effectType > 20) {
-            _player.buffArr[usingSkill.effectType - 21] += usingSkill.baseEffect;
+            _player.buffArr[usingSkill.effectType - 21] += effect;
         }
 
         // 타겟팅 초기화

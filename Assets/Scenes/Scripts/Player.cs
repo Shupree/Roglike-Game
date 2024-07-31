@@ -23,14 +23,6 @@ public class Player : MonoBehaviour
         // _StateScript = transform.Find("Canvas").gameObject.transform.Find("StateUI").gameObject.GetComponent<StateUpdate>();
     }
 
-    public void ChangeSkill()
-    {
-        //switch () {
-
-        //}
-    }
-
-
     // 매턴마다 버프/디버프 감소
     public void DecStatusEffect()
     {

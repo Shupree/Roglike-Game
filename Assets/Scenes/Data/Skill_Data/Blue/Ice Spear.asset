@@ -10,20 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75fffb14871e4c0429a65bfdb9d4f3f4, type: 3}
-  m_Name: Thunder
+  m_Name: Ice Spear
   m_EditorClassIdentifier: 
-  skillType: 2
-  attackType: Splash
-  skillId: 3
-  skillName: "\uBCBC\uB77D"
+  skillType: 1
+  attackType: Single
+  skillId: 2
+  skillName: "\uC544\uC774\uC2A4 \uC2A4\uD53C\uC5B4"
   skillDesc: 
-  skillIcon: {fileID: 1997828774, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
-  baseDamage: 2
-  baseShield: 0
+  skillIcon: {fileID: 1737672109, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  baseDamage: 5
+  baseShield: 5
   baseCount: 0
-  effectType: 3
-  baseEffect: 4
-  damages: 0200000002000000020000000200000002000000
-  shields: 
-  counts: 0100000001000000010000000200000002000000
-  effects: 
+  effectType: 4
+  baseEffect: 2
+  incDamage: 2
+  incShield: 0
+  incEffect: 0

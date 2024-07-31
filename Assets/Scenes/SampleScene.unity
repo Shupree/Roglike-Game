@@ -508,9 +508,9 @@ MonoBehaviour:
   _SpawnManager: {fileID: 0}
   _SkillManager: {fileID: 874136660}
   _MasterPieceManager: {fileID: 1208187670}
+  _player: {fileID: 821215748}
   state: 0
   isLive: 0
-  _player: {fileID: 821215748}
   enemyID: 00000000000000000000000000000000
   target: {fileID: 0}
   targetInfo: {fileID: 0}
@@ -2028,7 +2028,7 @@ GameObject:
   - component: {fileID: 499733694}
   - component: {fileID: 499733693}
   m_Layer: 5
-  m_Name: Icon
+  m_Name: IconSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3868,7 +3868,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 1807624531, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
-  m_Type: 3
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 1
@@ -3911,16 +3911,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 756236259}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1405.9276}
+  m_LocalScale: {x: 15.621418, y: 15.621418, z: 15.621418}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1295798179}
-  m_Father: {fileID: 808153715}
+  m_Father: {fileID: 1013239626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 438.863, y: -226.69}
+  m_AnchoredPosition: {x: 16.356934, y: -15.903061}
   m_SizeDelta: {x: 0.3, y: 0.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &756236261
@@ -3944,7 +3944,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: -6522886353871927248, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4582,7 +4582,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1013239626}
-  - {fileID: 756236260}
   - {fileID: 659192609}
   m_Father: {fileID: 821215750}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5510,7 +5509,7 @@ GameObject:
   - component: {fileID: 874136659}
   - component: {fileID: 874136660}
   m_Layer: 5
-  m_Name: BagUI
+  m_Name: SkillManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5553,7 +5552,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b86b138b1e8a0564d92ea33a63f06553, type: 2}
   - {fileID: 11400000, guid: 247da9a4503f6a54f9f3e01173e54183, type: 2}
   - {fileID: 11400000, guid: 54d1341587082cf4c8f74841b9c6a519, type: 2}
-  - {fileID: 11400000, guid: 102fb75f053fc8c4aabd2f64d9168dfd, type: 2}
+  - {fileID: 11400000, guid: 5c264cf254fddf1429081e4b87a4cefa, type: 2}
   use_SkillData:
   - {fileID: 0}
   - {fileID: 0}
@@ -6156,8 +6155,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1013239626}
+  - component: {fileID: 1013239627}
   m_Layer: 5
-  m_Name: Health
+  m_Name: HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6176,6 +6176,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1413622178}
+  - {fileID: 756236260}
   m_Father: {fileID: 808153715}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -6183,6 +6184,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 12, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1013239627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013239625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b21bde6e7cbf84e4b9d0c7f114e76848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  target: {fileID: 0}
 --- !u!1 &1025380776
 GameObject:
   m_ObjectHideFlags: 0
@@ -7390,7 +7405,7 @@ GameObject:
   - component: {fileID: 1208187669}
   - component: {fileID: 1208187670}
   m_Layer: 5
-  m_Name: MPBagUI
+  m_Name: MPManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7431,6 +7446,7 @@ MonoBehaviour:
   all_MPData:
   - {fileID: 11400000, guid: 9caa96e3301f1974dbda21292ef2d023, type: 2}
   use_MPData: {fileID: 0}
+  MP_BtnUI: {fileID: 537655172}
 --- !u!1 &1209835800
 GameObject:
   m_ObjectHideFlags: 0
@@ -8409,7 +8425,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1413622178}
   - component: {fileID: 1413622180}
-  - component: {fileID: 1413622179}
   m_Layer: 5
   m_Name: Health Slider
   m_TagString: Untagged
@@ -8438,20 +8453,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -14}
   m_SizeDelta: {x: 16, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1413622179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1413622177}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b21bde6e7cbf84e4b9d0c7f114e76848, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  target: {fileID: 821215747}
 --- !u!114 &1413622180
 MonoBehaviour:
   m_ObjectHideFlags: 0
