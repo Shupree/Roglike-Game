@@ -58,14 +58,15 @@ public class StateUpdate : MonoBehaviour
                 }
                 break;
             case TargetInfo.Enemy:
+                Enemy EnemyComponent = transform.parent.parent.gameObject.GetComponent<Enemy>();
                 // 모든 버프/디버프 불러오기
-                for (int i = 0; i < transform.parent.parent.gameObject.GetComponent<Enemy>().debuffArr.Length; i++) 
+                for (int i = 0; i < EnemyComponent.debuffArr.Length; i++) 
                 {
-                    effectArr[i] = transform.parent.parent.gameObject.GetComponent<Enemy>().debuffArr[i];
+                    effectArr[i] = EnemyComponent.debuffArr[i];
                 }
-                for (int i = 9; i < transform.parent.parent.gameObject.GetComponent<Enemy>().buffArr.Length + 9; i++) 
+                for (int i = 9; i < EnemyComponent.buffArr.Length + 9; i++) 
                 {
-                    effectArr[i] = transform.parent.parent.gameObject.GetComponent<Enemy>().buffArr[i - 9];
+                    effectArr[i] = EnemyComponent.buffArr[i - 9];
                 }
                 break;
         }

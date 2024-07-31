@@ -22,6 +22,7 @@ public class GetObject : MonoBehaviour
                         Debug.Log(hit.collider.transform.GetChild(0));
                         //hit.collider.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
                         GameManager.instance.target = hit.collider.gameObject;
+                        GameManager.instance.targetInfo = hit.collider.gameObject.GetComponent<Enemy>();
                         break;
                 }
             }

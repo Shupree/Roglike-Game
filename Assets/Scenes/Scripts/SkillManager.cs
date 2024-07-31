@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BagManager : MonoBehaviour
+public class SkillManager : MonoBehaviour
 {
     // SkillType(Color), SkillID(int)
     public SkillData noneData;
-    public SkillData[] all_SkillData;
-    private SkillData[] have_SkillData = new SkillData[4];
-    public SkillData[] use_SkillData = new SkillData[4];    // red, yellow, blue, white 순
+    public SkillData[] all_SkillData;   // 모든 스킬데이터
+    private SkillData[] have_SkillData = new SkillData[4];  // 플레이어가 지니고 있는 모든 스킬 데이더
+    public SkillData[] use_SkillData = new SkillData[4];    // 사용할 스킬 데이터 (red, yellow, blue, white 순)
 
     private GameObject UIObject;
-    private GameObject[] redSlot = new GameObject[3];
-    private GameObject[] yellowSlot = new GameObject[3];
-    private GameObject[] blueSlot = new GameObject[3];
-    private GameObject[] whiteSlot = new GameObject[3];
+    private GameObject[] redSlot = new GameObject[3];       // Red 스킬 대기 슬롯
+    private GameObject[] yellowSlot = new GameObject[3];    // Yellow 스킬 대기 슬롯
+    private GameObject[] blueSlot = new GameObject[3];      // Blue 스킬 대기 슬롯
+    private GameObject[] whiteSlot = new GameObject[3];     // White 스킬 대기 슬롯
 
     private bool isOpend;
 
@@ -32,6 +32,7 @@ public class BagManager : MonoBehaviour
 
         isOpend = false;
 
+        // 테스트용 스킬 데이터 획득
         have_SkillData[0] = all_SkillData[0];
         use_SkillData[0] = have_SkillData[0];
 

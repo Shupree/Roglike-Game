@@ -26,6 +26,13 @@ public class Paint : MonoBehaviour
 
     private void FixedUpdate() 
     {
+        if (currentNum > maxNum) {
+            currentNum = maxNum;
+        }
+        else if (currentNum < 0) {
+            currentNum = 0;
+        }
+        
         icon.fillAmount = currentNum / (float)maxNum;
     }
 

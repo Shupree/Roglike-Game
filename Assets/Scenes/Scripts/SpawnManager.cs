@@ -28,7 +28,7 @@ public class SpawnManager : MonoBehaviour
                 Enemy = Instantiate(enemyPrefeb, position[i].transform.position, Quaternion.Euler(0, 0, 0));
                 Enemy.transform.parent = position[i].transform;
                 Enemy.name = Enemy.GetComponent<Enemy>().data.enemyName;
-                GameManager.instance.EnemyArr.Add(Enemy);
+                GameManager.instance.EnemyList.Add(Enemy);
             }
         }
     }

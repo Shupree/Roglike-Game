@@ -49,7 +49,8 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("적 처치");
 
-            GameManager.instance.EnemyArr.Remove(gameObject);
+            GameManager.instance.EnemyInfoList.Remove(gameObject.GetComponent<Enemy>());
+            GameManager.instance.EnemyList.Remove(gameObject);
             //GameManager.instance.EnemyNum--;
             //isLive = false;
             //gameObject.SetActive(false);
