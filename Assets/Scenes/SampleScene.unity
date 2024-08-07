@@ -508,6 +508,7 @@ MonoBehaviour:
   _SpawnManager: {fileID: 0}
   _SkillManager: {fileID: 874136660}
   _MasterPieceManager: {fileID: 1208187670}
+  _ArtifactManager: {fileID: 1186961439}
   _player: {fileID: 821215748}
   state: 0
   isLive: 0
@@ -4886,6 +4887,7 @@ MonoBehaviour:
   debuffArr: 000000000000000000000000000000000000000000000000000000000000000000000000
   buffArr: 00000000000000000000000000000000
   itemArr: 000000000000000000000000000000000000000000000000
+  gold: 0
 --- !u!212 &821215749
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7367,8 +7369,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1186961438}
+  - component: {fileID: 1186961439}
   m_Layer: 5
-  m_Name: ItemUI
+  m_Name: ArtifactUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7394,6 +7397,20 @@ RectTransform:
   m_AnchoredPosition: {x: 120, y: -64}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1186961439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186961437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d64de174127034e46b4e641e73c7c391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  all_ArtifactData:
+  - {fileID: 0}
 --- !u!1 &1208187668
 GameObject:
   m_ObjectHideFlags: 0

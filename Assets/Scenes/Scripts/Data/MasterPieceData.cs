@@ -29,18 +29,18 @@ public class MasterPieceData : ScriptableObject
     public int count;   // 타수
 
     // 00없음 01화상 02중독 03감전 04추위 05빙결 06기절
-    // 11공포 12위압 13부식
+    // 07공포 08위압 09부식
     // 21철갑 보호막 22집중 23흡수 24가시 25회복
     // 51물감 강탈 52만개 스택(전용) 53
 
     public int effectType;  // 효과 분류
     public int basicEffect;   // 효과 수치    (순수 효과 수치)
-    public int self_effectType;     // 자신에 대한 효과 타입    (없을 시 0)
-    public int self_effect;      // 자신에 대한 효과 수치
+    public int self_EffectType;     // 자신에 대한 효과 타입    (없을 시 0)
+    public int self_Effect;      // 자신에 대한 효과 수치
 
     [Header("# Condition")]
-    public string condition;    // None, Cost, Health, Paint, Gold
-    public string conditionColor;  // R, B, Y, W
+    public string conditionType;    // None, Cost, Health, Paint, Gold
+    public string conditionColor;  // Type이 Paint일 시 : R, B, Y, W
     public int perCondition;    // 조건 1회 충족당 필요한 수치      (기본값 = 1)
     public int maximumCondition;    // 조건 최대치  (cost: stack 최대치 / Paint류,Gold: 조건 최대 횟수)
                                     // 모든 재고 소모 시 -1값으로 설정함.

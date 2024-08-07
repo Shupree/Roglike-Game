@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 // 플레이어 사망 시 추가
 // StateUpdate 전부 리스트로 바꿀 것!
+// 버그 픽스!! 턴 종료 시 물감 회복 전에 걸작 스킬 발동이 가능한 버그 발생!!
 public class GameManager : MonoBehaviour
 {
     // static을 통해 메모리에 정보를 저장 후 타 스크립트에서 사용 가능.
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
     public SpawnManager _SpawnManager;
     public SkillManager _SkillManager;
     public MPManager _MasterPieceManager;
+    public ArtifactManager _ArtifactManager;
     public PaintManager _PaintManager = new PaintManager();
     public StageManager _StageManager = new StageManager();
     public Player _player;
@@ -73,6 +75,9 @@ public class GameManager : MonoBehaviour
     private void Update() 
     {
         if (_player.health <= 0) {
+            // 유물 : 패배 시 효과
+            _ArtifactManager.ArtifactFunction("Defeat");
+
             state = State.defeat;
         }
     }
@@ -110,7 +115,9 @@ public class GameManager : MonoBehaviour
                     usingSkill = _SkillManager.use_SkillData[3];
                     break;
             }
-            damage = usingSkill.baseDamage + _player.buffArr[0];     // 문제는 걸작 등으로 증가된 데미지, 집중 수치를 얻어야함.
+            if (usingSkill.baseDamage > 0) {
+                damage = usingSkill.baseDamage + _player.buffArr[0];     // 기본 데미지 + 집중 수치
+            }
             _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(usingSkill);
         }
         else if (_PaintManager.order > 0) {
@@ -201,7 +208,16 @@ public class GameManager : MonoBehaviour
             EnemyInfoList.Add(EnemyList[i].GetComponent<Enemy>());
         }
 
-        // 물감 기능 On
+        // 유물 : 적 조우 시 효과
+        _ArtifactManager.ArtifactFunction("Encounter");
+
+        // 플레이어 턴 시작
+        NextTurnStart();
+    }
+
+    // 턴 넘기기
+    void NextTurnStart()
+    {
         for (int i = 0; i < 4; i++)
         {
             _PaintScripts[i].canUsePaint = true;
@@ -213,12 +229,26 @@ public class GameManager : MonoBehaviour
             targetInfo = target.GetComponent<Enemy>();
         }
 
-        // 플레이어나 적에게 턴 넘기기
+        // 보호막 초기화
+        if (_player.buffArr[0] <= 0) {
+            _player.shield = 0;
+        }
+
+        // 유물 : 턴 시작 시 효과
+        _ArtifactManager.ArtifactFunction("StartTurn");
+
+        // 플레이어 중독 효과 연산
+        _player.Poison();
+
+        // 물감 기능 On
+        for (int i = 0; i < 4; i++)
+        {
+            _PaintScripts[i].canUsePaint = true;
+        }
+
         state = State.playerTurn;
+        Debug.Log("플레이어의 턴입니다.");
     }
-
-
-    // 
 
     // 공격 버튼
     public void PlayerAttackBtn()
@@ -241,7 +271,7 @@ public class GameManager : MonoBehaviour
         }
 
         _PaintManager.stack += _PaintManager.order;     // 사용한 물감 수만큼 스택 적립
-        if (MP_Data.condition == "Cost") {
+        if (MP_Data.conditionType == "Cost") {
             if (MP_Data.maximumCondition < _PaintManager.stack) {
                 _PaintManager.stack = MP_Data.maximumCondition;
             }
@@ -272,11 +302,6 @@ public class GameManager : MonoBehaviour
         usingSkill = _SkillManager.noneData;
     }
 
-    public void UseMasterPieceBtn()
-    {
-        //GetComponent<MP_ComponentType>().;
-    }
-
     IEnumerator PlayerAttack()
     {
         yield return new WaitForSeconds(1f);
@@ -291,16 +316,14 @@ public class GameManager : MonoBehaviour
         switch (usingSkill.attackType) {
             // 단타 공격
             case "Single":
-                targetInfo.health -= 
-                    damage + targetInfo.debuffArr[0];
+                if (usingSkill.baseDamage > 0) {
+                    targetInfo.health -= damage + targetInfo.debuffArr[0];  // 최종 데미지 + 적 화상 수치
+                }
 
                 // 적 디버프
                 if (usingSkill.effectType > 0) {
-                    if (usingSkill.effectType < 10) {
+                    if (usingSkill.effectType < 20) {
                         targetInfo.debuffArr[usingSkill.effectType - 1] += effect;
-                    }
-                    else if (usingSkill.effectType < 20) {
-                        targetInfo.debuffArr[usingSkill.effectType - 11] += effect;
                     }
                 }
                 Debug.Log("적은 "+usingSkill.baseDamage+"의 데미지를 입었다.");
@@ -308,16 +331,14 @@ public class GameManager : MonoBehaviour
             // 다단 히트
             case "Multiple":
                 for (int i = 0; i < usingSkill.baseCount; i++) {    // 타수 증가
-                    targetInfo.health -= 
-                        damage + targetInfo.debuffArr[0];
+                    if (usingSkill.baseDamage > 0) {
+                        targetInfo.health -= damage + targetInfo.debuffArr[0];  // 최종 데미지 + 적 화상 수치
+                    }
 
                     // 적 디버프
                     if (usingSkill.effectType > 0) {
-                        if (usingSkill.effectType < 10) {
+                        if (usingSkill.effectType < 20) {
                             targetInfo.debuffArr[usingSkill.effectType - 1] += effect;
-                        }
-                        else if (usingSkill.effectType < 20) {
-                            targetInfo.debuffArr[usingSkill.effectType - 11] += effect;
                         }
                     }
                     Debug.Log("적은 "+usingSkill.baseDamage+"의 데미지를 입었다.");
@@ -326,16 +347,15 @@ public class GameManager : MonoBehaviour
             // 전체 공격
             case "Splash":
                 for(int i = 0; i < EnemyList.Count; i++) {
-                    EnemyInfoList[i].health -=
-                        damage + EnemyInfoList[i].debuffArr[0];
+                    if (usingSkill.baseDamage > 0) {
+                        // 최종 데미지 + 적 화상 수치
+                        EnemyInfoList[i].health -= damage + EnemyInfoList[i].debuffArr[0];
+                    }
 
                     // 적 디버프
                     if (usingSkill.effectType > 0) {
-                        if (usingSkill.effectType < 10) {
+                        if (usingSkill.effectType < 20) {
                             EnemyInfoList[i].debuffArr[usingSkill.effectType - 1] += effect;
-                        }
-                        else if (usingSkill.effectType < 20) {
-                            EnemyInfoList[i].debuffArr[usingSkill.effectType - 11] += effect;
                         }
                     }
                 }
@@ -353,6 +373,12 @@ public class GameManager : MonoBehaviour
             _player.buffArr[usingSkill.effectType - 21] += effect;
         }
 
+        // 공격 확인
+        if (usingSkill.baseDamage > 0) {
+            // 유물 : 적중 시 효과
+            _ArtifactManager.ArtifactFunction("OnHit");
+        }
+
         // 타겟팅 초기화
         target = null;
 
@@ -361,9 +387,6 @@ public class GameManager : MonoBehaviour
 
         // 합산 데미지 초기화
         damage = 0;
-
-        // 플레이어 중독 효과 연산
-        _player.Poison();
 
         for(int i = 0; i < EnemyList.Count; i++) {
             // 감전 효과 연산
@@ -377,6 +400,9 @@ public class GameManager : MonoBehaviour
         usingSkill = _SkillManager.noneData;
 
         yield return new WaitForSeconds(1f);
+
+        // 플레이어 턴 종료 시 버프/디버프 감소
+        _player.DecStatusEffect();
 
         // 적 죽었으면 전투 종료
         if(EnemyList.Count == 0)
@@ -404,6 +430,9 @@ public class GameManager : MonoBehaviour
 
     void EndBattle()
     {
+        // 유물 : 승리 시 효과
+        _ArtifactManager.ArtifactFunction("Victory");
+
         Debug.Log("전투 종료");
         state = State.rest;
 
@@ -421,8 +450,13 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            // 적 보호막 리셋
-            EnemyInfoList[i].shield = 0;
+            // 적 보호막 초기화
+            if (EnemyInfoList[i].buffArr[0] <= 0) {
+                EnemyInfoList[i].shield = 0;
+            }
+
+            // 적 중독 효과
+            EnemyInfoList[i].Poison();
 
             // 빙결 상태 확인
             if (EnemyInfoList[i].debuffArr[4] > 0) {
@@ -434,34 +468,47 @@ public class GameManager : MonoBehaviour
             EnemyInfoList[i].TakeActInfo();
 
             // 공격 연산 (데미지 + 집중 + 플레이어_화상)
-            damage = EnemyInfoList[i].damage;
-            if (_player.shield != 0) {
-                if (_player.shield >= damage) {
-                    _player.shield -= damage;
-                    damage = 0;
-                }
-                else {
-                    damage -= _player.shield;
-                    _player.shield = 0;
-                }
-            }
-            _player.health = _player.health - damage;
+            if (EnemyInfoList[i].skillDamage > 0) {
+                damage = EnemyInfoList[i].skillDamage + EnemyInfoList[i].buffArr[1] + _player.debuffArr[0];
 
-            // 디버프 효과 연산
+                if (_player.shield != 0) {
+                    if (_player.shield >= damage) {
+                        _player.shield -= damage;
+                    }
+                    else {
+                        damage -= _player.shield;
+                        _player.shield = 0;
+                    }
+                }
+                _player.health = _player.health - damage;
+            }
+
+            // 보호막 연산
+            EnemyInfoList[i].shield += EnemyInfoList[i].skillShield;
+
+            // 버프/디버프 효과 연산
             if (EnemyInfoList[i].effectType > 0) {
-                // 기본 디버프
-                if (EnemyInfoList[i].effectType < 10) {
+                // 디버프
+                if (EnemyInfoList[i].effectType < 20) {
                     _player.debuffArr[EnemyInfoList[i].effectType - 1] += EnemyInfoList[i].effectNum;
                 }
+                // 버프
+                else if (EnemyInfoList[i].effectType < 30) {
+                    EnemyInfoList[i].buffArr[EnemyInfoList[i].effectType - 21] += EnemyInfoList[i].effectNum;
+                }
             }
 
+            
             Debug.Log(EnemyList[i].name+"의 공격! 플레이어에게"+damage+"의 데미지!");
+
+            // 피격 확인
+            if (EnemyInfoList[i].skillDamage > 0) {
+                // 유물 : 피격 시 효과
+                _ArtifactManager.ArtifactFunction("GetHit");
+            }
 
             // 합산 데미지 초기화
             damage = 0;
-
-            // 적 중독 효과
-            EnemyInfoList[i].Poison();
 
             // 플레이어 빙결 효과
             _player.Coldness();
@@ -494,8 +541,7 @@ public class GameManager : MonoBehaviour
                 _PaintScripts[i].FillPaint();
             }
 
-            // 턴에 따른 버프/디버프 감소
-            _player.DecStatusEffect();
+            // 적 턴 종료 시 버프/디버프 감소
             for(int i = 0; i < EnemyList.Count; i++)
             {
                 if (!EnemyList[i]) {
@@ -516,18 +562,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    _PaintScripts[i].canUsePaint = true;
-                }
-
-                // 자동 타겟팅
-                if (!target) {
-                    target = EnemyList[0];
-                }
-
-                state = State.playerTurn;
-                Debug.Log("플레이어의 턴입니다.");
+                NextTurnStart();
             }
         }
     }

@@ -51,7 +51,7 @@ public class MPManager : MonoBehaviour
 
     public void LateUpdate()
     {
-        if (use_MPData.condition == "Cost") {
+        if (use_MPData.conditionType == "Cost") {
             MP_BtnImg.fillAmount = GameManager.instance._PaintManager.stack / (float)use_MPData.maximumCondition;
         }
         else {
@@ -68,7 +68,7 @@ public class MPManager : MonoBehaviour
         
         _targetInfo = GameManager.instance.targetInfo;
 
-        switch (use_MPData.condition) {
+        switch (use_MPData.conditionType) {
             case "None":
                 GameManager.instance._PaintManager.stack = 0;
                 addValue = 1;
@@ -80,7 +80,7 @@ public class MPManager : MonoBehaviour
                 break;
             case "Health":
                 if (_player.health < use_MPData.perCondition) {
-                    _player.health = 1;    // HP가 부족해도 사용 가능
+                    return;    // HP가 부족하다면 사용 불가능
                 }
                 else {
                     _player.health -= use_MPData.perCondition;     // 필요 수치만큼 플레이어 HP 감소
@@ -140,11 +140,8 @@ public class MPManager : MonoBehaviour
 
                 // 적 디버프
                 if (use_MPData.effectType > 0) {
-                    if (use_MPData.effectType < 10) {
+                    if (use_MPData.effectType < 20) {
                         _targetInfo.debuffArr[use_MPData.effectType - 1] += effect;
-                    }
-                    else if (use_MPData.effectType < 20) {
-                        _targetInfo.debuffArr[use_MPData.effectType - 11] += effect;
                     }
                     else if (use_MPData.effectType == 51) {     // 물감 강탈 효과
                         int n = UnityEngine.Random.Range(0, 3);
@@ -164,11 +161,8 @@ public class MPManager : MonoBehaviour
 
                     // 적 디버프
                     if (use_MPData.effectType > 0) {
-                        if (use_MPData.effectType < 10) {
+                        if (use_MPData.effectType < 20) {
                             _targetInfo.debuffArr[use_MPData.effectType - 1] += effect;
-                        }
-                        else if (use_MPData.effectType < 20) {
-                            _targetInfo.debuffArr[use_MPData.effectType - 11] += effect;
                         }
                         else if (use_MPData.effectType == 51) {     // 물감 강탈 효과
                             int n = UnityEngine.Random.Range(0, 3);
@@ -189,11 +183,8 @@ public class MPManager : MonoBehaviour
 
                     // 적 디버프
                     if (use_MPData.effectType > 0) {
-                        if (use_MPData.effectType < 10) {
+                        if (use_MPData.effectType < 20) {
                             GameManager.instance.EnemyInfoList[i].debuffArr[use_MPData.effectType - 1] += effect;
-                        }
-                        else if (use_MPData.effectType < 20) {
-                            GameManager.instance.EnemyInfoList[i].debuffArr[use_MPData.effectType - 11] += effect;
                         }
                         else if (use_MPData.effectType == 51) {     // 물감 강탈 효과
                             int n = UnityEngine.Random.Range(0, 3);
@@ -218,17 +209,14 @@ public class MPManager : MonoBehaviour
         }
 
         // 자기 대상 효과
-        if (use_MPData.self_effectType != 0) {
+        if (use_MPData.self_EffectType != 0) {
             // 해로운 효과
-            if (use_MPData.self_effectType < 10) {
+            if (use_MPData.self_EffectType < 20) {
                 GameManager.instance._player.debuffArr[use_MPData.effectType - 1] += effect;
-            }
-            else if (use_MPData.self_effectType < 20) {
-                GameManager.instance._player.debuffArr[use_MPData.effectType - 11] += effect;
             }
             // 이로운 효과
             else {
-                GameManager.instance._player.buffArr[use_MPData.self_effectType - 21] += use_MPData.self_effect;
+                GameManager.instance._player.buffArr[use_MPData.self_EffectType - 21] += use_MPData.self_Effect;
             }
         }
 
@@ -236,6 +224,9 @@ public class MPManager : MonoBehaviour
         // 추가 효과(Extra Effect)는 사용될 시 제작하겠음.
         //
         //
+
+        // 유물 : 걸작 사용 시 효과
+        GameManager.instance._ArtifactManager.ArtifactFunction("UseMP");
     }
 
     public void BagBtn()

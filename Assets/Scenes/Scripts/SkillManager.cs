@@ -7,7 +7,7 @@ public class SkillManager : MonoBehaviour
     // SkillType(Color), SkillID(int)
     public SkillData noneData;
     public SkillData[] all_SkillData;   // 모든 스킬데이터
-    private SkillData[] have_SkillData = new SkillData[4];  // 플레이어가 지니고 있는 모든 스킬 데이더
+    private SkillData[] have_SkillData = new SkillData[4];  // 플레이어가 지니고 있는 모든 스킬 데이터
     public SkillData[] use_SkillData = new SkillData[4];    // 사용할 스킬 데이터 (red, yellow, blue, white 순)
 
     private GameObject UIObject;

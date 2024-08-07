@@ -8,11 +8,14 @@ public class Player : MonoBehaviour
     public int health;
     public int maxHealth = 100;
     public int shield;
+
     // 00화상, 01중독, 02감전, 03추위, 04빙결, 05기절, 06공포, 07위압, 08부식
     // 00철갑 보호막, 01집중, 02흡수, 03가시
     public int[] debuffArr = new int[9];
     public int[] buffArr = new int[4];
     public int[] itemArr = new int[6];      // 사용 중인 장신구
+
+    public int gold;
 
     public void Awake()
     {
@@ -27,7 +30,6 @@ public class Player : MonoBehaviour
     public void DecStatusEffect()
     {
         debuffArr[0] /= 2;  // 화상
-        debuffArr[1] /= 2;  // 중독
         debuffArr[6] -= 1;  // 공포
         debuffArr[7] -= 1;  // 위압
         debuffArr[8] -= 1;  // 부식
@@ -67,6 +69,9 @@ public class Player : MonoBehaviour
             health -= debuffArr[1];
 
             Debug.Log("플레이어는 중독으로 "+debuffArr[1]+"의 데미지를 입었다!");
+
+            // 중독 수치 감소
+            debuffArr[1] /= 2;
         }
     }
 

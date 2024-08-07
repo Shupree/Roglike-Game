@@ -21,17 +21,19 @@ public class DummyBot : MonoBehaviour
         // 홀수 턴 _ 뼈다귀치기(6공격, 4중독)
         if(0 != turn % 2)
         {
-            dataArr[0] = data.attackDamage_01;
-            dataArr[1] = data.attackEffect_01;
-            dataArr[2] = data.effectNum_01;
+            dataArr[0] = data.damage_01;
+            dataArr[1] = data.shield_01;
+            dataArr[2] = data.effectType_01;
+            dataArr[3] = data.effectNum_01;
             return dataArr;
         }
         // 짝수 턴 _ 재구성(4회복)
         else
         {
-            dataArr[0] = data.attackDamage_02;
-            dataArr[1] = data.attackEffect_02;
-            dataArr[2] = data.effectNum_02;
+            dataArr[0] = data.damage_02;
+            dataArr[1] = data.shield_02;
+            dataArr[2] = data.effectType_02;
+            dataArr[3] = data.effectNum_02;
             return dataArr;
         }
     }

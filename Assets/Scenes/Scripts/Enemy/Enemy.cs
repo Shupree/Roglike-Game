@@ -16,10 +16,11 @@ public class Enemy : MonoBehaviour
     public int maxHealth;
     public int shield;
     // 00화상, 01중독, 02감전, 03추위, 04빙결, 05기절 06공포, 07위압, 08부식
-    // 00철갑 보호막, 01집중, 02흡수, 03가시
+    // 00철갑, 01집중, 02흡수, 03가시
     public int[] debuffArr = new int[9];
     public int[] buffArr = new int[4];
-    public int damage;
+    public int skillDamage;
+    public int skillShield;
 
     public bool isLive;
     
@@ -76,39 +77,23 @@ public class Enemy : MonoBehaviour
 
         // 스킬 데미지 확정
         if (enemyAct[0] != 0) {
-            damage = enemyAct[0] + buffArr[1] + GameManager.instance._player.debuffArr[0];
+            skillDamage = enemyAct[0] + buffArr[1] + GameManager.instance._player.debuffArr[0];
+        }
+
+        // 보호막 확정
+        if (enemyAct[1] != 0) {
+            skillShield = enemyAct[1];
         }
         
         // 효과 없음
-        if (enemyAct[1] == 0) {
+        if (enemyAct[2] == 0) {
             effectType = 0;
             effectNum = 0;
         }
         // 디버프 효과
-        else if (enemyAct[1] <= 10) {
-            effectType = enemyAct[1];
-            effectNum = enemyAct[2];
-        }
-        // 버프 효과
-        else if (enemyAct[1] > 10) {
-            switch (enemyAct[1]) {
-                // 회복
-                case 11:
-                    health += enemyAct[2];
-                    if (maxHealth < health) {
-                        health = maxHealth;
-                    }
-                    break;
-                
-                // 보호막
-                case 12:
-                    shield += enemyAct[2];
-                    break;
-                // 집중
-                case 13:
-                    buffArr[1] += enemyAct[2];
-                    break;
-            }
+        else {
+            effectType = enemyAct[2];
+            effectNum = enemyAct[3];
         }
     }
 
@@ -116,7 +101,6 @@ public class Enemy : MonoBehaviour
     public void DecStatusEffect()
     {
         debuffArr[0] /= 2;
-        debuffArr[1] /= 2;
         debuffArr[6] -= 1;
         debuffArr[7] -= 1;
         debuffArr[8] -= 1;
@@ -126,6 +110,7 @@ public class Enemy : MonoBehaviour
         buffArr[3] = 0;
 
         for (int i = 0; i < debuffArr.Length; i++) {
+            // 혹시 모를 음수 차단
             if (debuffArr[i] < 0) {
                 debuffArr[i] = 0;
             }
@@ -156,6 +141,9 @@ public class Enemy : MonoBehaviour
             health -= debuffArr[1];
 
             Debug.Log(gameObject.name+"은(는) 중독으로 "+debuffArr[1]+"의 데미지를 입었다!");
+
+            // 중독 수치 감소
+            debuffArr[1] /= 2;
         }
     }
 
