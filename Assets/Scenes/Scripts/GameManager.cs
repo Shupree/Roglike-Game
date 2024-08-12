@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     public enum State
     {
-        rest, start, playerTurn, enemyTurn, win, defeat
+        rest, start, playerTurn, playerAttack, enemyTurn, win, defeat
     }
 
     public State state;
@@ -47,10 +47,16 @@ public class GameManager : MonoBehaviour
     public SkillData usingSkill;
     public MasterPieceData MP_Data;
 
+    public int maxCanvasNum;       // 최대 캔버스 수 (최대 행동 수)
+    private int canvasNum;       // 현재 캔버스 수 (현재 행동 수)
+
+    public int turn;            // 현재 턴 수
+
     
     private int damage;
     private int shield;
     private int effect;
+    private int heal;
 
     // 초기화
     void Awake()
@@ -66,8 +72,17 @@ public class GameManager : MonoBehaviour
         // 테스트 맵
         //map = 0;
 
+        // 임시 : 캔버스 수 2개
+        maxCanvasNum = 2;
+
+        // 임시 : 첫 스테이지 적 스폰 ID
         enemyID[0] = 1;
         enemyID[3] = 2;
+
+        damage = 0;
+        shield = 0;
+        effect = 0;
+        heal = 0;
 
         BattleStart();
     }
@@ -76,7 +91,7 @@ public class GameManager : MonoBehaviour
     {
         if (_player.health <= 0) {
             // 유물 : 패배 시 효과
-            _ArtifactManager.ArtifactFunction("Defeat");
+            _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Defeat);
 
             state = State.defeat;
         }
@@ -118,15 +133,18 @@ public class GameManager : MonoBehaviour
             if (usingSkill.baseDamage > 0) {
                 damage = usingSkill.baseDamage + _player.buffArr[0];     // 기본 데미지 + 집중 수치
             }
+            shield = usingSkill.baseShield;
+            effect = usingSkill.baseEffect;
+            heal = usingSkill.baseHeal; 
             _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(usingSkill);
         }
         else if (_PaintManager.order > 0) {
             damage += usingSkill.incDamage * _PaintManager.order;
-            Debug.Log("현재 데미지" + damage + "\n현재 보호막" + shield + "\n현재 버프/디버프" + effect);
-
             shield += usingSkill.incShield * _PaintManager.order;
-
             effect += usingSkill.incEffect * _PaintManager.order;
+            heal += usingSkill.incHeal * _PaintManager.order;
+
+            Debug.Log("현재 데미지" + damage + "\n현재 보호막" + shield + "\n현재 버프/디버프" + effect);
         }
         _PaintManager.AddPaint(colorType);
         _Palette.GetComponent<PaletteManager>().ConvertSprite(colorType);
@@ -162,7 +180,6 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        state = State.start;
         BattleStart();
     }
 
@@ -184,6 +201,11 @@ public class GameManager : MonoBehaviour
     void BattleStart()
     {
         state = State.start;    // 전투 시작 알림
+
+        turn = 0;   // 턴 초기화
+
+        // 캔버스 수 초기화
+        canvasNum = maxCanvasNum;
 
         // 물감 최대치로 보충
         for (int i = 0; i < 4; i++)
@@ -209,7 +231,7 @@ public class GameManager : MonoBehaviour
         }
 
         // 유물 : 적 조우 시 효과
-        _ArtifactManager.ArtifactFunction("Encounter");
+        _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Encounter);
 
         // 플레이어 턴 시작
         NextTurnStart();
@@ -218,9 +240,15 @@ public class GameManager : MonoBehaviour
     // 턴 넘기기
     void NextTurnStart()
     {
+        turn++;     // 턴 수 증가
+
+        // 캔버스 수 초기화
+        canvasNum = maxCanvasNum;
+
+        // 플레이어 물감 회복
         for (int i = 0; i < 4; i++)
         {
-            _PaintScripts[i].canUsePaint = true;
+            _PaintScripts[i].FillPaint();
         }
 
         // 자동 타겟팅
@@ -234,11 +262,17 @@ public class GameManager : MonoBehaviour
             _player.shield = 0;
         }
 
-        // 유물 : 턴 시작 시 효과
-        _ArtifactManager.ArtifactFunction("StartTurn");
-
         // 플레이어 중독 효과 연산
         _player.Poison();
+
+        // 적 행동 확정
+        for(int i = 0; i < EnemyList.Count; i++) {
+            EnemyInfoList[i].TakeActInfo();
+        }
+
+        // 유물 : 턴 시작 시 효과
+        Debug.Log("OKKKKKK");
+        _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.StartTurn);
 
         // 물감 기능 On
         for (int i = 0; i < 4; i++)
@@ -258,20 +292,22 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // 물감 버튼 Off
-        for (int i = 0; i < 4; i++)
-        {
-            _PaintScripts[i].canUsePaint = false;
-        }
-
         // 버튼이 계속 눌리는 거 방지하기 위함
         if(state != State.playerTurn)
         {
             return;
         }
+        state = State.playerAttack;
+
+        // 물감 버튼 Off
+        for (int i = 0; i < 4; i++)
+        {
+            _PaintScripts[i].usedColorNum = 0;      // 반환용 물감 초기화
+            _PaintScripts[i].canUsePaint = false;
+        }
 
         _PaintManager.stack += _PaintManager.order;     // 사용한 물감 수만큼 스택 적립
-        if (MP_Data.conditionType == "Cost") {
+        if (MP_Data.conditionType == MasterPieceData.ConditionType.Cost) {
             if (MP_Data.maximumCondition < _PaintManager.stack) {
                 _PaintManager.stack = MP_Data.maximumCondition;
             }
@@ -293,6 +329,8 @@ public class GameManager : MonoBehaviour
             _PaintScripts[i].ReturnPaint();
         }
         damage = 0;
+        shield = 0;
+        effect = 0;
 
         _PaintManager.ClearPaint();
         _Palette.GetComponent<PaletteManager>().ClearPalette();
@@ -315,7 +353,7 @@ public class GameManager : MonoBehaviour
         // 공격 type에 따른 분류
         switch (usingSkill.attackType) {
             // 단타 공격
-            case "Single":
+            case SkillData.AttackType.Single:
                 if (usingSkill.baseDamage > 0) {
                     targetInfo.health -= damage + targetInfo.debuffArr[0];  // 최종 데미지 + 적 화상 수치
                 }
@@ -329,7 +367,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("적은 "+usingSkill.baseDamage+"의 데미지를 입었다.");
                 break;
             // 다단 히트
-            case "Multiple":
+            case SkillData.AttackType.Multiple:
                 for (int i = 0; i < usingSkill.baseCount; i++) {    // 타수 증가
                     if (usingSkill.baseDamage > 0) {
                         targetInfo.health -= damage + targetInfo.debuffArr[0];  // 최종 데미지 + 적 화상 수치
@@ -345,7 +383,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             // 전체 공격
-            case "Splash":
+            case SkillData.AttackType.Splash:
                 for(int i = 0; i < EnemyList.Count; i++) {
                     if (usingSkill.baseDamage > 0) {
                         // 최종 데미지 + 적 화상 수치
@@ -359,41 +397,52 @@ public class GameManager : MonoBehaviour
                         }
                     }
                 }
-                Debug.Log("적들은 "+usingSkill.baseDamage+"의 데미지를 입었다.");
+                Debug.Log("적들은 "+damage+"의 데미지를 입었다.");
                 break;
         }
         // 데미지 연산 : 기본 데미지 + 화상 데미지 + 집중 효과
-
-        // 플레이어 보호막
-        _player.shield += shield;
-        Debug.Log("플레이어는 "+shield+"의 보호막을 얻었다!");
 
         // 플레이어 버프
         if (usingSkill.effectType > 20) {
             _player.buffArr[usingSkill.effectType - 21] += effect;
         }
 
+        // 플레이어 보호막
+        _player.shield += shield;
+        Debug.Log("플레이어는 "+shield+"의 보호막을 얻었다!");
+
+        // 플레이어 회복
+        _player.health += heal;
+        if (_player.health > _player.maxHealth) {
+            _player.health = _player.maxHealth;
+        }
+        Debug.Log("플레이어는 "+heal+"만큼 회복했다!");
+
         // 공격 확인
         if (usingSkill.baseDamage > 0) {
             // 유물 : 적중 시 효과
-            _ArtifactManager.ArtifactFunction("OnHit");
+            _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.OnHit);
         }
 
-        // 타겟팅 초기화
-        target = null;
+        // 타겟팅 초기화 (마지막 캔버스일 시)
+        if (canvasNum <= 0) {
+            target = null;
+        }
 
         // 색 초기화
         ClearColor();
 
-        // 합산 데미지 초기화
+        // 합산 수치 초기화
         damage = 0;
+        shield = 0;
+        effect = 0;
+        heal = 0;
 
         for(int i = 0; i < EnemyList.Count; i++) {
             // 감전 효과 연산
             EnemyInfoList[i].ElectricShock();
             // 추위 효과 연산
             EnemyInfoList[i].Coldness();
-
         }
 
         // 스킬 리셋
@@ -403,6 +452,9 @@ public class GameManager : MonoBehaviour
 
         // 플레이어 턴 종료 시 버프/디버프 감소
         _player.DecStatusEffect();
+
+        // 캔버스 수 감소
+        canvasNum--;
 
         // 적 죽었으면 전투 종료
         if(EnemyList.Count == 0)
@@ -420,10 +472,22 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            // 캔버스 보유 시 재공격 기회 제공
+            if (canvasNum > 0) {
+                state = State.playerTurn;
+
+                // 물감 기능 On
+                for (int i = 0; i < 4; i++)
+                {
+                    _PaintScripts[i].canUsePaint = true;
+                }
+            }
             // 적 살았으면 적에게 턴 넘기기
-            state = State.enemyTurn;
-            StartCoroutine(EnemyTurn());
-            Debug.Log("적의 턴입니다.");
+            else {
+                state = State.enemyTurn;
+                StartCoroutine(EnemyTurn());
+                Debug.Log("적의 턴입니다.");
+            }
 
         }
     }
@@ -431,7 +495,10 @@ public class GameManager : MonoBehaviour
     void EndBattle()
     {
         // 유물 : 승리 시 효과
-        _ArtifactManager.ArtifactFunction("Victory");
+        _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Victory);
+
+        // 걸작 스택 리셋
+        _PaintManager.stack = 0;
 
         Debug.Log("전투 종료");
         state = State.rest;
@@ -464,9 +531,6 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            // 적 행동 확정
-            EnemyInfoList[i].TakeActInfo();
-
             // 공격 연산 (데미지 + 집중 + 플레이어_화상)
             if (EnemyInfoList[i].skillDamage > 0) {
                 damage = EnemyInfoList[i].skillDamage + EnemyInfoList[i].buffArr[1] + _player.debuffArr[0];
@@ -474,17 +538,24 @@ public class GameManager : MonoBehaviour
                 if (_player.shield != 0) {
                     if (_player.shield >= damage) {
                         _player.shield -= damage;
+                        damage = 0;
                     }
                     else {
                         damage -= _player.shield;
                         _player.shield = 0;
                     }
                 }
-                _player.health = _player.health - damage;
+                _player.health -= damage;
             }
 
             // 보호막 연산
             EnemyInfoList[i].shield += EnemyInfoList[i].skillShield;
+
+            // 회복 연산
+            EnemyInfoList[i].health += EnemyInfoList[i].skillHeal;
+            if (EnemyInfoList[i].health > EnemyInfoList[i].maxHealth) {
+                EnemyInfoList[i].health = EnemyInfoList[i].maxHealth;
+            }
 
             // 버프/디버프 효과 연산
             if (EnemyInfoList[i].effectType > 0) {
@@ -504,11 +575,14 @@ public class GameManager : MonoBehaviour
             // 피격 확인
             if (EnemyInfoList[i].skillDamage > 0) {
                 // 유물 : 피격 시 효과
-                _ArtifactManager.ArtifactFunction("GetHit");
+                _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.GetHit);
             }
 
-            // 합산 데미지 초기화
+            // 합산 수치 초기화
             damage = 0;
+            shield = 0;
+            effect = 0;
+            heal = 0;
 
             // 플레이어 빙결 효과
             _player.Coldness();
@@ -535,12 +609,6 @@ public class GameManager : MonoBehaviour
         }
         // 적 공격 끝났으면 플레이어에게 턴 넘기기
         else {
-            // 플레이어 물감 회복
-            for (int i = 0; i < 4; i++)
-            {
-                _PaintScripts[i].FillPaint();
-            }
-
             // 적 턴 종료 시 버프/디버프 감소
             for(int i = 0; i < EnemyList.Count; i++)
             {

@@ -8,7 +8,7 @@ public class Paint : MonoBehaviour
 {
     public int maxNum;
     public int currentNum;
-    private int usedColorNum;
+    public int usedColorNum;
     public bool canUsePaint = false;
     public GameObject colorUI;
     private Image icon;

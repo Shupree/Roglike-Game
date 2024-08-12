@@ -11,10 +11,10 @@ public class SkillManager : MonoBehaviour
     public SkillData[] use_SkillData = new SkillData[4];    // 사용할 스킬 데이터 (red, yellow, blue, white 순)
 
     private GameObject UIObject;
-    private GameObject[] redSlot = new GameObject[3];       // Red 스킬 대기 슬롯
-    private GameObject[] yellowSlot = new GameObject[3];    // Yellow 스킬 대기 슬롯
-    private GameObject[] blueSlot = new GameObject[3];      // Blue 스킬 대기 슬롯
-    private GameObject[] whiteSlot = new GameObject[3];     // White 스킬 대기 슬롯
+    //private GameObject[] redSlot = new GameObject[3];       // Red 스킬 대기 슬롯
+    //private GameObject[] yellowSlot = new GameObject[3];    // Yellow 스킬 대기 슬롯
+    //private GameObject[] blueSlot = new GameObject[3];      // Blue 스킬 대기 슬롯
+    //private GameObject[] whiteSlot = new GameObject[3];     // White 스킬 대기 슬롯
 
     private bool isOpend;
 
@@ -22,13 +22,13 @@ public class SkillManager : MonoBehaviour
     {
         UIObject = transform.GetChild(0).gameObject;
         UIObject.SetActive(false);
-        for (int i = 0; i < 3; i++) 
+        /*for (int i = 0; i < 3; i++) 
         {
             redSlot[i] = UIObject.transform.GetChild(0).GetChild(i).gameObject;
             yellowSlot[i] = UIObject.transform.GetChild(1).GetChild(i).gameObject;
             blueSlot[i] = UIObject.transform.GetChild(2).GetChild(i).gameObject;
             whiteSlot[i] = UIObject.transform.GetChild(3).GetChild(i).gameObject;
-        }
+        }*/
 
         isOpend = false;
 

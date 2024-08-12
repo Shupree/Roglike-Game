@@ -29,6 +29,7 @@ public class EnemyData : ScriptableObject
     public int shield_01;
     public int effectType_01;
     public int effectNum_01;
+    public int heal_01;
 
     // 공격2
     [Header("# Attack02")]
@@ -36,6 +37,7 @@ public class EnemyData : ScriptableObject
     public int shield_02;
     public int effectType_02;
     public int effectNum_02;
+    public int heal_02;
 
     // 공격3
     [Header("# Attack03")]
@@ -43,6 +45,7 @@ public class EnemyData : ScriptableObject
     public int shield_03;
     public int effectType_03;
     public int effectNum_03;
+    public int heal_03;
 
     // 공격4
     [Header("# Attack04")]
@@ -50,6 +53,7 @@ public class EnemyData : ScriptableObject
     public int shield_04;
     public int effectType_04;
     public int effectNum_04;
+    public int heal_04;
 
     // 플레이어에게 특수 디버프 부여
     [Header("# PlayerDebuff")]

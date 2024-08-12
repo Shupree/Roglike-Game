@@ -13,16 +13,19 @@ MonoBehaviour:
   m_Name: Thunder
   m_EditorClassIdentifier: 
   skillType: 2
-  attackType: Splash
+  attackType: 2
   skillId: 3
   skillName: "\uBCBC\uB77D"
-  skillDesc: 
+  skillDesc: "\uBAA8\uB4E0 \uC801\uC5D0\uAC8C 2\uB370\uBBF8\uC9C0, 4\uAC10\uC804
+    \uBD80\uC5EC"
   skillIcon: {fileID: 1997828774, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
   baseDamage: 2
-  baseShield: 0
   baseCount: 0
+  baseShield: 0
+  baseHeal: 0
   effectType: 3
   baseEffect: 4
   incDamage: 1
   incShield: 0
+  incHeal: 0
   incEffect: 0

@@ -10,7 +10,7 @@ public class DummyBot2 : MonoBehaviour
 
     void Awake()
     {
-        dataArr = new int[3];
+        dataArr = new int[5];
     }
 
     //dataArr[0] = 행동 타입(공격, 효과 등), dataArr[1] = 수치
@@ -23,6 +23,7 @@ public class DummyBot2 : MonoBehaviour
             dataArr[1] = data.shield_01;
             dataArr[2] = data.effectType_01;
             dataArr[3] = data.effectNum_01;
+            dataArr[4] = data.heal_01;
             return dataArr;
         }
         // 짝수 턴 _ 신체 강화(4감전)
@@ -32,6 +33,7 @@ public class DummyBot2 : MonoBehaviour
             dataArr[1] = data.shield_02;
             dataArr[2] = data.effectType_02;
             dataArr[3] = data.effectNum_02;
+            dataArr[4] = data.heal_02;
             return dataArr;
         }
     }

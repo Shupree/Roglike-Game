@@ -16,15 +16,20 @@ public class MPManager : MonoBehaviour
 
     private Player _player;
     private Enemy _targetInfo;
+    private List<Enemy> _EnemyInfoList;
     private Paint[] _PaintScripts;
-    private int damage;
-    private int effect;
-    private int addValue;
 
     public GameObject MP_BtnUI;
     //private Image MP_BtnEmptyImg;
     //private Image MP_BtnImg;
     private Image MP_BtnImg;
+
+    private int damage;
+    private int shield;
+    private int heal;
+    private int effect;
+    
+    private int addValue;
 
     private bool isOpend;
 
@@ -41,17 +46,23 @@ public class MPManager : MonoBehaviour
         GameManager.instance.MP_Data = use_MPData;
 
         _player = GameManager.instance._player;
+        _EnemyInfoList = GameManager.instance.EnemyInfoList;
         _PaintScripts = GameManager.instance._PaintScripts;
 
         // 걸작 사용 버튼 세팅
         //MP_BtnEmptyImg = MP_BtnUI.transform.GetChild(0).GetComponent<Image>();
         //MP_BtnImg = MP_BtnUI.transform.GetChild(1).GetComponent<Image>();
         MP_BtnImg = MP_BtnUI.transform.GetChild(1).GetComponent<Image>();
+
+        damage = 0;
+        shield = 0;
+        heal = 0;
+        effect = 0;
     }
 
     public void LateUpdate()
     {
-        if (use_MPData.conditionType == "Cost") {
+        if (use_MPData.conditionType == MasterPieceData.ConditionType.Cost) {
             MP_BtnImg.fillAmount = GameManager.instance._PaintManager.stack / (float)use_MPData.maximumCondition;
         }
         else {
@@ -69,16 +80,16 @@ public class MPManager : MonoBehaviour
         _targetInfo = GameManager.instance.targetInfo;
 
         switch (use_MPData.conditionType) {
-            case "None":
+            case MasterPieceData.ConditionType.None:
                 GameManager.instance._PaintManager.stack = 0;
                 addValue = 1;
                 break;
-            case "Cost": 
+            case MasterPieceData.ConditionType.Cost: 
                 addValue = (GameManager.instance._PaintManager.stack - use_MPData.cost) / use_MPData.perCondition;  // 여분 코스트 / 필요 수치
                 GameManager.instance._PaintManager.stack = 
                     (GameManager.instance._PaintManager.stack - use_MPData.cost) % use_MPData.perCondition;  // 여분 반환
                 break;
-            case "Health":
+            case MasterPieceData.ConditionType.Health:
                 if (_player.health < use_MPData.perCondition) {
                     return;    // HP가 부족하다면 사용 불가능
                 }
@@ -88,15 +99,15 @@ public class MPManager : MonoBehaviour
                 GameManager.instance._PaintManager.stack = 0;
                 addValue = 1;   // 횟수는 1회로 한정
                 break;
-            case "Paint":  // 물감
+            case MasterPieceData.ConditionType.Paint:  // 물감
                 int i = 0;
-                if (use_MPData.conditionColor == "B") {
+                if (use_MPData.conditionColor == MasterPieceData.PaintType.B) {
                     i = 1;
                 }
-                else if (use_MPData.conditionColor == "Y") {
+                else if (use_MPData.conditionColor == MasterPieceData.PaintType.Y) {
                     i = 2;
                 }
-                else if (use_MPData.conditionColor == "W") {
+                else if (use_MPData.conditionColor == MasterPieceData.PaintType.W) {
                     i = 3;
                 }
 
@@ -119,7 +130,7 @@ public class MPManager : MonoBehaviour
                     }
                 }
                 break;
-            case "Gold":
+            case MasterPieceData.ConditionType.Gold:
                 //
                 // 골드 및 상점 시스템부터 제작 후 제작할 것!
                 //
@@ -129,12 +140,14 @@ public class MPManager : MonoBehaviour
         }
 
         damage = use_MPData.basicDamage + (use_MPData.perDamage * addValue);
+        shield = use_MPData.baseShield + (use_MPData.perShield * addValue);
+        heal = use_MPData.baseHeal + (use_MPData.perHeal * addValue);
         effect = use_MPData.basicEffect + (use_MPData.perEffect * addValue);
 
         // 공격 type에 따른 분류
         switch (use_MPData.attackType) {
             // 단타 공격
-            case "Single":
+            case MasterPieceData.AttackType.Single:
                 _targetInfo.health -= 
                     damage + _targetInfo.debuffArr[0];
 
@@ -154,7 +167,7 @@ public class MPManager : MonoBehaviour
                 Debug.Log("적은 "+damage+"의 데미지를 입었다.");
                 break;
             // 다단 히트
-            case "Multiple":
+            case MasterPieceData.AttackType.Multiple:
                 for (int i = 0; i < use_MPData.count; i++) {    // 타수 증가
                     _targetInfo.health -= 
                         damage + _targetInfo.debuffArr[0];
@@ -176,15 +189,15 @@ public class MPManager : MonoBehaviour
                 }
                 break;
             // 전체 공격
-            case "Splash":
+            case MasterPieceData.AttackType.Splash:
                 for(int i = 0; i < GameManager.instance.EnemyList.Count; i++) {
-                    GameManager.instance.EnemyInfoList[i].health -=
-                        damage + GameManager.instance.EnemyInfoList[i].debuffArr[0];
+                    _EnemyInfoList[i].health -=
+                        damage + _EnemyInfoList[i].debuffArr[0];
 
                     // 적 디버프
                     if (use_MPData.effectType > 0) {
                         if (use_MPData.effectType < 20) {
-                            GameManager.instance.EnemyInfoList[i].debuffArr[use_MPData.effectType - 1] += effect;
+                            _EnemyInfoList[i].debuffArr[use_MPData.effectType - 1] += effect;
                         }
                         else if (use_MPData.effectType == 51) {     // 물감 강탈 효과
                             int n = UnityEngine.Random.Range(0, 3);
@@ -212,12 +225,21 @@ public class MPManager : MonoBehaviour
         if (use_MPData.self_EffectType != 0) {
             // 해로운 효과
             if (use_MPData.self_EffectType < 20) {
-                GameManager.instance._player.debuffArr[use_MPData.effectType - 1] += effect;
+                _player.debuffArr[use_MPData.effectType - 1] += effect;
             }
             // 이로운 효과
             else {
-                GameManager.instance._player.buffArr[use_MPData.self_EffectType - 21] += use_MPData.self_Effect;
+                _player.buffArr[use_MPData.self_EffectType - 21] += use_MPData.self_Effect;
             }
+        }
+
+        // 플레이어 보호막 획득
+        _player.shield += shield;
+
+        // 플레이어 회복
+        _player.health += heal;
+        if (_player.health > _player.maxHealth) {
+            _player.health = _player.maxHealth;
         }
 
         //
@@ -225,8 +247,21 @@ public class MPManager : MonoBehaviour
         //
         //
 
+        // 적 디버프 연산
+        for(int a = 0; a < _EnemyInfoList.Count; a++) {
+            // 감전 효과 연산
+            _EnemyInfoList[a].ElectricShock();
+            // 추위 효과 연산
+            _EnemyInfoList[a].Coldness();
+        }
+        
+        // 플레이어 빙결 효과
+        _player.Coldness();
+        // 플레이어 감전 효과
+        _player.ElectricShock();
+
         // 유물 : 걸작 사용 시 효과
-        GameManager.instance._ArtifactManager.ArtifactFunction("UseMP");
+        GameManager.instance._ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.UseMP);
     }
 
     public void BagBtn()

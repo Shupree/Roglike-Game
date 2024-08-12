@@ -523,6 +523,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4c2783c6e3d38d24ca3e6f7eb7218efd, type: 2}
   usingSkill: {fileID: 11400000, guid: 4c759db75ead19b4b9f7b79a129141da, type: 2}
   MP_Data: {fileID: 11400000, guid: 9caa96e3301f1974dbda21292ef2d023, type: 2}
+  maxCanvasNum: 0
+  turn: 0
 --- !u!4 &59903916
 Transform:
   m_ObjectHideFlags: 0
@@ -7371,7 +7373,7 @@ GameObject:
   - component: {fileID: 1186961438}
   - component: {fileID: 1186961439}
   m_Layer: 5
-  m_Name: ArtifactUI
+  m_Name: ArtifactManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7410,7 +7412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   all_ArtifactData:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 39c7d4efe8e78be4d9628f23cf25203c, type: 2}
 --- !u!1 &1208187668
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,16 +13,18 @@ MonoBehaviour:
   m_Name: Flame_Bullet
   m_EditorClassIdentifier: 
   skillType: 0
-  attackType: Multiple
+  attackType: 1
   skillId: 1
   skillName: "\uBD88\uAF43 \uD0C4\uD658"
   skillDesc: 
   skillIcon: {fileID: -537537479, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
   baseDamage: 1
-  baseShield: 0
   baseCount: 4
+  baseShield: 0
+  baseHeal: 0
   effectType: 1
   baseEffect: 1
   incDamage: 1
   incShield: 0
+  incHeal: 0
   incEffect: 0

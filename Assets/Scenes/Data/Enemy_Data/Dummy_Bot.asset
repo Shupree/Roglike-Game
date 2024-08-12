@@ -18,16 +18,20 @@ MonoBehaviour:
   enemyDesc: "\uB354\uBBF8 \uBD07\uC785\uB2C8\uB2E4."
   enemyModel: {fileID: 0}
   maxHealth: 30
-  attackDamage_01: 6
-  attackEffect_01: 2
+  damage_01: 6
+  shield_01: 0
+  effectType_01: 2
   effectNum_01: 4
-  attackDamage_02: 0
-  attackEffect_02: 11
+  damage_02: 0
+  shield_02: 0
+  effectType_02: 0
   effectNum_02: 4
-  attackDamage_03: 0
-  attackEffect_03: 0
+  damage_03: 0
+  shield_03: 0
+  effectType_03: 0
   effectNum_03: 0
-  attackDamage_04: 0
-  attackEffect_04: 0
+  damage_04: 0
+  shield_04: 0
+  effectType_04: 0
   effectNum_04: 0
   playerEffectType: 0

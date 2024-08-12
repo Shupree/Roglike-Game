@@ -7,26 +7,34 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    public int[] enemyAct = new int[3];
-    public int effectType;
-    public int effectNum;
-    public int turn;
+    private SpriteRenderer target_SpriteRenderer;
+
     public EnemyData data;
-    public int health;
+    public int[] enemyAct = new int[5];
+
+    public int turn;
+
     public int maxHealth;
+    public int health;
     public int shield;
     // 00화상, 01중독, 02감전, 03추위, 04빙결, 05기절 06공포, 07위압, 08부식
     // 00철갑, 01집중, 02흡수, 03가시
     public int[] debuffArr = new int[9];
     public int[] buffArr = new int[4];
+
     public int skillDamage;
     public int skillShield;
+    public int effectType;
+    public int effectNum;
+    public int skillHeal;
 
     public bool isLive;
     
     void Awake()
     {
-        turn = 0;
+        target_SpriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+
+        turn = GameManager.instance.turn;
         maxHealth = data.maxHealth;
         health = maxHealth;
     }
@@ -34,14 +42,14 @@ public class Enemy : MonoBehaviour
     void Update() 
     {
         if (gameObject == GameManager.instance.target) {
-            transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+            target_SpriteRenderer.enabled = true;
         }
         else {
-            if (GameManager.instance.usingSkill.attackType == "Splash") {
-                transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+            if (GameManager.instance.usingSkill.attackType == SkillData.AttackType.Splash) {
+                target_SpriteRenderer.enabled = true;
             }
             else {
-                transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+                target_SpriteRenderer.enabled = false;
             }
         }
 
@@ -61,7 +69,6 @@ public class Enemy : MonoBehaviour
 
     public void TakeActInfo()
     {
-        turn++;
         // 몬스터에 따른 공격 방식 선정
         switch (data.enemyId) {
             // DummyBot
@@ -80,7 +87,7 @@ public class Enemy : MonoBehaviour
             skillDamage = enemyAct[0] + buffArr[1] + GameManager.instance._player.debuffArr[0];
         }
 
-        // 보호막 확정
+        // 보호막 수치 확정
         if (enemyAct[1] != 0) {
             skillShield = enemyAct[1];
         }
@@ -90,10 +97,15 @@ public class Enemy : MonoBehaviour
             effectType = 0;
             effectNum = 0;
         }
-        // 디버프 효과
+        // 버프/디버프 효과
         else {
             effectType = enemyAct[2];
             effectNum = enemyAct[3];
+        }
+
+        // 회복 수치 확정
+        if (enemyAct[4] != 0) {
+            skillHeal = enemyAct[4];
         }
     }
 
