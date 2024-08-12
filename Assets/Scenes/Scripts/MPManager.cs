@@ -260,6 +260,14 @@ public class MPManager : MonoBehaviour
         // 플레이어 감전 효과
         _player.ElectricShock();
 
+        // 타겟 사망 시 타겟팅 재설정
+        if (!GameManager.instance.target) {
+            GameManager.instance.target = GameManager.instance.EnemyList[0];
+            _targetInfo = _EnemyInfoList[0];
+        }
+
+        GameManager.instance.CheckVictory();
+
         // 유물 : 걸작 사용 시 효과
         GameManager.instance._ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.UseMP);
     }

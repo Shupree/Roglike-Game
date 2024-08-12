@@ -15,7 +15,7 @@ public class StateUpdate : MonoBehaviour
     // stateUI에 따른 이펙트 타입 정보 (ImageArr의 순서와 EffectType의 순서가 일치해야 함.)
 
     // -01없음, 00화상, 01중독, 02감전, 03추위, 04빙결, 05기절, 06공포, 07위압, 08부식
-    // 00철갑 보호막, 01집중, 02흡수, 03가시
+    // 09철갑, 10집중, 11흡수, 12가시
     /*public int[] debuffArr = new int[9];
     public int[] buffArr = new int[4];*/
     public int[] effectArr = new int[13];   // player, Enemy에게서 받은 Effect 전부
@@ -119,7 +119,7 @@ public class StateUpdate : MonoBehaviour
                         textArr[order].enabled = true;
 
                         UIArr[order].sprite = spriteArr[i];
-                        textArr[order].text = GameManager.instance._player.debuffArr[i].ToString();
+                        textArr[order].text = effectArr[i].ToString();
 
                         order++;
                     }

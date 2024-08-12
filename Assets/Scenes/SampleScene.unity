@@ -1388,6 +1388,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxNum: 0
   currentNum: 0
+  usedColorNum: 0
   canUsePaint: 0
   colorUI: {fileID: 0}
 --- !u!1 &323911129
@@ -2658,6 +2659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxNum: 0
   currentNum: 0
+  usedColorNum: 0
   canUsePaint: 0
   colorUI: {fileID: 0}
 --- !u!1 &537655172
@@ -3244,6 +3246,13 @@ MonoBehaviour:
   - {fileID: 934571490, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
   - {fileID: -6065768427115596876, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
   - {fileID: 1436338628549066657, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
+  - {fileID: 1436338628549066657, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
+  - {fileID: 1436338628549066657, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
+  - {fileID: 1436338628549066657, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
+  - {fileID: -1997803578, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: -1997803578, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: -1997803578, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: -1997803578, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
 --- !u!114 &659192611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7135,6 +7144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxNum: 0
   currentNum: 0
+  usedColorNum: 0
   canUsePaint: 0
   colorUI: {fileID: 0}
 --- !u!1 &1176373358
@@ -7191,6 +7201,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxNum: 0
   currentNum: 0
+  usedColorNum: 0
   canUsePaint: 0
   colorUI: {fileID: 0}
 --- !u!114 &1176373361
@@ -8235,6 +8246,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxNum: 0
   currentNum: 0
+  usedColorNum: 0
   canUsePaint: 0
   colorUI: {fileID: 1503878164}
 --- !u!1 &1383261325
