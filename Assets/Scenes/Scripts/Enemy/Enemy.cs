@@ -28,6 +28,9 @@ public class Enemy : MonoBehaviour
     public int effectNum;
     public int skillHeal;
 
+    private int skillOrder;
+    private int maxSkillOrder;
+
     public bool isLive;
     
     void Awake()
@@ -37,6 +40,8 @@ public class Enemy : MonoBehaviour
         turn = GameManager.instance.turn;
         maxHealth = data.maxHealth;
         health = maxHealth;
+
+        maxSkillOrder = data.skillNum;
     }
 
     void Update() 
@@ -69,17 +74,51 @@ public class Enemy : MonoBehaviour
 
     public void TakeActInfo()
     {
-        // 몬스터에 따른 공격 방식 선정
-        switch (data.enemyId) {
-            // DummyBot
+        // 몹 패턴
+        switch (skillOrder) {
+            case 0:
+                skillOrder++;
+                enemyAct[0] = data.damage_01;
+                enemyAct[1] = data.shield_01;
+                enemyAct[2] = data.effectType_01;
+                enemyAct[3] = data.effectNum_01;
+                enemyAct[4] = data.heal_01;
+                break;
             case 1:
-                enemyAct = GetComponent<DummyBot>().SetPattern(turn);
+                skillOrder++;
+                enemyAct[0] = data.damage_02;
+                enemyAct[1] = data.shield_02;
+                enemyAct[2] = data.effectType_02;
+                enemyAct[3] = data.effectNum_02;
+                enemyAct[4] = data.heal_02;
                 break;
-
-            // DummyBot2
             case 2:
-                enemyAct = GetComponent<DummyBot2>().SetPattern(turn);
+                skillOrder++;
+                enemyAct[0] = data.damage_03;
+                enemyAct[1] = data.shield_03;
+                enemyAct[2] = data.effectType_03;
+                enemyAct[3] = data.effectNum_03;
+                enemyAct[4] = data.heal_03;
                 break;
+            case 3:
+                skillOrder++;
+                enemyAct[0] = data.damage_04;
+                enemyAct[1] = data.shield_04;
+                enemyAct[2] = data.effectType_04;
+                enemyAct[3] = data.effectNum_04;
+                enemyAct[4] = data.heal_04;
+                break;
+            case 4:
+                skillOrder++;
+                enemyAct[0] = data.damage_05;
+                enemyAct[1] = data.shield_05;
+                enemyAct[2] = data.effectType_05;
+                enemyAct[3] = data.effectNum_05;
+                enemyAct[4] = data.heal_05;
+                break;
+        }
+        if (skillOrder >= maxSkillOrder) {
+            skillOrder = 0;
         }
 
         // 스킬 데미지 확정

@@ -287,8 +287,7 @@ public class GameManager : MonoBehaviour
             EnemyInfoList[i].TakeActInfo();
         }
 
-        // 유물 : 턴 시작 시 효과
-        Debug.Log("OKKKKKK");
+        // 유물 : 턴 시작 시 효과   (유물의 Awake보다 일찍 발동되는 문제 발생)
         _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.StartTurn);
 
         // 물감 기능 On

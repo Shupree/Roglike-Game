@@ -17,21 +17,30 @@ MonoBehaviour:
   enemyName: "\uD6C8\uB828\uC6A9 \uBD07"
   enemyDesc: "\uB354\uBBF8 \uBD07\uC785\uB2C8\uB2E4."
   enemyModel: {fileID: 0}
+  skillNum: 2
   maxHealth: 30
   damage_01: 6
   shield_01: 0
   effectType_01: 2
   effectNum_01: 4
+  heal_01: 0
   damage_02: 0
   shield_02: 0
   effectType_02: 0
   effectNum_02: 4
+  heal_02: 0
   damage_03: 0
   shield_03: 0
   effectType_03: 0
   effectNum_03: 0
+  heal_03: 0
   damage_04: 0
   shield_04: 0
   effectType_04: 0
   effectNum_04: 0
-  playerEffectType: 0
+  heal_04: 0
+  damage_05: 0
+  shield_05: 0
+  effectType_05: 0
+  effectNum_05: 0
+  heal_05: 0

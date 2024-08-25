@@ -14,6 +14,7 @@ public class EnemyData : ScriptableObject
     public string enemyName;
     public string enemyDesc;
     public Sprite enemyModel;
+    public int skillNum;
 
     [Header("# Ability")]
     public int maxHealth;
@@ -22,6 +23,9 @@ public class EnemyData : ScriptableObject
     // 00없음 01화상 02중독 03감전 04추위 05빙결 06기절
     // 07공포 08위압 09부식
     // 21철갑 보호막 22집중 23흡수 24가시
+
+    // 스킬은 위에서부터 채워주어야 함.
+    // skillNum은 공격 패턴의 개수와 같아야 함.
 
     // 공격1
     [Header("# Attack01")]
@@ -55,7 +59,11 @@ public class EnemyData : ScriptableObject
     public int effectNum_04;
     public int heal_04;
 
-    // 플레이어에게 특수 디버프 부여
-    [Header("# PlayerDebuff")]
-    public int playerEffectType;
+    // 공격5
+    [Header("# Attack05")]
+    public int damage_05;
+    public int shield_05;
+    public int effectType_05;
+    public int effectNum_05;
+    public int heal_05;
 }
