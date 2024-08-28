@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public SkillManager _SkillManager;
     public MPManager _MasterPieceManager;
     public ArtifactManager _ArtifactManager;
+    public ThemeManager _ThemeManager;
     public PaintManager _PaintManager = new PaintManager();
     public StageManager _StageManager = new StageManager();
     public Player _player;
@@ -109,35 +110,42 @@ public class GameManager : MonoBehaviour
     }
 
     // 페인트 추가
-    public void AddColor(int colorType)
+    public void AddColor(int paintType, bool isThemeSkill)
     {
         if (_PaintManager.order == 0) {
-            switch (colorType) {
-                // Red 타입 스킬
-                case 1:
-                    usingSkill = _SkillManager.use_SkillData[0];
-                    break;
-                // blue 타입 스킬
-                case 2:
-                    usingSkill = _SkillManager.use_SkillData[1];
-                    break;
-                // yellow 타입 스킬
-                case 3:
-                    usingSkill = _SkillManager.use_SkillData[2];
-                    break;
-                // white 타입 스킬
-                case 4:
-                    usingSkill = _SkillManager.use_SkillData[3];
-                    break;
+            // 테마스킬이 아닌 기본 스킬의 경우 : usingSkill 설정
+            if (isThemeSkill == false) {
+                switch (paintType) {
+                    // Red 타입 스킬
+                    case 1:
+                        usingSkill = _SkillManager.use_SkillData[0];
+                        break;
+                    // blue 타입 스킬
+                    case 2:
+                        usingSkill = _SkillManager.use_SkillData[1];
+                        break;
+                    // yellow 타입 스킬
+                    case 3:
+                        usingSkill = _SkillManager.use_SkillData[2];
+                        break;
+                    // white 타입 스킬
+                    case 4:
+                        usingSkill = _SkillManager.use_SkillData[3];
+                        break;
+                }
             }
+            // 기본 데미지, 보호막, 효과, 회복 연산
             if (usingSkill.baseDamage > 0) {
                 damage = usingSkill.baseDamage + _player.buffArr[0];     // 기본 데미지 + 집중 수치
             }
             shield = usingSkill.baseShield;
             effect = usingSkill.baseEffect;
             heal = usingSkill.baseHeal; 
+
+            // 스킬 아이콘 변경
             _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(usingSkill);
         }
+        // 계수에 따른 추가 연산
         else if (_PaintManager.order > 0) {
             damage += usingSkill.incDamage * _PaintManager.order;
             shield += usingSkill.incShield * _PaintManager.order;
@@ -146,8 +154,9 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("현재 데미지" + damage + "\n현재 보호막" + shield + "\n현재 버프/디버프" + effect);
         }
-        _PaintManager.AddPaint(colorType);
-        _Palette.GetComponent<PaletteManager>().ConvertSprite(colorType);
+
+        _PaintManager.AddPaint(paintType);
+        _Palette.GetComponent<PaletteManager>().ConvertSprite(paintType);
     }
 
     // 페인트 초기화
@@ -290,6 +299,9 @@ public class GameManager : MonoBehaviour
         // 유물 : 턴 시작 시 효과   (유물의 Awake보다 일찍 발동되는 문제 발생)
         _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.StartTurn);
 
+        // 테마 스킬 _ 턴 시작 시 효과
+        _ThemeManager.onTurnEffect = true;
+
         // 물감 기능 On
         for (int i = 0; i < 4; i++)
         {
@@ -323,6 +335,7 @@ public class GameManager : MonoBehaviour
         }
 
         _PaintManager.stack += _PaintManager.order;     // 사용한 물감 수만큼 스택 적립
+
         if (MP_Data.conditionType == MasterPieceData.ConditionType.Cost) {
             if (MP_Data.maximumCondition < _PaintManager.stack) {
                 _PaintManager.stack = MP_Data.maximumCondition;
@@ -354,6 +367,9 @@ public class GameManager : MonoBehaviour
 
         // 스킬 리셋
         usingSkill = _SkillManager.noneData;
+
+        // 테마 스킬 리셋
+        _ThemeManager.onThemeSkill = false;
     }
 
     IEnumerator PlayerAttack()
@@ -440,13 +456,17 @@ public class GameManager : MonoBehaviour
             _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.OnHit);
         }
 
+        // 테마 스킬_테마 스킬 사용 시
+        if (_ThemeManager.onThemeSkill == true) {
+            _ThemeManager.usedPaintNum = _PaintManager.order;
+            _ThemeManager.colorType_FirstSub = _PaintManager.paints[1];
+            _ThemeManager.useThemeSkill = true;
+        }
+
         // 타겟팅 초기화 (마지막 캔버스일 시)
         if (canvasNum <= 0) {
             target = null;
         }
-
-        // 색 초기화
-        ClearColor();
 
         // 합산 수치 초기화
         damage = 0;
@@ -460,6 +480,9 @@ public class GameManager : MonoBehaviour
             // 추위 효과 연산
             EnemyInfoList[i].Coldness();
         }
+
+        // 색 초기화
+        ClearColor();
 
         // 스킬 리셋
         usingSkill = _SkillManager.noneData;

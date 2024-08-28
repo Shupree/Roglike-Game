@@ -19,11 +19,6 @@ public class EnemyData : ScriptableObject
     [Header("# Ability")]
     public int maxHealth;
 
-    // EffectType
-    // 00없음 01화상 02중독 03감전 04추위 05빙결 06기절
-    // 07공포 08위압 09부식
-    // 21철갑 보호막 22집중 23흡수 24가시
-
     // 스킬은 위에서부터 채워주어야 함.
     // skillNum은 공격 패턴의 개수와 같아야 함.
 

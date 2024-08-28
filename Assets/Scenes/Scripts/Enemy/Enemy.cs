@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
     private SpriteRenderer target_SpriteRenderer;
 
     public EnemyData data;
-    public int[] enemyAct = new int[5];
+    private int[] enemyAct = new int[5];
 
     public int turn;
 

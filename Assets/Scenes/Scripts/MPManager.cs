@@ -216,8 +216,8 @@ public class MPManager : MonoBehaviour
         switch (use_MPData.effectType) {
             case 52:    // 만개 스택
                 break;
-            case 53:    // 폭탄
-                break;
+            //case 53:    // 폭탄
+                //break;
 
         }
 

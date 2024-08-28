@@ -28,11 +28,6 @@ public class ArtifactData : ScriptableObject
     //public int numOfUse;              // 사용 횟수    (-1은 무한)
     //public bool oneTime;                // 1회성 소멸
 
-
-    // 00없음 01화상 02중독 03감전 04추위 05빙결 06기절
-    // 07공포 08위압 09부식
-    // 21철갑 22집중 23흡수 24가시
-
     [Header("# Condition")]
     // 주의 : conditionType이 EnemyEffect일 시 Trigger로 OnHit, StartTurn만 사용가능함. 
     public TriggerSituation whenToTrigger;    // 전투 시 발동 시점 (Encounter, OnHit, GetHit, StartTurn, Victory, Defeat, UseMP, EnterStore, EnterElite)

@@ -30,12 +30,6 @@ public class MasterPieceData : ScriptableObject
     public AttackType attackType;
     public int basicDamage;  // 기본 데미지
     public int count;   // 타수
-
-    // 00없음 01화상 02중독 03감전 04추위 05빙결 06기절
-    // 07공포 08위압 09부식
-    // 21철갑 보호막 22집중 23흡수 24가시
-    // 51물감 강탈 52만개 스택(전용) 53
-
     public int baseShield;  // 기본 보호막 양
     public int baseHeal;    // 기본 회복량
     public int effectType;  // 효과 분류

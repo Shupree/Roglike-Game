@@ -52,21 +52,50 @@ public class Paint : MonoBehaviour
         else {
             switch (clickObject.name) {
                 case "RedPaint":
-                    GameManager.instance.AddColor(1);
+                    GameManager.instance.AddColor(1, false);
                     break;
                 case "BluePaint":
-                    GameManager.instance.AddColor(2);
+                    GameManager.instance.AddColor(2, false);
                     break;
                 case "YellowPaint":
-                    GameManager.instance.AddColor(3);
+                    GameManager.instance.AddColor(3, false);
                     break;
                 case "WhitePaint":
-                    GameManager.instance.AddColor(4);
+                    GameManager.instance.AddColor(4, false);
                     break;
             }
 
             usedColorNum += 1;
             currentNum--;
+        }
+    }
+
+    public void UseThemeSkill(int paintType, int paintNum)
+    {
+        if (canUsePaint == false) {
+            return;
+        }
+        if (currentNum < paintNum) {
+            Debug.Log("해당 페인트가 없어요!");
+        }
+        else {
+            switch (paintType) {
+                case 1:
+                    GameManager.instance.AddColor(1, true);
+                    break;
+                case 2:
+                    GameManager.instance.AddColor(2, true);
+                    break;
+                case 3:
+                    GameManager.instance.AddColor(3, true);
+                    break;
+                case 4:
+                    GameManager.instance.AddColor(4, true);
+                    break;
+            }
+
+            usedColorNum += paintNum;
+            currentNum -= paintNum;
         }
     }
 
