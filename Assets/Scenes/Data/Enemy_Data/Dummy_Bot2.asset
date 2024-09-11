@@ -17,6 +17,7 @@ MonoBehaviour:
   enemyName: "\uB354\uBBF8 \uBF08\uB2E4\uADC0"
   enemyDesc: "\uB354\uBBF8 \uC2A4\uCF08\uB808\uD1A4\uC785\uB2C8\uB2E4."
   enemyModel: {fileID: 0}
+  gold: 17
   skillNum: 2
   maxHealth: 15
   damage_01: 5

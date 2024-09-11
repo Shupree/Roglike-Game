@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     public int[] buffArr = new int[4];
     public int[] itemArr = new int[6];      // 사용 중인 장신구
 
-    public int gold;
+    public int gold;        // 소지금
 
     public void Awake()
     {

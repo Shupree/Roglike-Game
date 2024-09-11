@@ -58,6 +58,8 @@ public class GameManager : MonoBehaviour
     private int effect;
     private int heal;
 
+    private int trophy;     // 승리 시 전리품(골드)
+
     // 초기화
     void Awake()
     {
@@ -84,7 +86,9 @@ public class GameManager : MonoBehaviour
         effect = 0;
         heal = 0;
 
-        BattleStart();
+        _player.gold += 100;        // 초기 소지금
+
+        SetNextStageUI();
     }
 
     private void Update() 
@@ -253,6 +257,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < EnemyList.Count; i++)
         {
             EnemyInfoList.Add(EnemyList[i].GetComponent<Enemy>());
+            trophy += EnemyInfoList[i].data.gold;
         }
 
         // 유물 : 적 조우 시 효과
@@ -573,6 +578,10 @@ public class GameManager : MonoBehaviour
 
         // 걸작 스택 리셋
         _PaletteManager.stack = 0;
+
+        // 전리품(골드) 획득
+        _player.gold += trophy;
+        trophy = 0;
 
         Debug.Log("전투 종료");
         state = State.rest;

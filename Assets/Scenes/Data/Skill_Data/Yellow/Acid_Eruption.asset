@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75fffb14871e4c0429a65bfdb9d4f3f4, type: 3}
-  m_Name: Thunder
+  m_Name: Acid_Eruption
   m_EditorClassIdentifier: 
   skillType: 2
-  paintCondition: 0
-  attackType: 2
-  skillId: 3
-  skillName: "\uBCBC\uB77D"
-  skillDesc: "\uBAA8\uB4E0 \uC801\uC5D0\uAC8C 2\uB370\uBBF8\uC9C0, 3\uAC10\uC804
-    \uBD80\uC5EC"
-  skillIcon: {fileID: 1997828774, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
-  baseDamage: 2
-  baseCount: 1
+  paintCondition: 1
+  attackType: 1
+  skillId: 8
+  skillName: "\uB3C5\uC131 \uD3ED\uBC1C"
+  skillDesc: "3\uD68C, \uB79C\uB364 \uC801\uC5D0\uAC8C 3\uB370\uBBF8\uC9C0\uB97C
+    \uC8FC\uACE0 3\uC911\uB3C5\uC744 \uBD80\uC5EC"
+  skillIcon: {fileID: 21300000, guid: f15b5215d190b1941b8a7b0f9078f1e8, type: 3}
+  baseDamage: 3
+  baseCount: 3
   baseShield: 0
   baseHeal: 0
-  effectType: 3
+  effectType: 2
   baseEffect: 3
-  incDamage: 1
+  incDamage: 0
   incShield: 0
   incHeal: 0
-  incEffect: 0
+  incEffect: 1

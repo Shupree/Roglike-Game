@@ -16,16 +16,16 @@ MonoBehaviour:
   paintCondition: 1
   attackType: 0
   skillId: 4
-  skillName: Barrier
-  skillDesc: "\uC2A4\uC2A4\uB85C\uC5D0\uAC8C \uBCF4\uD638\uB9C9 6, \uC9D1\uC911 2
+  skillName: "\uBC30\uB9AC\uC5B4"
+  skillDesc: "\uC2A4\uC2A4\uB85C\uC5D0\uAC8C \uBCF4\uD638\uB9C9 4, \uC9D1\uC911 1
     \uBD80\uC5EC"
   skillIcon: {fileID: -201829820, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
   baseDamage: 0
   baseCount: 1
-  baseShield: 6
+  baseShield: 4
   baseHeal: 0
   effectType: 22
-  baseEffect: 2
+  baseEffect: 1
   incDamage: 0
   incShield: 2
   incHeal: 0

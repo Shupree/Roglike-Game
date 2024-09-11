@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75fffb14871e4c0429a65bfdb9d4f3f4, type: 3}
-  m_Name: Thunder
+  m_Name: Ice_Spear
   m_EditorClassIdentifier: 
-  skillType: 2
-  paintCondition: 0
-  attackType: 2
-  skillId: 3
-  skillName: "\uBCBC\uB77D"
-  skillDesc: "\uBAA8\uB4E0 \uC801\uC5D0\uAC8C 2\uB370\uBBF8\uC9C0, 3\uAC10\uC804
-    \uBD80\uC5EC"
-  skillIcon: {fileID: 1997828774, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
-  baseDamage: 2
+  skillType: 1
+  paintCondition: 1
+  attackType: 0
+  skillId: 2
+  skillName: "\uC544\uC774\uC2A4 \uC2A4\uD53C\uC5B4"
+  skillDesc: "\uB2E8\uC77C \uD0C0\uAC9F\uC5D0\uAC8C 5\uB370\uBBF8\uC9C0\uB97C \uC8FC\uACE0
+    \uCD94\uC704 2\uB97C \uBD80"
+  skillIcon: {fileID: 1737672109, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  baseDamage: 5
   baseCount: 1
-  baseShield: 0
+  baseShield: 5
   baseHeal: 0
-  effectType: 3
-  baseEffect: 3
-  incDamage: 1
+  effectType: 4
+  baseEffect: 2
+  incDamage: 2
   incShield: 0
   incHeal: 0
   incEffect: 0

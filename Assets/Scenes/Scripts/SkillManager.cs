@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SkillManager : MonoBehaviour
 {
@@ -8,42 +10,42 @@ public class SkillManager : MonoBehaviour
     public SkillData noneData;
     public SkillData[] all_SkillData;   // 모든 스킬데이터
     private SkillData[] have_SkillData = new SkillData[4];  // 플레이어가 지니고 있는 모든 스킬 데이터
-    public SkillData[] use_SkillData = new SkillData[4];    // 사용할 스킬 데이터 (red, yellow, blue, white 순)
+    public SkillData[] use_SkillData = new SkillData[4];    // 사용할 스킬 데이터 (red, blue, yellow, white 순)
 
     private GameObject UIObject;
-    //private GameObject[] redSlot = new GameObject[3];       // Red 스킬 대기 슬롯
-    //private GameObject[] yellowSlot = new GameObject[3];    // Yellow 스킬 대기 슬롯
-    //private GameObject[] blueSlot = new GameObject[3];      // Blue 스킬 대기 슬롯
-    //private GameObject[] whiteSlot = new GameObject[3];     // White 스킬 대기 슬롯
+    private GameObject[] skillSlots = new GameObject[4];       // 색상별 스킬 슬롯 (빨강, 파랑, 노랑, 흰색)
 
     private bool isOpend;
 
-    void Start()
+    void Awake()
     {
         UIObject = transform.GetChild(0).gameObject;
         UIObject.SetActive(false);
-        /*for (int i = 0; i < 3; i++) 
+        for (int i = 0; i < 4; i++) 
         {
-            redSlot[i] = UIObject.transform.GetChild(0).GetChild(i).gameObject;
-            yellowSlot[i] = UIObject.transform.GetChild(1).GetChild(i).gameObject;
-            blueSlot[i] = UIObject.transform.GetChild(2).GetChild(i).gameObject;
-            whiteSlot[i] = UIObject.transform.GetChild(3).GetChild(i).gameObject;
-        }*/
+            skillSlots[i] = UIObject.transform.GetChild(i).gameObject;
+            Debug.Log(skillSlots[i]);
+        }
 
         isOpend = false;
 
         // 테스트용 스킬 데이터 획득
-        have_SkillData[0] = all_SkillData[0];
+        have_SkillData[0] = all_SkillData[1];
         use_SkillData[0] = have_SkillData[0];
 
-        have_SkillData[1] = all_SkillData[1];
+        have_SkillData[1] = all_SkillData[2];
         use_SkillData[1] = have_SkillData[1];
 
-        have_SkillData[2] = all_SkillData[2];
+        have_SkillData[2] = all_SkillData[3];
         use_SkillData[2] = have_SkillData[2];
 
-        have_SkillData[3] = all_SkillData[3];
+        have_SkillData[3] = all_SkillData[4];
         use_SkillData[3] = have_SkillData[3];
+
+        ConvertImage(1, use_SkillData[0]);
+        ConvertImage(2, use_SkillData[1]);
+        ConvertImage(3, use_SkillData[2]);
+        ConvertImage(4, use_SkillData[3]);
     }
 
     public void BagBtn()
@@ -58,8 +60,8 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public void ConvertImage()
+    public void ConvertImage(int colorType, SkillData data)     // colorType : 1 빨강, 2 파랑, 3 노랑, 4 하양
     {
-
+        skillSlots[colorType - 1].GetComponent<Image>().sprite = data.skillIcon;
     }
 }
