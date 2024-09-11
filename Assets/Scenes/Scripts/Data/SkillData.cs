@@ -7,7 +7,7 @@ public class SkillData : ScriptableObject
 {
     // 스킬 테이블
     public enum SkillType { Red, Blue, Yellow, White }
-    public enum AttackType { Single, Multiple, Splash }
+    public enum AttackType { Single, Bounce, Splash }
 
     [Header("# Main Info")]
     public SkillType skillType; // 스킬 색상

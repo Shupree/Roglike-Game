@@ -14,6 +14,7 @@ public class EnemyData : ScriptableObject
     public string enemyName;
     public string enemyDesc;
     public Sprite enemyModel;
+    public int gold;
     public int skillNum;
 
     [Header("# Ability")]

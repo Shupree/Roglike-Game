@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Thunder
   m_EditorClassIdentifier: 
   skillType: 2
+  paintCondition: 0
   attackType: 2
   skillId: 3
   skillName: "\uBCBC\uB77D"
@@ -20,7 +21,7 @@ MonoBehaviour:
     \uBD80\uC5EC"
   skillIcon: {fileID: 1997828774, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
   baseDamage: 2
-  baseCount: 0
+  baseCount: 1
   baseShield: 0
   baseHeal: 0
   effectType: 3

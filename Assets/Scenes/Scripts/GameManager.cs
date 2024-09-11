@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
 
     public int turn;            // 현재 턴 수
 
-    
+    private int finalDamage;
     private int damage;
     private int shield;
     private int effect;
@@ -385,23 +385,19 @@ public class GameManager : MonoBehaviour
         switch (usingSkill.attackType) {
             // 단타 공격
             case SkillData.AttackType.Single:
-                if (usingSkill.baseDamage > 0) {
-                    targetInfo.health -= damage + targetInfo.debuffArr[0];  // 최종 데미지 + 적 화상 수치
-                }
-
-                // 적 디버프
-                if (usingSkill.effectType > 0) {
-                    if (usingSkill.effectType < 20) {
-                        targetInfo.debuffArr[usingSkill.effectType - 1] += effect;
-                    }
-                }
-                Debug.Log("적은 "+usingSkill.baseDamage+"의 데미지를 입었다.");
-                break;
-            // 다단 히트
-            case SkillData.AttackType.Multiple:
-                for (int i = 0; i < usingSkill.baseCount; i++) {    // 타수 증가
-                    if (usingSkill.baseDamage > 0) {
-                        targetInfo.health -= damage + targetInfo.debuffArr[0];  // 최종 데미지 + 적 화상 수치
+                for (int i = 0; i < usingSkill.baseCount; i++) {    // 타수만큼 반복
+                    if (usingSkill.baseDamage > 0) {                        // 기본 데미지가 0일 시 스킵
+                        finalDamage = damage + targetInfo.debuffArr[0];     // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                        if (targetInfo.shield > 0) {    // 실드 존재 시
+                            if (targetInfo.shield > finalDamage) {
+                                targetInfo.shield -= finalDamage;
+                                finalDamage = 0;
+                            }
+                            else {
+                                finalDamage -= targetInfo.shield;
+                            }
+                        }
+                        targetInfo.health -= finalDamage;   // 데미지 누적
                     }
 
                     // 적 디버프
@@ -410,25 +406,64 @@ public class GameManager : MonoBehaviour
                             targetInfo.debuffArr[usingSkill.effectType - 1] += effect;
                         }
                     }
-                    Debug.Log("적은 "+usingSkill.baseDamage+"의 데미지를 입었다.");
+                    Debug.Log(targetInfo.data.enemyName+"은(는) "+finalDamage+"의 데미지를 입었다.");
                 }
                 break;
-            // 전체 공격
-            case SkillData.AttackType.Splash:
-                for(int i = 0; i < EnemyList.Count; i++) {
-                    if (usingSkill.baseDamage > 0) {
-                        // 최종 데미지 + 적 화상 수치
-                        EnemyInfoList[i].health -= damage + EnemyInfoList[i].debuffArr[0];
+            // 바운스
+            case SkillData.AttackType.Bounce:
+                for (int i = 0; i < usingSkill.baseCount; i++) {    // 타수만큼 반복
+                    int randomNum = UnityEngine.Random.Range(0, EnemyList.Count);
+                    if (usingSkill.baseDamage > 0) {                                    // 기본 데미지가 0일 시 스킵
+                        finalDamage = damage + EnemyInfoList[randomNum].debuffArr[0];   // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                        if (EnemyInfoList[randomNum].shield > 0) {      // 실드 존재 시
+                            if (EnemyInfoList[randomNum].shield > finalDamage) {
+                                EnemyInfoList[randomNum].shield -= finalDamage;
+                                finalDamage = 0;
+                            }
+                            else {
+                                finalDamage -= EnemyInfoList[randomNum].shield;
+                            }
+                        }
+                        EnemyInfoList[randomNum].health -= finalDamage;     // 데미지 누적 
                     }
 
                     // 적 디버프
                     if (usingSkill.effectType > 0) {
                         if (usingSkill.effectType < 20) {
-                            EnemyInfoList[i].debuffArr[usingSkill.effectType - 1] += effect;
+                            EnemyInfoList[randomNum].debuffArr[usingSkill.effectType - 1] += effect;
                         }
                     }
+                    Debug.Log(EnemyInfoList[randomNum].data.enemyName+"은(는) "+finalDamage+"의 데미지를 입었다.");
                 }
-                Debug.Log("적들은 "+damage+"의 데미지를 입었다.");
+                break;
+            // 전체 공격
+            case SkillData.AttackType.Splash:
+                for (int a = 0; a < usingSkill.baseCount; a++) {    // 타수만큼 반복
+                    for(int i = 0; i < EnemyList.Count; i++) {
+                        if (usingSkill.baseDamage > 0) {                                        // 기본 데미지가 0일 시 스킵
+                            finalDamage = damage + EnemyInfoList[i].debuffArr[0];               // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                            if (EnemyInfoList[i].shield > 0) {
+                                if (EnemyInfoList[i].shield > finalDamage) {
+                                    EnemyInfoList[i].shield -= finalDamage;
+                                    finalDamage = 0;
+                                }
+                                else {
+                                    finalDamage -= EnemyInfoList[i].shield;
+                                }
+                            }
+                            EnemyInfoList[i].health -= finalDamage;
+                        }
+
+                        // 적 디버프
+                        if (usingSkill.effectType > 0) {
+                            if (usingSkill.effectType < 20) {
+                                EnemyInfoList[i].debuffArr[usingSkill.effectType - 1] += effect;
+                            }
+                        }
+                        
+                        Debug.Log(EnemyInfoList[i].data.enemyName+"은(는) "+finalDamage+"의 데미지를 입었다.");
+                    }
+                }
                 break;
         }
         // 데미지 연산 : 기본 데미지 + 화상 데미지 + 집중 효과

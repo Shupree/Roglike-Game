@@ -46,11 +46,14 @@ public class Enemy : MonoBehaviour
 
     void Update() 
     {
+        // 만약 단일 타겟일 시 대상 타겟팅
         if (gameObject == GameManager.instance.target) {
             target_SpriteRenderer.enabled = true;
         }
+        // 공격 타입이 전체 공격기 혹은 바운스 공격기일 시 전체 타겟팅
         else {
-            if (GameManager.instance.usingSkill.attackType == SkillData.AttackType.Splash) {
+            if (GameManager.instance.usingSkill.attackType == SkillData.AttackType.Splash
+                 || GameManager.instance.usingSkill.attackType == SkillData.AttackType.Bounce) {
                 target_SpriteRenderer.enabled = true;
             }
             else {
