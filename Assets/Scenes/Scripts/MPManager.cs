@@ -24,6 +24,8 @@ public class MPManager : MonoBehaviour
     //private Image MP_BtnImg;
     private Image MP_BtnImg;
 
+    private PaletteManager _PaletteManager;
+
     private int damage;
     private int shield;
     private int heal;
@@ -35,6 +37,8 @@ public class MPManager : MonoBehaviour
 
     void Awake()
     {
+        _PaletteManager = GameManager.instance._PaletteManager;
+
         UIObject = transform.GetChild(0).gameObject;
         UIObject.SetActive(false);
 
@@ -63,17 +67,17 @@ public class MPManager : MonoBehaviour
     public void LateUpdate()
     {
         if (use_MPData.conditionType == MasterPieceData.ConditionType.Cost) {
-            MP_BtnImg.fillAmount = GameManager.instance._PaintManager.stack / (float)use_MPData.maximumCondition;
+            MP_BtnImg.fillAmount = GameManager.instance._PaletteManager.stack / (float)use_MPData.maximumCondition;
         }
         else {
-            MP_BtnImg.fillAmount = GameManager.instance._PaintManager.stack / (float)use_MPData.cost;
+            MP_BtnImg.fillAmount = GameManager.instance._PaletteManager.stack / (float)use_MPData.cost;
         }
     }
 
     public void MPFunction()
     {   
         // 스택 수 부족 시 return
-        if(GameManager.instance._PaintManager.stack < use_MPData.cost) {
+        if(_PaletteManager.stack < use_MPData.cost) {
             return;
         }
         
@@ -81,13 +85,13 @@ public class MPManager : MonoBehaviour
 
         switch (use_MPData.conditionType) {
             case MasterPieceData.ConditionType.None:
-                GameManager.instance._PaintManager.stack = 0;
+                _PaletteManager.stack = 0;
                 addValue = 1;
                 break;
             case MasterPieceData.ConditionType.Cost: 
-                addValue = (GameManager.instance._PaintManager.stack - use_MPData.cost) / use_MPData.perCondition;  // 여분 코스트 / 필요 수치
-                GameManager.instance._PaintManager.stack = 
-                    (GameManager.instance._PaintManager.stack - use_MPData.cost) % use_MPData.perCondition;  // 여분 반환
+                addValue = (_PaletteManager.stack - use_MPData.cost) / use_MPData.perCondition;  // 여분 코스트 / 필요 수치
+                _PaletteManager.stack = 
+                    (_PaletteManager.stack - use_MPData.cost) % use_MPData.perCondition;  // 여분 반환
                 break;
             case MasterPieceData.ConditionType.Health:
                 if (_player.health < use_MPData.perCondition) {
@@ -96,7 +100,7 @@ public class MPManager : MonoBehaviour
                 else {
                     _player.health -= use_MPData.perCondition;     // 필요 수치만큼 플레이어 HP 감소
                 }
-                GameManager.instance._PaintManager.stack = 0;
+                _PaletteManager.stack = 0;
                 addValue = 1;   // 횟수는 1회로 한정
                 break;
             case MasterPieceData.ConditionType.Paint:  // 물감
@@ -115,7 +119,7 @@ public class MPManager : MonoBehaviour
                 if (use_MPData.maximumCondition == -1) {
                     addValue = _PaintScripts[i].currentNum;
                     _PaintScripts[i].currentNum = 0;   // 물감 전부 제거
-                    GameManager.instance._PaintManager.stack = 0;
+                    _PaletteManager.stack = 0;
                 }
                 // 조건: n만큼의 물감
                 else {
@@ -125,7 +129,7 @@ public class MPManager : MonoBehaviour
                     }
                     else {
                         _PaintScripts[i].currentNum -= use_MPData.perCondition;    // 물감 수 감소
-                        GameManager.instance._PaintManager.stack = 0;
+                        _PaletteManager.stack = 0;
                         addValue = 1;
                     }
                 }

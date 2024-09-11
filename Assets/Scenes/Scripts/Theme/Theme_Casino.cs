@@ -9,6 +9,11 @@ public class Theme_Casino : MonoBehaviour
     // 턴 시작 시 GameManager에서 ThemeManager 호출해서 턴 시작 시 효과 호출할 것
     // 무력감 디버프 추가할 것
     // 콜 효과 제작할 것
+    public enum HandRank
+    {
+        loyalStraightFlush, straightFlush, fourCard, triple, pair
+    }
+
     private ThemeManager _ThemeManager;
 
     public int[] playingCard = new int[5];     // 빈 플래잉 카드는 -1로 표기 (적:1, 청:2, 황:3, 백:4)
@@ -19,6 +24,10 @@ public class Theme_Casino : MonoBehaviour
 
     public bool onShuffle;
     private bool onCardTrick;
+
+    private int[] cardColorArr = new int[4];     // [빨강, 파랑, 노랑, 하양] (콜 시, 플래잉카드 합산)
+
+    private HandRank hand;      // 흰색 플러쉬 판별
 
     void Awake()
     {
@@ -31,6 +40,10 @@ public class Theme_Casino : MonoBehaviour
 
         onShuffle = false;
         onCardTrick = false;
+
+        for (int i = 0; i < 4; i++) {
+            cardColorArr[i] = 0;
+        }
     }
 
     private void FixedUpdate() {
@@ -100,11 +113,43 @@ public class Theme_Casino : MonoBehaviour
 
             // 콜 시 효과 제작할 것
 
+            // 플래잉 카드 초기화 및 색상 갯수 확인
             for (int i = 0; i < 5; i++)
             {
+                switch (playingCard[i]) {
+                    case 1:
+                        cardColorArr[0]++;
+                        break;
+                    case 2:
+                        cardColorArr[1]++;
+                        break;
+                    case 3:
+                        cardColorArr[2]++;
+                        break;
+                    case 4:
+                        cardColorArr[3]++;
+                        break;
+                }
                 playingCard[i] = -1;
             }
             playingCardNum = 0;
+
+            for (int i = 5; i >= 2; i--)
+            {
+                if (cardColorArr[3] == i) {
+                    if (i == 5) {
+                        
+                        Debug.Log("로얄스트레이트플러쉬");
+                    }
+                    else {
+                        Debug.Log("");
+                    }
+                    break;
+                }
+                else if (cardColorArr[0] == i) {
+                    break;
+                }
+            }
         }
     }
 

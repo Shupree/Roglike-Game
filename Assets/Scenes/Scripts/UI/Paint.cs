@@ -46,7 +46,7 @@ public class Paint : MonoBehaviour
         if (currentNum == 0) {
             Debug.Log("해당 페인트가 없어요!");
         }
-        else if (GameManager.instance._PaintManager.order > GameManager.instance._PaintManager.limit) {
+        else if (GameManager.instance._PaletteManager.order > GameManager.instance._PaletteManager.limit) {
             Debug.Log("이미 팔레트가 꽉 찼어!");
         }
         else {

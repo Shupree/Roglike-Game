@@ -8,6 +8,11 @@ public class PaletteManager : MonoBehaviour
     public GameObject[] UIArr = new GameObject[5];
     public Image[] imageArr = new Image[5];
     private int paletteNum;
+    public int limit = 2;       // 최대 페인트 수
+    public int order = 0;       // 팔레트 순서
+    public int[] paints = new int[5];
+    // none = 0, red = 1, blue = 2, yellow = 3, white = 4
+    public int stack;           // 물감 사용 스택 수
 
     void Awake()
     {
@@ -16,8 +21,28 @@ public class PaletteManager : MonoBehaviour
             imageArr[i] = UIArr[i].GetComponent<Image>();
             imageArr[i].color = Color.gray;
         }
+        paints[0] = 0;
+        paints[1] = 0;
+        paints[2] = 0;
+        paints[3] = 0;
+        paints[4] = 0;
 
         paletteNum = 0;
+    }
+
+    // 팔레트에 페인트 추가
+    public void AddPaint(int num) {
+        paints[order] = num;
+        order++;
+    }
+
+    // 페인트 초기화
+    public void ClearPaint() {
+        for (int i = 0; i < 5; i++)
+        {
+            order = 0;
+            paints[i] = 0;
+        }
     }
 
     // 팔레트 이미지 교체

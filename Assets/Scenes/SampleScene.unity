@@ -494,7 +494,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _MainCamera: {fileID: 519420031}
-  _Palette: {fileID: 1995579604}
   _NextStageUI:
   - {fileID: 2143699460}
   - {fileID: 718527220}
@@ -510,6 +509,7 @@ MonoBehaviour:
   _MasterPieceManager: {fileID: 1208187670}
   _ArtifactManager: {fileID: 1186961439}
   _ThemeManager: {fileID: 82714236}
+  _PaletteManager: {fileID: 1995579606}
   _player: {fileID: 821215748}
   state: 0
   isLive: 0
@@ -11633,6 +11633,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  limit: 2
+  order: 0
+  paints: 0000000000000000000000000000000000000000
+  stack: 0
 --- !u!114 &1995579607
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public Camera _MainCamera;
-    public GameObject _Palette;
     public GameObject[] _NextStageUI;
     public GameObject _CanvasUI;
     public Paint[] _PaintScripts;   // [0]빨강 [1]파랑 [2]노랑 [3]하양
@@ -23,7 +22,7 @@ public class GameManager : MonoBehaviour
     public MPManager _MasterPieceManager;
     public ArtifactManager _ArtifactManager;
     public ThemeManager _ThemeManager;
-    public PaintManager _PaintManager = new PaintManager();
+    public PaletteManager _PaletteManager;
     public StageManager _StageManager = new StageManager();
     public Player _player;
 
@@ -112,7 +111,7 @@ public class GameManager : MonoBehaviour
     // 페인트 추가
     public void AddColor(int paintType, bool isThemeSkill)
     {
-        if (_PaintManager.order == 0) {
+        if (_PaletteManager.order == 0) {
             // 테마스킬이 아닌 기본 스킬의 경우 : usingSkill 설정
             if (isThemeSkill == false) {
                 switch (paintType) {
@@ -146,24 +145,24 @@ public class GameManager : MonoBehaviour
             _CanvasUI.GetComponent<CanvasScript>().ConvertSprite(usingSkill);
         }
         // 계수에 따른 추가 연산
-        else if (_PaintManager.order > 0) {
-            damage += usingSkill.incDamage * _PaintManager.order;
-            shield += usingSkill.incShield * _PaintManager.order;
-            effect += usingSkill.incEffect * _PaintManager.order;
-            heal += usingSkill.incHeal * _PaintManager.order;
+        else if (_PaletteManager.order > 0) {
+            damage += usingSkill.incDamage * _PaletteManager.order;
+            shield += usingSkill.incShield * _PaletteManager.order;
+            effect += usingSkill.incEffect * _PaletteManager.order;
+            heal += usingSkill.incHeal * _PaletteManager.order;
 
             Debug.Log("현재 데미지" + damage + "\n현재 보호막" + shield + "\n현재 버프/디버프" + effect);
         }
 
-        _PaintManager.AddPaint(paintType);
-        _Palette.GetComponent<PaletteManager>().ConvertSprite(paintType);
+        _PaletteManager.AddPaint(paintType);
+        _PaletteManager.ConvertSprite(paintType);
     }
 
     // 페인트 초기화
     public void ClearColor()
     {
-        _PaintManager.ClearPaint();
-        _Palette.GetComponent<PaletteManager>().ClearPalette();
+        _PaletteManager.ClearPaint();
+        _PaletteManager.ClearPalette();
     }
 
     public void SetCurrntStage(int stageType)
@@ -316,7 +315,7 @@ public class GameManager : MonoBehaviour
     public void PlayerAttackBtn()
     {
         // 물감 선택X 시
-        if (_PaintManager.order == 0) {
+        if (_PaletteManager.order == 0) {
             return;
         }
 
@@ -334,16 +333,16 @@ public class GameManager : MonoBehaviour
             _PaintScripts[i].canUsePaint = false;
         }
 
-        _PaintManager.stack += _PaintManager.order;     // 사용한 물감 수만큼 스택 적립
+        _PaletteManager.stack += _PaletteManager.order;     // 사용한 물감 수만큼 스택 적립
 
         if (MP_Data.conditionType == MasterPieceData.ConditionType.Cost) {
-            if (MP_Data.maximumCondition < _PaintManager.stack) {
-                _PaintManager.stack = MP_Data.maximumCondition;
+            if (MP_Data.maximumCondition < _PaletteManager.stack) {
+                _PaletteManager.stack = MP_Data.maximumCondition;
             }
         }
         else {
-            if (MP_Data.cost < _PaintManager.stack) {
-                _PaintManager.stack = MP_Data.cost;
+            if (MP_Data.cost < _PaletteManager.stack) {
+                _PaletteManager.stack = MP_Data.cost;
             }
         }
 
@@ -361,8 +360,8 @@ public class GameManager : MonoBehaviour
         shield = 0;
         effect = 0;
 
-        _PaintManager.ClearPaint();
-        _Palette.GetComponent<PaletteManager>().ClearPalette();
+        _PaletteManager.ClearPaint();
+        _PaletteManager.ClearPalette();
         _CanvasUI.GetComponent<CanvasScript>().ClearSprite();
 
         // 스킬 리셋
@@ -458,8 +457,8 @@ public class GameManager : MonoBehaviour
 
         // 테마 스킬_테마 스킬 사용 시
         if (_ThemeManager.onThemeSkill == true) {
-            _ThemeManager.usedPaintNum = _PaintManager.order;
-            _ThemeManager.colorType_FirstSub = _PaintManager.paints[1];
+            _ThemeManager.usedPaintNum = _PaletteManager.order;
+            _ThemeManager.colorType_FirstSub = _PaletteManager.paints[1];
             _ThemeManager.useThemeSkill = true;
         }
 
@@ -538,7 +537,7 @@ public class GameManager : MonoBehaviour
         _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Victory);
 
         // 걸작 스택 리셋
-        _PaintManager.stack = 0;
+        _PaletteManager.stack = 0;
 
         Debug.Log("전투 종료");
         state = State.rest;
@@ -776,7 +775,7 @@ public class StageManager
 // 페인트 정보 저장
 public class PaintManager
 {
-    // 최대 페인트 수
+    /* 최대 페인트 수
     public int limit = 2;
     public int order = 0;
     public int[] paints = new int[5];
@@ -788,9 +787,9 @@ public class PaintManager
         paints[2] = 0;
         paints[3] = 0;
         paints[4] = 0;
-    }
+    }*/
 
-    public void AddPaint(int num) {
+    /*public void AddPaint(int num) {
         paints[order] = num;
         order++;
     }
@@ -802,5 +801,5 @@ public class PaintManager
             order = 0;
             paints[i] = 0;
         }
-    }
+    }*/
 }
