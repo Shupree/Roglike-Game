@@ -7,7 +7,7 @@ public class MasterPieceData : ScriptableObject
 {
     // 걸작 스크립터블 오브젝트
     public enum MP_Class { White, Red, Blue, Yellow, Orange, Purple, Green, Black, Hidden }
-    public enum AttackType { Single, Multiple, Splash }
+    public enum AttackType { Single, Bounce, Splash }
     public enum ConditionType { None, Cost, Health, Paint, Gold }
     public enum PaintType { R, B, Y, W }
 

@@ -26,6 +26,7 @@ public class MPManager : MonoBehaviour
 
     private PaletteManager _PaletteManager;
 
+    private int finalDamage;
     private int damage;
     private int shield;
     private int heal;
@@ -152,29 +153,18 @@ public class MPManager : MonoBehaviour
         switch (use_MPData.attackType) {
             // 단타 공격
             case MasterPieceData.AttackType.Single:
-                _targetInfo.health -= 
-                    damage + _targetInfo.debuffArr[0];
-
-                // 적 디버프
-                if (use_MPData.effectType > 0) {
-                    if (use_MPData.effectType < 20) {
-                        _targetInfo.debuffArr[use_MPData.effectType - 1] += effect;
-                    }
-                    else if (use_MPData.effectType == 51) {     // 물감 강탈 효과
-                        int n = UnityEngine.Random.Range(0, 3);
-                        _PaintScripts[n].currentNum += 1;
-                        if (_PaintScripts[n].currentNum > _PaintScripts[n].maxNum) {
-                            _PaintScripts[n].currentNum = _PaintScripts[n].maxNum;
+                for (int i = 0; i < use_MPData.count; i++) {    // 타수만큼 반복
+                    finalDamage = damage + _targetInfo.debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                    if (_targetInfo.shield > 0) {                           // 적 실드 존재 시
+                        if (_targetInfo.shield > finalDamage) {
+                            _targetInfo.shield -= finalDamage;
+                            finalDamage = 0;
+                        }
+                        else {
+                            finalDamage -= _targetInfo.shield;
                         }
                     }
-                }
-                Debug.Log("적은 "+damage+"의 데미지를 입었다.");
-                break;
-            // 다단 히트
-            case MasterPieceData.AttackType.Multiple:
-                for (int i = 0; i < use_MPData.count; i++) {    // 타수 증가
-                    _targetInfo.health -= 
-                        damage + _targetInfo.debuffArr[0];
+                    _targetInfo.health -= finalDamage;      // 데미지 누적
 
                     // 적 디버프
                     if (use_MPData.effectType > 0) {
@@ -189,19 +179,29 @@ public class MPManager : MonoBehaviour
                             }
                         }
                     }
-                    Debug.Log("적은 "+damage+"의 데미지를 입었다.");
+                    Debug.Log(_targetInfo.data.enemyName+"은(는) "+finalDamage+"의 데미지를 입었다.");
                 }
                 break;
-            // 전체 공격
-            case MasterPieceData.AttackType.Splash:
-                for(int i = 0; i < GameManager.instance.EnemyList.Count; i++) {
-                    _EnemyInfoList[i].health -=
-                        damage + _EnemyInfoList[i].debuffArr[0];
+            // 다단 히트
+            case MasterPieceData.AttackType.Bounce:
+                for (int i = 0; i < use_MPData.count; i++) {    // 타수만큼 반복
+                    int randomNum = UnityEngine.Random.Range(0, GameManager.instance.EnemyList.Count);      // 랜덤 적 선정
+                    finalDamage = damage + _EnemyInfoList[randomNum].debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                    if (_EnemyInfoList[randomNum].shield > 0) {             // 적 실드 존재 시
+                        if (_EnemyInfoList[randomNum].shield > finalDamage) {
+                            _EnemyInfoList[randomNum].shield -= finalDamage;
+                            finalDamage = 0;
+                        }
+                        else {
+                            finalDamage -= _EnemyInfoList[randomNum].shield;
+                        }
+                    }
+                    _EnemyInfoList[randomNum].health -= finalDamage;        // 데미지 누적
 
                     // 적 디버프
                     if (use_MPData.effectType > 0) {
                         if (use_MPData.effectType < 20) {
-                            _EnemyInfoList[i].debuffArr[use_MPData.effectType - 1] += effect;
+                            _EnemyInfoList[randomNum].debuffArr[use_MPData.effectType - 1] += effect;
                         }
                         else if (use_MPData.effectType == 51) {     // 물감 강탈 효과
                             int n = UnityEngine.Random.Range(0, 3);
@@ -211,8 +211,41 @@ public class MPManager : MonoBehaviour
                             }
                         }
                     }
+                    Debug.Log(_EnemyInfoList[randomNum].data.enemyName+"은(는) "+finalDamage+"의 데미지를 입었다.");
                 }
-                Debug.Log("적들은 "+damage+"의 데미지를 입었다.");
+                break;
+            // 전체 공격
+            case MasterPieceData.AttackType.Splash:
+                for (int a = 0; a < use_MPData.count; a++) {    // 타수만큼 반복
+                    for(int i = 0; i < GameManager.instance.EnemyList.Count; i++) {
+                        finalDamage = damage + _EnemyInfoList[i].debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                        if (_EnemyInfoList[i].shield > 0) {             // 적 실드 존재 시
+                            if (_EnemyInfoList[i].shield > finalDamage) {
+                                _EnemyInfoList[i].shield -= finalDamage;
+                                finalDamage = 0;
+                            }
+                            else {
+                                finalDamage -= _EnemyInfoList[i].shield;
+                            }
+                        }
+                        _EnemyInfoList[i].health -= finalDamage;        // 데미지 누적
+
+                        // 적 디버프
+                        if (use_MPData.effectType > 0) {
+                            if (use_MPData.effectType < 20) {
+                                _EnemyInfoList[i].debuffArr[use_MPData.effectType - 1] += effect;
+                            }
+                            else if (use_MPData.effectType == 51) {     // 물감 강탈 효과
+                                int n = UnityEngine.Random.Range(0, 3);
+                                _PaintScripts[n].currentNum += 1;
+                                if (_PaintScripts[n].currentNum > _PaintScripts[n].maxNum) {
+                                    _PaintScripts[n].currentNum = _PaintScripts[n].maxNum;
+                                }
+                            }
+                        }
+                        Debug.Log(_EnemyInfoList[i].data.enemyName+"은(는) "+finalDamage+"의 데미지를 입었다.");
+                    }
+                }
                 break;
         }
 
