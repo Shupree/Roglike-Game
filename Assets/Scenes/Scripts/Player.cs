@@ -38,13 +38,29 @@ public class Player : MonoBehaviour
         buffArr[2] = 0;     // 흡수
         buffArr[3] = 0;     // 가시
 
+        // 음수가 되는 경우 방지
         for (int i = 0; i < debuffArr.Length; i++) {
             if (debuffArr[i] < 0) {
                 debuffArr[i] = 0;
             }
-            if (i < buffArr.Length && buffArr[i] < 0) {
+        }
+        for (int i = 0; i < buffArr.Length; i++) {
+            if (buffArr[i] < 0) {
                 buffArr[i] = 0;
             }
+        }
+    }
+
+    // 전투 종료 후 상태이상 초기화
+    public void ClearStatusEffect()
+    {
+        // 디버프 초기화
+        for (int i = 0; i < debuffArr.Length; i++) {
+            debuffArr[i] = 0;
+        }
+        // 버프 초기화
+        for (int i = 0; i < buffArr.Length; i++) {
+            buffArr[i] = 0;
         }
     }
 

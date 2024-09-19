@@ -22,7 +22,7 @@ MonoBehaviour:
   cost: 3
   attackType: 2
   basicDamage: 0
-  count: 0
+  count: 1
   baseShield: 0
   baseHeal: 0
   effectType: 4

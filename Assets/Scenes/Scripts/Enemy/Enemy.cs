@@ -154,14 +154,16 @@ public class Enemy : MonoBehaviour
     // 매턴마다 버프/디버프 감소
     public void DecStatusEffect()
     {
-        debuffArr[0] /= 2;
-        debuffArr[6] -= 1;
-        debuffArr[7] -= 1;
-        debuffArr[8] -= 1;
-        buffArr[0] -= 1;
-        buffArr[1] = 0;
-        buffArr[2] = 0;
-        buffArr[3] = 0;
+        debuffArr[0] /= 2;  // 화상
+        debuffArr[4] = 0;   // 빙결
+        debuffArr[5] = 0;   // 기절
+        debuffArr[6] -= 1;  // 공포
+        debuffArr[7] -= 1;  // 위압
+        debuffArr[8] -= 1;  // 부식
+        buffArr[0] -= 1;    // 철갑
+        buffArr[1] = 0;     // 집중
+        buffArr[2] = 0;     // 흡수
+        buffArr[3] = 0;     // 가시
 
         for (int i = 0; i < debuffArr.Length; i++) {
             // 혹시 모를 음수 차단

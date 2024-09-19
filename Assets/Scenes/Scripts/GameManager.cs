@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
     private int effect;
     private int heal;
 
-    private int trophy;     // 승리 시 전리품(골드)
+    private int loot_Gold;     // 승리 시 전리품_골드
 
     // 초기화
     void Awake()
@@ -257,7 +257,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < EnemyList.Count; i++)
         {
             EnemyInfoList.Add(EnemyList[i].GetComponent<Enemy>());
-            trophy += EnemyInfoList[i].data.gold;
+            loot_Gold += EnemyInfoList[i].data.gold;
         }
 
         // 유물 : 적 조우 시 효과
@@ -281,12 +281,6 @@ public class GameManager : MonoBehaviour
             _PaintScripts[i].FillPaint();
         }
 
-        // 자동 타겟팅
-        if (!target) {
-            target = EnemyList[0];
-            targetInfo = EnemyInfoList[0];
-        }
-
         // 보호막 초기화
         if (_player.buffArr[0] <= 0) {
             _player.shield = 0;
@@ -300,7 +294,31 @@ public class GameManager : MonoBehaviour
             EnemyInfoList[i].TakeActInfo();
         }
 
-        // 유물 : 턴 시작 시 효과   (유물의 Awake보다 일찍 발동되는 문제 발생)
+        // 플레이어 빙결/기절 효과  (플레이어 턴 스킵)
+        if(_player.debuffArr[4] > 0 || _player.debuffArr[5] > 0)
+        {
+            if (_player.debuffArr[4] > 0) {
+                _player.debuffArr[4] = 0;
+                Debug.Log("빙결!");
+            }
+
+            if (_player.debuffArr[5] > 0) {
+                _player.debuffArr[5] = 0;
+                Debug.Log("기절!");
+            }
+
+            state = State.enemyTurn;
+            StartCoroutine(EnemyTurn());
+            Debug.Log("적의 턴입니다.");
+        }
+
+        // 자동 타겟팅
+        if (!target) {
+            target = EnemyList[0];
+            targetInfo = EnemyInfoList[0];
+        }
+
+        // 유물 : 플레이어의 턴 시작 시 효과   (유물의 Awake보다 일찍 발동되는 문제 발생)
         _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.StartTurn);
 
         // 테마 스킬 _ 턴 시작 시 효과
@@ -573,15 +591,18 @@ public class GameManager : MonoBehaviour
 
     void EndBattle()
     {
-        // 유물 : 승리 시 효과
-        _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Victory);
+        // 플레이어 상태 이상 초기화
+        _player.ClearStatusEffect();
 
         // 걸작 스택 리셋
         _PaletteManager.stack = 0;
 
+        // 유물 : 승리 시 효과
+        _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Victory);
+
         // 전리품(골드) 획득
-        _player.gold += trophy;
-        trophy = 0;
+        _player.gold += loot_Gold;
+        loot_Gold = 0;
 
         Debug.Log("전투 종료");
         state = State.rest;
@@ -608,14 +629,16 @@ public class GameManager : MonoBehaviour
             // 적 중독 효과
             EnemyInfoList[i].Poison();
 
-            // 빙결 상태 확인
-            if (EnemyInfoList[i].debuffArr[4] > 0) {
-                EnemyInfoList[i].debuffArr[4] -= 1;
-                continue;
-            }
-            // 기절 상태 확인
-            else if (EnemyInfoList[i].debuffArr[5] > 0) {
-                EnemyInfoList[i].debuffArr[5] -= 1;
+            // 적 빙결/기절 상태 확인   (적 턴 스킵)
+            if (EnemyInfoList[i].debuffArr[4] > 0 || EnemyInfoList[i].debuffArr[5] > 0) {
+                if (EnemyInfoList[i].debuffArr[4] > 0) {
+                    EnemyInfoList[i].debuffArr[4] = 0;
+                    Debug.Log(EnemyInfoList[i].data.enemyName+" 빙결!");
+                }
+                if (EnemyInfoList[i].debuffArr[5] > 0) {
+                    EnemyInfoList[i].debuffArr[5] = 0;
+                    Debug.Log(EnemyInfoList[i].data.enemyName+" 기절!");
+                }
                 continue;
             }
 
@@ -706,30 +729,7 @@ public class GameManager : MonoBehaviour
                 EnemyInfoList[i].DecStatusEffect();
             }
 
-            // 플레이어 빙결 효과
-            if(_player.debuffArr[4] > 0)
-            {
-                _player.debuffArr[4] -= 1;
-                Debug.Log("빙결!");
-
-                state = State.enemyTurn;
-                StartCoroutine(EnemyTurn());
-                Debug.Log("적의 턴입니다.");
-            }
-            // 플레이어 기절 효과
-            else if (_player.debuffArr[5] > 0)
-            {
-                _player.debuffArr[5] -= 1;
-                Debug.Log("기절!");
-
-                state = State.enemyTurn;
-                StartCoroutine(EnemyTurn());
-                Debug.Log("적의 턴입니다.");
-            }
-            else
-            {
                 NextTurnStart();
-            }
         }
     }
 }
