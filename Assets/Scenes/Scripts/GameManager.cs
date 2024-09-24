@@ -8,6 +8,8 @@ using UnityEngine.UI;
 // 플레이어 사망 시 추가
 // StateUpdate 전부 리스트로 바꿀 것!
 // 버그 픽스!! 턴 종료 시 물감 회복 전에 걸작 스킬 발동이 가능한 버그 발생!!
+// 버그 확인 필요!! 바운스 공격 시 이미 죽은 적에게 날아가는지 확인할 것!!
+
 public class GameManager : MonoBehaviour
 {
     // static을 통해 메모리에 정보를 저장 후 타 스크립트에서 사용 가능.
@@ -24,6 +26,7 @@ public class GameManager : MonoBehaviour
     public ThemeManager _ThemeManager;
     public PaletteManager _PaletteManager;
     public StageManager _StageManager = new StageManager();
+    public LootUI _LootManager;
     public Player _player;
 
     public enum State
@@ -58,7 +61,7 @@ public class GameManager : MonoBehaviour
     private int effect;
     private int heal;
 
-    private int loot_Gold;     // 승리 시 전리품_골드
+    private int[] loot = new int[4];     // 1.골드 수, 2.스킬 선택지 수, 3.장신구ID, 4.걸작ID
 
     // 초기화
     void Awake()
@@ -66,10 +69,12 @@ public class GameManager : MonoBehaviour
         instance = this;
         _SpawnManager = gameObject.GetComponent<SpawnManager>();
 
-        // 버튼 비활성화
+        // UI 비활성화
         _NextStageUI[0].SetActive(false);
         _NextStageUI[1].SetActive(false);
         _NextStageUI[2].SetActive(false);
+
+        _LootManager.DeactivateAllUI();
 
         // 테스트 맵
         //map = 0;
@@ -257,8 +262,12 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < EnemyList.Count; i++)
         {
             EnemyInfoList.Add(EnemyList[i].GetComponent<Enemy>());
-            loot_Gold += EnemyInfoList[i].data.gold;
+            loot[0] += EnemyInfoList[i].data.gold;      // 전리품_골드 세팅
+            //loot[2]
         }
+
+        // 전리품_스킬 세팅
+        loot[1] = 3;
 
         // 유물 : 적 조우 시 효과
         _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Encounter);
@@ -600,9 +609,30 @@ public class GameManager : MonoBehaviour
         // 유물 : 승리 시 효과
         _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Victory);
 
-        // 전리품(골드) 획득
-        _player.gold += loot_Gold;
-        loot_Gold = 0;
+        // 전리품_골드 획득
+        _LootManager.gameObject.SetActive(true);
+        if (loot[0] > 0) {
+            _LootManager.SetLootUI(1,loot[0]);
+        }
+        loot[0] = 0;
+
+        // 전리품_스킬 획득
+        if (loot[1] > 0) {
+            _LootManager.SetLootUI(2,loot[1]);
+        }
+        loot[1] = 0;
+
+        // 전리품_장신구 획득
+        if (loot[2] > 0) {
+            _LootManager.SetLootUI(3,loot[2]);
+        }
+        loot[2] = 0;
+
+        /* 전리품_걸작 획득
+        if (loot[3] > 0) {
+            _LootManager.SetLootUI(4,loot[3]);
+        }
+        loot[3] = 0;*/
 
         Debug.Log("전투 종료");
         state = State.rest;

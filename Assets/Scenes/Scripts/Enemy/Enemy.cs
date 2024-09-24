@@ -155,8 +155,6 @@ public class Enemy : MonoBehaviour
     public void DecStatusEffect()
     {
         debuffArr[0] /= 2;  // 화상
-        debuffArr[4] = 0;   // 빙결
-        debuffArr[5] = 0;   // 기절
         debuffArr[6] -= 1;  // 공포
         debuffArr[7] -= 1;  // 위압
         debuffArr[8] -= 1;  // 부식
