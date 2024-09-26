@@ -40,6 +40,18 @@ public class ArtifactManager : MonoBehaviour
         slotImgArr[0].sprite = have_ArtifactData[0].sprite;
     }
 
+    public void AddArtifact(int artifactId) 
+    {   
+        // 아티팩트가 최대(6개) 개수 이하일 때
+        if (have_ArtifactData.Count <= 6) {
+            have_ArtifactData.Add(all_ArtifactData[artifactId]);
+        }
+        // 아티팩트가 최대(6개) 개수를 넘었을 때
+        else {
+            // 아티팩트 교환 UI 출력해야 함.
+        }
+    }
+
     // Data.WhenToTrigger에 따른 함수 작동
     public void ArtifactFunction(ArtifactData.TriggerSituation triggerName)
     {

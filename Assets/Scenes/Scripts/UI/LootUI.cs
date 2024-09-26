@@ -8,8 +8,10 @@ using UnityEngine.UI;
 // 전투 승리 보상 버튼UI
 public class LootUI : MonoBehaviour
 {
-    private GameObject[] UIArr = new GameObject[3];
-    public Sprite[] SpriteArr;
+    private GameObject[] UIArr = new GameObject[3];     // 전리품 UI 버튼
+    private GameObject loot_SkillUI;         // 전리품_스킬 선택 시 열리는 선택지 UI
+    private GameObject[] loot_SkillUIArr = new GameObject[3];       // 전리품_스킬 선택지 UI 버튼
+    public Sprite[] spriteArr;
     private int[] lootType = new int[3];    // 버튼별 보상 종류 (0:Null, 1:골드, 2:스킬, 3:장신구, 4:걸작)
     private int[] lootDetail = new int[3];  // 버튼별 보상 상세정보
     private int order;      // 보상 개수
@@ -21,6 +23,11 @@ public class LootUI : MonoBehaviour
         {
             UIArr[i] = transform.GetChild(1).GetChild(i).gameObject;
             UIArr[i].SetActive(false);
+        }
+        loot_SkillUI = transform.GetChild(2).gameObject;
+        for (int i = 0; i < loot_SkillUIArr.Length; i++)
+        {
+            loot_SkillUIArr[i] = loot_SkillUI.transform.GetChild(0).GetChild(i).gameObject;
         }
 
         // 초기화
@@ -48,13 +55,13 @@ public class LootUI : MonoBehaviour
             case 1:     // 골드 보상
                 lootType[order] = 1;
                 lootDetail[order] = detail;
-                UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = SpriteArr[0];
+                UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = spriteArr[0];
                 UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = detail.ToString() + " Golds";
                 break;
             case 2:     // 일반스킬 보상
                 lootType[order] = 2;
                 lootDetail[order] = detail;
-                UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = SpriteArr[1];
+                UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = spriteArr[1];
                 UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Skills";
                 break;
             case 3:     // 장신구 보상
@@ -81,10 +88,14 @@ public class LootUI : MonoBehaviour
                 order -= 1;
                 break;
             case 2:     // 보상: 스킬
+                
                 UIArr[btnOrder - 1].SetActive(false);
                 order -= 1;
                 break;
             case 3:     // 보상: 장신구
+                GameManager.instance._ArtifactManager.AddArtifact(lootDetail[btnOrder - 1]);
+                UIArr[btnOrder - 1].SetActive(false);
+                order -= 1;
                 break;
         }
 
