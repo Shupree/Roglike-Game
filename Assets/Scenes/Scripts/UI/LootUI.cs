@@ -24,7 +24,8 @@ public class LootUI : MonoBehaviour
             UIArr[i] = transform.GetChild(1).GetChild(i).gameObject;
             UIArr[i].SetActive(false);
         }
-        loot_SkillUI = transform.GetChild(2).gameObject;
+        loot_SkillUI = transform.GetChild(3).gameObject;
+        loot_SkillUI.SetActive(false);
         for (int i = 0; i < loot_SkillUIArr.Length; i++)
         {
             loot_SkillUIArr[i] = loot_SkillUI.transform.GetChild(0).GetChild(i).gameObject;
@@ -88,7 +89,28 @@ public class LootUI : MonoBehaviour
                 order -= 1;
                 break;
             case 2:     // 보상: 스킬
-                
+                // 골드 보상을 먼저 받는 경우 출력 안되는 버그 발생!
+                loot_SkillUI.SetActive(true);
+
+                List<int> randomNumList = new List<int>();
+
+                int currentNum = UnityEngine.Random.Range(1, 5);    // 랜덤 색상 1개 추첨
+                randomNumList.Add(currentNum);
+                for (int i = 0; i < 2; i++)
+                {
+                    if (randomNumList.Contains(currentNum)) {
+                        currentNum = UnityEngine.Random.Range(1, 5);    // 중독제외 랜덤 색상 2회 추가 추첨
+                    }
+                    else {
+                        randomNumList.Add(currentNum);
+                        i++;
+                    }
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    //GameManager.instance._SkillManager.PickRandomSkill(randomNumList[i]);
+                    // 여기에 PickRandomSkill() return받아서 UI업데이트
+                }
                 UIArr[btnOrder - 1].SetActive(false);
                 order -= 1;
                 break;
@@ -102,5 +124,10 @@ public class LootUI : MonoBehaviour
         if (order <= 0) {   // 모든 보상 획득 시
             DeactivateAllUI();      // 초기화
         }
+    }
+
+    void ClickLoot_SkillBtn()
+    {
+
     }
 }

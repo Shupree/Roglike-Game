@@ -4332,9 +4332,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteArr:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: -1997803578, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: 934571490, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: -155058199, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
 --- !u!1 &756236259
 GameObject:
   m_ObjectHideFlags: 0
@@ -6146,16 +6146,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noneData: {fileID: 11400000, guid: 4c759db75ead19b4b9f7b79a129141da, type: 2}
-  all_SkillData:
+  red_SkillData:
   - {fileID: 11400000, guid: 102fb75f053fc8c4aabd2f64d9168dfd, type: 2}
   - {fileID: 11400000, guid: b86b138b1e8a0564d92ea33a63f06553, type: 2}
+  - {fileID: 11400000, guid: b86f6386c0146d542bb103b8ba604dfa, type: 2}
+  blue_SkillData:
+  - {fileID: 11400000, guid: 102fb75f053fc8c4aabd2f64d9168dfd, type: 2}
   - {fileID: 11400000, guid: 247da9a4503f6a54f9f3e01173e54183, type: 2}
-  - {fileID: 11400000, guid: 54d1341587082cf4c8f74841b9c6a519, type: 2}
-  - {fileID: 11400000, guid: 5c264cf254fddf1429081e4b87a4cefa, type: 2}
   - {fileID: 11400000, guid: 1c0e4bd84b4969440b4cc6b631100a65, type: 2}
   - {fileID: 11400000, guid: 511e26204cc05134bac7e1b1ed25fbf8, type: 2}
-  - {fileID: 11400000, guid: b86f6386c0146d542bb103b8ba604dfa, type: 2}
+  yellow_SkillData:
+  - {fileID: 11400000, guid: 102fb75f053fc8c4aabd2f64d9168dfd, type: 2}
   - {fileID: 11400000, guid: 74dd1558a342c354db3fb50f9dd619bb, type: 2}
+  - {fileID: 11400000, guid: 54d1341587082cf4c8f74841b9c6a519, type: 2}
+  white_SkillData:
+  - {fileID: 11400000, guid: 102fb75f053fc8c4aabd2f64d9168dfd, type: 2}
+  - {fileID: 11400000, guid: 5c264cf254fddf1429081e4b87a4cefa, type: 2}
   - {fileID: 11400000, guid: 2ab1be290e645504fb88576f89132401, type: 2}
   use_SkillData:
   - {fileID: 0}
