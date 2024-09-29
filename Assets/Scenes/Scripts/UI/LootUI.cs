@@ -11,10 +11,12 @@ public class LootUI : MonoBehaviour
     private GameObject[] UIArr = new GameObject[3];     // 전리품 UI 버튼
     private GameObject loot_SkillUI;         // 전리품_스킬 선택 시 열리는 선택지 UI
     private GameObject[] loot_SkillUIArr = new GameObject[3];       // 전리품_스킬 선택지 UI 버튼
-    public Sprite[] spriteArr;
+    public Sprite[] spriteArr;              // 전리품별 아이콘 스프라이트Arr
     private int[] lootType = new int[3];    // 버튼별 보상 종류 (0:Null, 1:골드, 2:스킬, 3:장신구, 4:걸작)
     private int[] lootDetail = new int[3];  // 버튼별 보상 상세정보
-    private int order;      // 보상 개수
+    private int order;      // 전리품 수
+
+    private List<SkillData> loot_SkillDataList = new List<SkillData>();
 
     void Awake()
     {
@@ -24,11 +26,11 @@ public class LootUI : MonoBehaviour
             UIArr[i] = transform.GetChild(1).GetChild(i).gameObject;
             UIArr[i].SetActive(false);
         }
-        loot_SkillUI = transform.GetChild(3).gameObject;
-        loot_SkillUI.SetActive(false);
+        loot_SkillUI = transform.GetChild(4).gameObject;
         for (int i = 0; i < loot_SkillUIArr.Length; i++)
         {
             loot_SkillUIArr[i] = loot_SkillUI.transform.GetChild(0).GetChild(i).gameObject;
+            loot_SkillUIArr[i].SetActive(false);
         }
 
         // 초기화
@@ -37,11 +39,19 @@ public class LootUI : MonoBehaviour
             lootType[i] = 0;
             lootDetail[i] = 0;
         }
+        loot_SkillDataList = new List<SkillData>();
+        loot_SkillUI.SetActive(false);
     }
 
     // UI 기능 정지 (이미지, 기능 전부)
     public void DeactivateAllUI()
     {
+        // 초기화
+        for (int i = 0; i < lootType.Length; i++)
+        {
+            lootType[i] = 0;
+            lootDetail[i] = 0;
+        }
         gameObject.SetActive(false);
         order = 0;      // 전리품 초기화
     }
@@ -84,19 +94,28 @@ public class LootUI : MonoBehaviour
     {
         switch (lootType[btnOrder - 1]) {
             case 1:     // 보상: 골드
+                // 플레이어의 골드 추가
                 GameManager.instance._player.gold += lootDetail[btnOrder - 1];
+
+                // 해당 전리품 UI Off
                 UIArr[btnOrder - 1].SetActive(false);
                 order -= 1;
+
+                // 만약 전리품이 더 없을 시 자동 진행
+                if (order == 0) {
+                    ClickNextBtn();
+                }
                 break;
             case 2:     // 보상: 스킬
-                // 골드 보상을 먼저 받는 경우 출력 안되는 버그 발생!
+                // 스킬 선택 UI On
                 loot_SkillUI.SetActive(true);
 
+                // 추첨한 숫자 리스트
                 List<int> randomNumList = new List<int>();
 
                 int currentNum = UnityEngine.Random.Range(1, 5);    // 랜덤 색상 1개 추첨
                 randomNumList.Add(currentNum);
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 2;)
                 {
                     if (randomNumList.Contains(currentNum)) {
                         currentNum = UnityEngine.Random.Range(1, 5);    // 중독제외 랜덤 색상 2회 추가 추첨
@@ -106,28 +125,70 @@ public class LootUI : MonoBehaviour
                         i++;
                     }
                 }
+                // 해당 색상의 랜덤 전리품UI 생성
                 for (int i = 0; i < 3; i++)
                 {
-                    //GameManager.instance._SkillManager.PickRandomSkill(randomNumList[i]);
-                    // 여기에 PickRandomSkill() return받아서 UI업데이트
+                    loot_SkillUIArr[i].SetActive(true);
+                    Debug.Log(randomNumList[i]);
+                    loot_SkillDataList.Add(GameManager.instance._SkillManager.PickRandomSkill(randomNumList[i]));
+                    loot_SkillUIArr[i].GetComponent<Image>().sprite = loot_SkillDataList[i].skillIcon;
                 }
+
+                // 해당 전리품UI Off
                 UIArr[btnOrder - 1].SetActive(false);
                 order -= 1;
                 break;
             case 3:     // 보상: 장신구
+                // 장신구 추가
                 GameManager.instance._ArtifactManager.AddArtifact(lootDetail[btnOrder - 1]);
+
+                // 해당 전리품UI Off
                 UIArr[btnOrder - 1].SetActive(false);
                 order -= 1;
-                break;
-        }
 
-        if (order <= 0) {   // 모든 보상 획득 시
-            DeactivateAllUI();      // 초기화
+                // 만약 전리품이 더 없을 시 자동 진행
+                if (order == 0) {
+                    ClickNextBtn();
+                }
+                break;
         }
     }
 
-    void ClickLoot_SkillBtn()
+    // 전리품UI Off + 다음 선택지UI ON
+    public void ClickNextBtn()
     {
+        DeactivateAllUI();
+        GameManager.instance.SetNextStageUI();
+    }
 
+    public void ClickLoot_SkillBtn(int btnOrder)
+    {
+        // 버튼에 따른 스킬 지급
+        switch (btnOrder) {
+            case 1:
+                GameManager.instance._SkillManager.ConvertSkill(loot_SkillDataList[0]);
+                break;
+            case 2:
+                GameManager.instance._SkillManager.ConvertSkill(loot_SkillDataList[1]);
+                break;
+            case 3:
+                GameManager.instance._SkillManager.ConvertSkill(loot_SkillDataList[2]);
+                break;
+        }
+
+        // 초기화
+        loot_SkillDataList = new List<SkillData>();
+
+        // UI 비활성화
+        for (int i = 0; i < loot_SkillUIArr.Length; i++)
+        {
+            loot_SkillUIArr[i].SetActive(false);
+        }
+        loot_SkillUI.SetActive(false);
+
+        // 만약 전리품이 더 없을 시 자동 진행
+        if (order == 0) {
+            ClickNextBtn();
+        }
     }
 }

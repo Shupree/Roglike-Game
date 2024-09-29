@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -182,10 +183,24 @@ public class MPManager : MonoBehaviour
                     Debug.Log(_targetInfo.data.enemyName+"은(는) "+finalDamage+"의 데미지를 입었다.");
                 }
                 break;
-            // 다단 히트
+            // 바운스
             case MasterPieceData.AttackType.Bounce:
+                List<Enemy> attackedEnemyList = _EnemyInfoList.ToList();         // 적 생존 확인용 간이 리스트
                 for (int i = 0; i < use_MPData.count; i++) {    // 타수만큼 반복
                     int randomNum = UnityEngine.Random.Range(0, GameManager.instance.EnemyList.Count);      // 랜덤 적 선정
+                    
+                    // Hp없는 적에게 공격이 튀는 것을 방지
+                    if (attackedEnemyList[randomNum].health < 0) {
+                        attackedEnemyList.RemoveAt(randomNum);
+                        i--;
+                        if (attackedEnemyList.Count <= 0) {
+                            break;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+
                     finalDamage = damage + _EnemyInfoList[randomNum].debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
                     if (_EnemyInfoList[randomNum].shield > 0) {             // 적 실드 존재 시
                         if (_EnemyInfoList[randomNum].shield > finalDamage) {

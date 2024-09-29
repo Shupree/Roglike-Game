@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +9,8 @@ using UnityEngine.UI;
 // 플레이어 사망 시 추가
 // StateUpdate 전부 리스트로 바꿀 것!
 // 버그 픽스!! 턴 종료 시 물감 회복 전에 걸작 스킬 발동이 가능한 버그 발생!!
-// 버그 확인 필요!! 바운스 공격 시 이미 죽은 적에게 날아가는지 확인할 것!!
+// 버그 픽스!! 장신구로 처치 시 턴 안넘어감!!
+// => 따로 적 소탕 시 함수를 만들고 MP사용 시, 장신구사용 시, 특정 시점에서 발동시키면 될 듯!
 
 public class GameManager : MonoBehaviour
 {
@@ -295,12 +297,32 @@ public class GameManager : MonoBehaviour
             _player.shield = 0;
         }
 
+        // 자동 타겟팅
+        if (!target) {
+            target = EnemyList[0];
+            targetInfo = EnemyInfoList[0];
+        }
+
+        // 유물 : 플레이어의 턴 시작 시 효과   (유물의 Awake보다 일찍 발동되는 문제 발생)
+        _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.StartTurn);
+
+        // 테마 스킬 _ 턴 시작 시 효과
+        _ThemeManager.onTurnEffect = true;
+
         // 플레이어 중독 효과 연산
         _player.Poison();
 
         // 적 행동 확정
         for(int i = 0; i < EnemyList.Count; i++) {
             EnemyInfoList[i].TakeActInfo();
+        }
+
+        // 승리 시
+        if(EnemyList.Count == 0)
+        {
+            isLive = false;
+            state = State.win;
+            EndBattle();
         }
 
         // 플레이어 빙결/기절 효과  (플레이어 턴 스킵)
@@ -320,27 +342,17 @@ public class GameManager : MonoBehaviour
             StartCoroutine(EnemyTurn());
             Debug.Log("적의 턴입니다.");
         }
+        // 플레이어의 턴 진행
+        else {
+            // 물감 기능 On
+            for (int i = 0; i < 4; i++)
+            {
+                _PaintScripts[i].canUsePaint = true;
+            }
 
-        // 자동 타겟팅
-        if (!target) {
-            target = EnemyList[0];
-            targetInfo = EnemyInfoList[0];
+            state = State.playerTurn;
+            Debug.Log("플레이어의 턴입니다.");
         }
-
-        // 유물 : 플레이어의 턴 시작 시 효과   (유물의 Awake보다 일찍 발동되는 문제 발생)
-        _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.StartTurn);
-
-        // 테마 스킬 _ 턴 시작 시 효과
-        _ThemeManager.onTurnEffect = true;
-
-        // 물감 기능 On
-        for (int i = 0; i < 4; i++)
-        {
-            _PaintScripts[i].canUsePaint = true;
-        }
-
-        state = State.playerTurn;
-        Debug.Log("플레이어의 턴입니다.");
     }
 
     // 공격 버튼
@@ -443,8 +455,22 @@ public class GameManager : MonoBehaviour
                 break;
             // 바운스
             case SkillData.AttackType.Bounce:
+                List<Enemy> attackedEnemyList = EnemyInfoList.ToList();          // 적 생존 확인용 간이 리스트
                 for (int i = 0; i < usingSkill.baseCount; i++) {    // 타수만큼 반복
-                    int randomNum = UnityEngine.Random.Range(0, EnemyList.Count);
+                    int randomNum = UnityEngine.Random.Range(0, attackedEnemyList.Count);
+
+                    // Hp없는 적에게 공격이 튀는 것을 방지
+                    if (attackedEnemyList[randomNum].health < 0) {
+                        attackedEnemyList.RemoveAt(randomNum);
+                        i--;
+                        if (attackedEnemyList.Count <= 0) {
+                            break;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                    
                     if (usingSkill.baseDamage > 0) {                                    // 기본 데미지가 0일 시 스킵
                         finalDamage = damage + EnemyInfoList[randomNum].debuffArr[0];   // 최종 데미지 = 기본 데미지 + 적 화상 수치
                         if (EnemyInfoList[randomNum].shield > 0) {      // 실드 존재 시
@@ -609,8 +635,19 @@ public class GameManager : MonoBehaviour
         // 유물 : 승리 시 효과
         _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Victory);
 
-        // 전리품_골드 획득
+        /* 전리품_걸작 획득
+        if (loot[3] > 0) {
+            _LootManager.SetLootUI(4,loot[3]);
+        }
+        loot[3] = 0;*/
+
+        Debug.Log("전투 종료");
+        state = State.rest;
+
+        // 전리품UI On
         _LootManager.gameObject.SetActive(true);
+
+        // 전리품_골드 획득
         if (loot[0] > 0) {
             _LootManager.SetLootUI(1,loot[0]);
         }
@@ -627,17 +664,6 @@ public class GameManager : MonoBehaviour
             _LootManager.SetLootUI(3,loot[2]);
         }
         loot[2] = 0;
-
-        /* 전리품_걸작 획득
-        if (loot[3] > 0) {
-            _LootManager.SetLootUI(4,loot[3]);
-        }
-        loot[3] = 0;*/
-
-        Debug.Log("전투 종료");
-        state = State.rest;
-
-        SetNextStageUI();
     }
 
     IEnumerator EnemyTurn()
