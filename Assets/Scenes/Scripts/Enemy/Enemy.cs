@@ -71,6 +71,10 @@ public class Enemy : MonoBehaviour
             //GameManager.instance.EnemyNum--;
             //isLive = false;
             //gameObject.SetActive(false);
+
+            // 플레이어의 승리 확인
+            GameManager.instance.CheckVictory();
+
             Destroy(gameObject);
         }
     }

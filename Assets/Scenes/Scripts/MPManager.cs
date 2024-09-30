@@ -37,6 +37,8 @@ public class MPManager : MonoBehaviour
 
     private bool isOpend;
 
+    public bool canUseMP;
+
     void Awake()
     {
         _PaletteManager = GameManager.instance._PaletteManager;
@@ -78,8 +80,13 @@ public class MPManager : MonoBehaviour
 
     public void MPFunction()
     {   
+        // 걸작 사용 불가능한지 판별
+        if (canUseMP != true) {
+            return;
+        }
+
         // 스택 수 부족 시 return
-        if(_PaletteManager.stack < use_MPData.cost) {
+        if (_PaletteManager.stack < use_MPData.cost) {
             return;
         }
         
@@ -152,20 +159,22 @@ public class MPManager : MonoBehaviour
 
         // 공격 type에 따른 분류
         switch (use_MPData.attackType) {
-            // 단타 공격
+            // 단일 공격
             case MasterPieceData.AttackType.Single:
                 for (int i = 0; i < use_MPData.count; i++) {    // 타수만큼 반복
-                    finalDamage = damage + _targetInfo.debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
-                    if (_targetInfo.shield > 0) {                           // 적 실드 존재 시
-                        if (_targetInfo.shield > finalDamage) {
-                            _targetInfo.shield -= finalDamage;
-                            finalDamage = 0;
+                    if (damage > 0) {
+                        finalDamage = damage + _targetInfo.debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                        if (_targetInfo.shield > 0) {                           // 적 실드 존재 시
+                            if (_targetInfo.shield > finalDamage) {
+                                _targetInfo.shield -= finalDamage;
+                                finalDamage = 0;
+                            }
+                            else {
+                                finalDamage -= _targetInfo.shield;
+                            }
                         }
-                        else {
-                            finalDamage -= _targetInfo.shield;
-                        }
+                        _targetInfo.health -= finalDamage;      // 데미지 누적
                     }
-                    _targetInfo.health -= finalDamage;      // 데미지 누적
 
                     // 적 디버프
                     if (use_MPData.effectType > 0) {
@@ -201,17 +210,19 @@ public class MPManager : MonoBehaviour
                         }
                     }
 
-                    finalDamage = damage + _EnemyInfoList[randomNum].debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
-                    if (_EnemyInfoList[randomNum].shield > 0) {             // 적 실드 존재 시
-                        if (_EnemyInfoList[randomNum].shield > finalDamage) {
-                            _EnemyInfoList[randomNum].shield -= finalDamage;
-                            finalDamage = 0;
+                    if (damage > 0) {
+                        finalDamage = damage + _EnemyInfoList[randomNum].debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                        if (_EnemyInfoList[randomNum].shield > 0) {             // 적 실드 존재 시
+                            if (_EnemyInfoList[randomNum].shield > finalDamage) {
+                                _EnemyInfoList[randomNum].shield -= finalDamage;
+                                finalDamage = 0;
+                            }
+                            else {
+                                finalDamage -= _EnemyInfoList[randomNum].shield;
+                            }
                         }
-                        else {
-                            finalDamage -= _EnemyInfoList[randomNum].shield;
-                        }
+                        _EnemyInfoList[randomNum].health -= finalDamage;        // 데미지 누적
                     }
-                    _EnemyInfoList[randomNum].health -= finalDamage;        // 데미지 누적
 
                     // 적 디버프
                     if (use_MPData.effectType > 0) {
@@ -233,17 +244,19 @@ public class MPManager : MonoBehaviour
             case MasterPieceData.AttackType.Splash:
                 for (int a = 0; a < use_MPData.count; a++) {    // 타수만큼 반복
                     for(int i = 0; i < GameManager.instance.EnemyList.Count; i++) {
-                        finalDamage = damage + _EnemyInfoList[i].debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
-                        if (_EnemyInfoList[i].shield > 0) {             // 적 실드 존재 시
-                            if (_EnemyInfoList[i].shield > finalDamage) {
-                                _EnemyInfoList[i].shield -= finalDamage;
-                                finalDamage = 0;
+                        if (damage > 0) {
+                            finalDamage = damage + _EnemyInfoList[i].debuffArr[0];        // 최종 데미지 = 기본 데미지 + 적 화상 수치
+                            if (_EnemyInfoList[i].shield > 0) {             // 적 실드 존재 시
+                                if (_EnemyInfoList[i].shield > finalDamage) {
+                                    _EnemyInfoList[i].shield -= finalDamage;
+                                    finalDamage = 0;
+                                }
+                                else {
+                                    finalDamage -= _EnemyInfoList[i].shield;
+                                }
                             }
-                            else {
-                                finalDamage -= _EnemyInfoList[i].shield;
-                            }
+                            _EnemyInfoList[i].health -= finalDamage;        // 데미지 누적
                         }
-                        _EnemyInfoList[i].health -= finalDamage;        // 데미지 누적
 
                         // 적 디버프
                         if (use_MPData.effectType > 0) {
@@ -318,7 +331,8 @@ public class MPManager : MonoBehaviour
             _targetInfo = _EnemyInfoList[0];
         }
 
-        GameManager.instance.CheckVictory();
+        // 플레이어의 승리 확인
+        // GameManager.instance.CheckVictory();
 
         // 유물 : 걸작 사용 시 효과
         GameManager.instance._ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.UseMP);

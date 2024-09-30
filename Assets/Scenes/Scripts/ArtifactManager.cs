@@ -285,7 +285,8 @@ public class ArtifactManager : MonoBehaviour
                 _targetInfo = _EnemyInfoList[0];
             }
 
-            GameManager.instance.CheckVictory();
+            // 플레이어의 승리 확인
+            // GameManager.instance.CheckVictory();
         }
     }
 }

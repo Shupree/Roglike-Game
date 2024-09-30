@@ -8,9 +8,6 @@ using UnityEngine.UI;
 
 // 플레이어 사망 시 추가
 // StateUpdate 전부 리스트로 바꿀 것!
-// 버그 픽스!! 턴 종료 시 물감 회복 전에 걸작 스킬 발동이 가능한 버그 발생!!
-// 버그 픽스!! 장신구로 처치 시 턴 안넘어감!!
-// => 따로 적 소탕 시 함수를 만들고 MP사용 시, 장신구사용 시, 특정 시점에서 발동시키면 될 듯!
 
 public class GameManager : MonoBehaviour
 {
@@ -244,10 +241,10 @@ public class GameManager : MonoBehaviour
         canvasNum = maxCanvasNum;
 
         // 물감 최대치로 보충
-        for (int i = 0; i < 4; i++)
-        {
-            _PaintScripts[i].FillUpPaint();
-        }
+        //for (int i = 0; i < 4; i++)
+        //{
+        //    _PaintScripts[i].FillUpPaint();
+        //}
 
         // 스킬 리셋
         usingSkill = _SkillManager.noneData;
@@ -318,12 +315,7 @@ public class GameManager : MonoBehaviour
         }
 
         // 승리 시
-        if(EnemyList.Count == 0)
-        {
-            isLive = false;
-            state = State.win;
-            EndBattle();
-        }
+        CheckVictory();
 
         // 플레이어 빙결/기절 효과  (플레이어 턴 스킵)
         if(_player.debuffArr[4] > 0 || _player.debuffArr[5] > 0)
@@ -349,6 +341,8 @@ public class GameManager : MonoBehaviour
             {
                 _PaintScripts[i].canUsePaint = true;
             }
+            // 걸작 기능 On
+            _MasterPieceManager.canUseMP = true;
 
             state = State.playerTurn;
             Debug.Log("플레이어의 턴입니다.");
@@ -376,6 +370,8 @@ public class GameManager : MonoBehaviour
             _PaintScripts[i].usedColorNum = 0;      // 반환용 물감 초기화
             _PaintScripts[i].canUsePaint = false;
         }
+        // 걸작 기능 Off
+        _MasterPieceManager.canUseMP = false;
 
         _PaletteManager.stack += _PaletteManager.order;     // 사용한 물감 수만큼 스택 적립
 
@@ -609,6 +605,8 @@ public class GameManager : MonoBehaviour
                 {
                     _PaintScripts[i].canUsePaint = true;
                 }
+                // 걸작 기능 Off
+                _MasterPieceManager.canUseMP = true;
             }
             // 적 살았으면 적에게 턴 넘기기
             else {
@@ -628,6 +626,12 @@ public class GameManager : MonoBehaviour
     {
         // 플레이어 상태 이상 초기화
         _player.ClearStatusEffect();
+
+        // 물감 최대치로 보충
+        for (int i = 0; i < 4; i++)
+        {
+            _PaintScripts[i].FillUpPaint();
+        }
 
         // 걸작 스택 리셋
         _PaletteManager.stack = 0;
@@ -770,9 +774,7 @@ public class GameManager : MonoBehaviour
         // 승리 시
         if(EnemyList.Count == 0)
         {
-            isLive = false;
-            state = State.win;
-            EndBattle();
+            CheckVictory();
         }
         // 적 공격 끝났으면 플레이어에게 턴 넘기기
         else {
@@ -785,7 +787,8 @@ public class GameManager : MonoBehaviour
                 EnemyInfoList[i].DecStatusEffect();
             }
 
-                NextTurnStart();
+            // 다음 턴 시작
+            NextTurnStart();
         }
     }
 }
