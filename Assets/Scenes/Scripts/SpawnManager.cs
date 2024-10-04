@@ -5,9 +5,11 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     public GameObject[] position;
+    public GameObject position_Outside;
     public GameObject[] enemyPrefebArr;
-    public GameObject enemyPrefeb;
-    public GameObject Enemy;
+    private GameObject enemyPrefeb;
+    public GameObject[] NPCPrefebArr;
+    private GameObject Enemy;
 
     void Awake()
     {
@@ -31,5 +33,13 @@ public class SpawnManager : MonoBehaviour
                 GameManager.instance.EnemyList.Add(Enemy);
             }
         }
+    }
+
+    public void StoreNPCSpawn() 
+    {
+        GameObject StoreNPC;
+        StoreNPC = Instantiate(NPCPrefebArr[0], position[2].transform.position, Quaternion.Euler(0, 0, 0));
+        StoreNPC.transform.parent = position[2].transform;
+        // StoreNPC.name = StoreNPC.GetComponent<Enemy>().data.enemyName;
     }
 }

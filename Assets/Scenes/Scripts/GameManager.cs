@@ -24,8 +24,8 @@ public class GameManager : MonoBehaviour
     public ArtifactManager _ArtifactManager;
     public ThemeManager _ThemeManager;
     public PaletteManager _PaletteManager;
-    public StageManager _StageManager = new StageManager();
     public LootUI _LootManager;
+    public StageManager _StageManager = new StageManager();
     public Player _player;
 
     public enum State
@@ -193,10 +193,15 @@ public class GameManager : MonoBehaviour
                 enemyID[1] = EnemySetData[randomSetNum].monster02;
                 enemyID[2] = EnemySetData[randomSetNum].monster03;
                 enemyID[3] = EnemySetData[randomSetNum].monster04;
+                
+                BattleStart();
+                break;
+            // 상점
+            case 6:
+                // 상점NPC 스폰
+                _SpawnManager.StoreNPCSpawn();
                 break;
         }
-
-        BattleStart();
     }
 
     public void SetNextStageUI()
@@ -811,7 +816,7 @@ public class StageManager
     }
 
     public void SetNextStageInfo() {
-        // 일반몹 스테이지 강제
+        // 일반몹 스테이지 강제 (첫 스테이지)
         if (stageNum == 1) {
             nextStageInfo[0] = 1;
             nextStageInfo[1] = 1;
@@ -823,7 +828,7 @@ public class StageManager
             nextStageInfo[1] = 2;
             nextStageInfo[2] = 0;
         }
-        // 상점 스테이지 선택
+        // 상점 스테이지 선택 (보스 전 상점)
         else if (stageNum == 5) {
             nextStageInfo[0] = 1;
             nextStageInfo[1] = 6;
