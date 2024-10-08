@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ArtifactManager : MonoBehaviour
 {
     public ArtifactData[] all_ArtifactData;   // 모든 유물 데이터
-    private List<ArtifactData> have_ArtifactData = new List<ArtifactData>();  // 플레이어가 지니고 있는 모든 유물 데이터
+    private List<ArtifactData> have_ArtifactData = new List<ArtifactData>();  // 플레이어가 지니고 있는 모든 유물 데이터 리스트
     // 리스트이지만 최대 수는 6개이기 때문에 유의해서 코딩해야함.
 
     private GameObject slotParent;
@@ -36,15 +36,15 @@ public class ArtifactManager : MonoBehaviour
 
         // 임시 이미지 장착
         // 본래는 유물 획득/제거/교체 시에 유물 이미지를 변경하면 됨.
-        have_ArtifactData.Add(all_ArtifactData[0]);
-        slotImgArr[0].sprite = have_ArtifactData[0].sprite;
+        AddArtifact(3);
     }
 
     public void AddArtifact(int artifactId) 
     {   
-        // 아티팩트가 최대(6개) 개수 이하일 때
-        if (have_ArtifactData.Count <= 6) {
+        // 아티팩트가 최대(6개) 개수 미만일 때
+        if (have_ArtifactData.Count < 6) {
             have_ArtifactData.Add(all_ArtifactData[artifactId]);
+            slotImgArr[have_ArtifactData.Count - 1].sprite = have_ArtifactData[have_ArtifactData.Count - 1].sprite;
         }
         // 아티팩트가 최대(6개) 개수를 넘었을 때
         else {
@@ -148,10 +148,12 @@ public class ArtifactManager : MonoBehaviour
                     }
                     break;
                 case ArtifactData.ConditionType.Gold:
-                    //
-                    // 골드 및 상점 시스템부터 제작 후 제작할 것!
-                    //
-                    //
+                    if (_player.gold < have_ArtifactData[i].conditionNum) {
+                        canUseArtifact = false;     // HP가 부족하면 사용 불가능
+                    }
+                    else {
+                        _player.gold -= have_ArtifactData[i].conditionNum;
+                    }
                     break;
             }
             

@@ -7212,7 +7212,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78249a206d5cc0346a00ff041de3701d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _SkillManager: {fileID: 0}
 --- !u!1 &821215747
 GameObject:
   m_ObjectHideFlags: 0
@@ -10780,7 +10779,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   all_ArtifactData:
+  - {fileID: 11400000, guid: adb2a9d9e355a5a45a0e25d877abe5a1, type: 2}
   - {fileID: 11400000, guid: 39c7d4efe8e78be4d9628f23cf25203c, type: 2}
+  - {fileID: 11400000, guid: 3ac3ae42417aaf641abcb5b81e5a4b1e, type: 2}
+  - {fileID: 11400000, guid: bc3e4305f9d54ec418a69177cabfecf1, type: 2}
 --- !u!1 &1188181098
 GameObject:
   m_ObjectHideFlags: 0
