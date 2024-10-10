@@ -52,6 +52,42 @@ public class ArtifactManager : MonoBehaviour
         }
     }
 
+    public List<ArtifactData> PickRandomArtifact(int num)     // num 수만큼 뽑기
+    {
+        int randomNum = 0;
+        List<ArtifactData> artifactList = new List<ArtifactData>();
+
+        // 무작위 스킬 추첨
+        for (int i = 0; i < num;)
+        {
+            randomNum = UnityEngine.Random.Range(0, all_ArtifactData.Length);
+
+            /*for (int a = 0; a < pickedSkillId.Count; a++)
+            {
+                // 이미 뽑았던 장신구는 재추점 1회 방지 (새로운 스킬 추첨률 증가)
+                if (randomNum == pickedSkillId[a]) {
+                    i = 0;
+                    pickedSkillId.Remove(randomNum);
+                }
+            }*/
+
+            // 이미 해당 장신구를 지니고 있는 경우 : 재추첨 (무한 for문 대책이 안되있음 주의 : 최소 10개 이상의 장신구 종류 필요)
+            if (have_ArtifactData.Contains(all_ArtifactData[randomNum])) {
+                continue;
+            }
+            // 중복된 장신구가 있는 경우 : 재추첨
+            else if (artifactList.Contains(all_ArtifactData[randomNum])) {
+                continue;
+            }
+            else {
+                artifactList.Add(all_ArtifactData[randomNum]);
+                i++;
+            }
+        }
+
+        return artifactList;
+    }
+
     // Data.WhenToTrigger에 따른 함수 작동
     public void ArtifactFunction(ArtifactData.TriggerSituation triggerName)
     {

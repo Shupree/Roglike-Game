@@ -30,7 +30,6 @@ public class SkillManager : MonoBehaviour
         for (int i = 0; i < 4; i++) 
         {
             skillSlots[i] = UIObject.transform.GetChild(i).gameObject;
-            Debug.Log(skillSlots[i]);
         }
 
         isOpend = false;
@@ -107,6 +106,8 @@ public class SkillManager : MonoBehaviour
     {
         int randomNum = 0;
         SkillData[] skillData = red_SkillData;
+
+        // 스킬 색상 확인
         switch (colorNum) {
             case 1:
                 skillData = red_SkillData;
@@ -122,6 +123,7 @@ public class SkillManager : MonoBehaviour
                 break;
         }
 
+        // 무작위 스킬 추첨
         for (int i = 0; i < 1;)
         {
             randomNum = UnityEngine.Random.Range(0, skillData.Length);
@@ -134,9 +136,9 @@ public class SkillManager : MonoBehaviour
                 }
             }*/
 
-            // 이미 해당 스킬을 지니고 있는 경우 : 재추점
+            // 이미 해당 스킬을 지니고 있는 경우 : 재추점   (무한 for문 대책이 안되있음 주의 : 최소 색상당 2개 이상의 스킬 필요)
             if (skillData[randomNum] == use_SkillData[colorNum - 1]) {
-                i = 0;
+                continue;
             }
             else {
                 i++;

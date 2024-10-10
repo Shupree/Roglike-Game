@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c46d04224bc2ee94db7dcb8fccf9e158, type: 3}
   m_Name: DummyArtifact03
   m_EditorClassIdentifier: 
-  artifactType: 0
+  artifactRate: 0
   ArtifactId: 2
   ArtifactName: "\uB354\uBBF8 \uC720\uBB3C03"
   ArtifactDesc: "\uAC78\uC791\uC744 \uC0AC\uC6A9\uD560 \uB54C \uBCF4\uD638\uB9C9

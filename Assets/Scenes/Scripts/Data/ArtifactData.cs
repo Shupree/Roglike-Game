@@ -6,13 +6,13 @@ using UnityEngine;
 public class ArtifactData : ScriptableObject
 {
     // 스킬 테이블
-    public enum ArtifactType { Common, Rare, Unique, Cursed }
+    public enum ArtifactRate { Common, Rare, Unique, Cursed }
     public enum TargetType { Player, Target, All, Random }
     public enum TriggerSituation { Encounter, StartTurn, OnHit, GetHit, Victory, Defeat, UseMP, EnterStore, EnterElite }
     public enum ConditionType { None, PlayerEffect, EnemyEffect, Health, Paint, Gold }
 
     [Header("# Main Info")]
-    public ArtifactType artifactType;   // 유물 등급
+    public ArtifactRate artifactRate;   // 유물 등급
     public int ArtifactId;                   // 유물 ID
     public string ArtifactName;              // 유물 이름
     public string ArtifactDesc;              // 유물 설명
