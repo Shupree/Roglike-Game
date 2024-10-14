@@ -320,7 +320,7 @@ public class ArtifactManager : MonoBehaviour
             // 타겟 사망 시 타겟팅 재설정
             if (!GameManager.instance.target) {
                 GameManager.instance.target = GameManager.instance.EnemyList[0];
-                _targetInfo = _EnemyInfoList[0];
+                GameManager.instance.targetInfo = GameManager.instance.EnemyInfoList[0];
             }
 
             // 플레이어의 승리 확인

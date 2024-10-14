@@ -8,7 +8,7 @@ public class StateUpdate : MonoBehaviour
 {
     public enum TargetInfo { Player, Enemy }
     public TargetInfo targetType;
-    private bool IsConvert;
+    private bool isConvert;
     private int order;   // stateUI 현재 순서
     private Image[] UIArr = new Image[6];   // 상태이상 UI 배열 (stateUI)
     private TextMeshProUGUI[] textArr = new TextMeshProUGUI[6]; // 상태이상 수치 UI 배열
@@ -39,7 +39,7 @@ public class StateUpdate : MonoBehaviour
         }
 
         order = 0;
-        IsConvert = false;
+        isConvert = false;
     }
 
     // 데이터 갱신
@@ -81,7 +81,7 @@ public class StateUpdate : MonoBehaviour
                     // 이미 생성된 UI가 있는 경우 _ UI 업데이트
                     if (effectArr[i] > 0) {
                         textArr[a].text = effectArr[i].ToString();
-                        IsConvert = true;
+                        isConvert = true;
                         break;
                     }
                     // 이미 생성된 UI가 있는 경우 _ 사라진 버프/디버프 UI 제거
@@ -106,7 +106,7 @@ public class StateUpdate : MonoBehaviour
             // 생성된 UI가 없는 경우 _ UI 생성
             if (effectArr[i] > 0) 
             {
-                if (IsConvert == false) {
+                if (isConvert == false) {
                     if (order >= 6) {
                     // UI 꽉참.
                     Debug.Log("UI가 전부 찼습니다.");
@@ -125,7 +125,7 @@ public class StateUpdate : MonoBehaviour
                     }
                 }
             }
-            IsConvert = false;
+            isConvert = false;
         }
     }
 }

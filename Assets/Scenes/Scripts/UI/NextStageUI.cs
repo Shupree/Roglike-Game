@@ -27,25 +27,24 @@ public class NextStageUI : MonoBehaviour
     }
 
     // 버튼 클릭 시
-    public void ClickStageBtn() {
-        GameObject clickObject = EventSystem.current.currentSelectedGameObject;
+    public void ClickStageBtn(int btnOrder) 
+    {
+        // GameObject clickObject = EventSystem.current.currentSelectedGameObject;
         if (stageType == 0) {
             Debug.Log("불가능한 스테이지 진행입니다.");
         }
         else {
-            switch (clickObject.name) {
-                case "Btn01":
+            switch (btnOrder) {
+                case 1:
                     GameManager.instance.SetCurrntStage(stageType);
                     break;
-                case "Btn02":
+                case 2:
                     GameManager.instance.SetCurrntStage(stageType);
                     break;
-                case "Btn03":
+                case 3:
                     GameManager.instance.SetCurrntStage(stageType);
                     break;
             }
         }
     }
 }
-
-// UI 클릭 시 다음 스테이지로!

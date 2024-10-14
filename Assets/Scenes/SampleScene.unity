@@ -616,10 +616,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _MainCamera: {fileID: 519420031}
-  _NextStageUI:
-  - {fileID: 2143699460}
-  - {fileID: 718527220}
-  - {fileID: 789233896}
   _CanvasUI: {fileID: 1454091560}
   _PaintScripts:
   - {fileID: 1359008123}
@@ -633,6 +629,7 @@ MonoBehaviour:
   _ThemeManager: {fileID: 82714236}
   _PaletteManager: {fileID: 1995579606}
   _LootManager: {fileID: 748426488}
+  _StageManager: {fileID: 970653728}
   _player: {fileID: 821215748}
   state: 0
   isLive: 0
@@ -5751,12 +5748,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 718527224}
         m_TargetAssemblyTypeName: NextStageUI, Assembly-CSharp
-        m_MethodName: ClickStageBtn
-        m_Mode: 1
+        m_MethodName: GetStageInfo
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6945,11 +6942,11 @@ MonoBehaviour:
       - m_Target: {fileID: 789233900}
         m_TargetAssemblyTypeName: NextStageUI, Assembly-CSharp
         m_MethodName: ClickStageBtn
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8953,8 +8950,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 970653727}
+  - component: {fileID: 970653728}
   m_Layer: 5
-  m_Name: NextStageBtn
+  m_Name: StageManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8982,6 +8980,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &970653728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970653726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e350cf8560c45e4f8c3e6c5e054c886, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageNum: 0
+  stageInfo: 0
+  nextStageInfo: 000000000000000000000000
 --- !u!1 &979817629
 GameObject:
   m_ObjectHideFlags: 0
@@ -16693,11 +16706,11 @@ MonoBehaviour:
       - m_Target: {fileID: 2143699464}
         m_TargetAssemblyTypeName: NextStageUI, Assembly-CSharp
         m_MethodName: ClickStageBtn
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public Camera _MainCamera;
-    public GameObject[] _NextStageUI;
     public GameObject _CanvasUI;
     public Paint[] _PaintScripts;   // [0]빨강 [1]파랑 [2]노랑 [3]하양
     public SpawnManager _SpawnManager;
@@ -25,7 +24,7 @@ public class GameManager : MonoBehaviour
     public ThemeManager _ThemeManager;
     public PaletteManager _PaletteManager;
     public LootUI _LootManager;
-    public StageManager _StageManager = new StageManager();
+    public StageManager _StageManager;
     public Player _player;
 
     public enum State
@@ -67,11 +66,6 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
         _SpawnManager = gameObject.GetComponent<SpawnManager>();
-
-        // UI 비활성화
-        _NextStageUI[0].SetActive(false);
-        _NextStageUI[1].SetActive(false);
-        _NextStageUI[2].SetActive(false);
 
         _LootManager.DeactivateAllUI();
 
@@ -177,11 +171,7 @@ public class GameManager : MonoBehaviour
     {
         // 스테이지 정보 입력
         _StageManager.stageInfo = stageType;
-
-        // 버튼 비활성화
-        _NextStageUI[0].SetActive(false);
-        _NextStageUI[1].SetActive(false);
-        _NextStageUI[2].SetActive(false);
+        _StageManager.OffOptionBtn();
 
         switch (stageType) {
             // 일반 몹 스테이지
@@ -200,23 +190,14 @@ public class GameManager : MonoBehaviour
             case 6:
                 // 상점NPC 스폰
                 _SpawnManager.StoreNPCSpawn();
+
                 break;
         }
     }
 
     public void SetNextStageUI()
     {
-        _StageManager.SetNextStageInfo();
-
-        // 버튼 활성화
-        _NextStageUI[0].SetActive(true);
-        _NextStageUI[1].SetActive(true);
-        _NextStageUI[2].SetActive(true);
-
-        // 버튼 정보 수정
-        _NextStageUI[0].GetComponent<NextStageUI>().GetStageInfo(_StageManager.nextStageInfo[0]);
-        _NextStageUI[1].GetComponent<NextStageUI>().GetStageInfo(_StageManager.nextStageInfo[1]);
-        _NextStageUI[2].GetComponent<NextStageUI>().GetStageInfo(_StageManager.nextStageInfo[2]);
+        _StageManager.SetNextStageInfo();   // 다음 스테이지 선택지 설정
     }
 
     public void CheckVictory() {
@@ -605,6 +586,12 @@ public class GameManager : MonoBehaviour
             if (canvasNum > 0) {
                 state = State.playerTurn;
 
+                // 자동 타겟팅
+                if (!target) {
+                    target = EnemyList[0];
+                    targetInfo = EnemyInfoList[0];
+                }
+
                 // 물감 기능 On
                 for (int i = 0; i < 4; i++)
                 {
@@ -796,118 +783,4 @@ public class GameManager : MonoBehaviour
             NextTurnStart();
         }
     }
-}
-
-// 스테이지 정보 관리
-public class StageManager
-{
-    // 현재 스테이지 수
-    public int stageNum = 0;
-    // 현재 스테이지 정보 (0비어있음, 1일반몹, 2엘리트몹, 3보스몹, 4상자, 5이벤트, 6상점)
-    public int stageInfo = 0;
-    public int randomNum = 0;
-    public int[] nextStageInfo = new int[3];
-
-    //초기화
-    public StageManager() {
-        nextStageInfo[0] = 0;
-        nextStageInfo[1] = 0;
-        nextStageInfo[2] = 0;
-    }
-
-    public void SetNextStageInfo() {
-        // 일반몹 스테이지 강제 (첫 스테이지)
-        if (stageNum == 1) {
-            nextStageInfo[0] = 1;
-            nextStageInfo[1] = 1;
-            nextStageInfo[2] = 0;
-        }
-        // 엘리트몹 스테이지 강제
-        else if (stageNum == 3) {
-            nextStageInfo[0] = 2;
-            nextStageInfo[1] = 2;
-            nextStageInfo[2] = 0;
-        }
-        // 상점 스테이지 선택 (보스 전 상점)
-        else if (stageNum == 5) {
-            nextStageInfo[0] = 1;
-            nextStageInfo[1] = 6;
-            nextStageInfo[2] = 0;
-        }
-        // 보스몹 스테이지 강제
-        else if (stageNum == 6) {
-            nextStageInfo[0] = 3;
-            nextStageInfo[1] = 0;
-            nextStageInfo[2] = 0;
-        }
-        // 스테이지 랜덤 설정
-        else {
-            randomNum = UnityEngine.Random.Range(1, 7);
-
-            switch (randomNum) {
-                case 1:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 4;
-                    nextStageInfo[2] = 0;
-                    break;
-                case 2:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 5;
-                    nextStageInfo[2] = 0;
-                    break;
-                case 3:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 5;
-                    nextStageInfo[2] = 0;
-                    break;
-                case 4:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 4;
-                    nextStageInfo[2] = 5;
-                    break;
-                case 5:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 6;
-                    nextStageInfo[2] = 0;
-                    break;
-                case 6:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 5;
-                    nextStageInfo[2] = 6;
-                    break;
-            }
-        }
-    }
-}
-
-// 페인트 정보 저장
-public class PaintManager
-{
-    /* 최대 페인트 수
-    public int limit = 2;
-    public int order = 0;
-    public int[] paints = new int[5];
-    // none = 0, red = 1, blue = 2, yellow = 3, white = 4
-    public int stack;   // 물감 사용 스택 수
-    public PaintManager() {
-        paints[0] = 0;
-        paints[1] = 0;
-        paints[2] = 0;
-        paints[3] = 0;
-        paints[4] = 0;
-    }*/
-
-    /*public void AddPaint(int num) {
-        paints[order] = num;
-        order++;
-    }
-
-    // 페인트 초기화
-    public void ClearPaint() {
-        for (int i = 0; i < 5; i++)
-        {
-            order = 0;
-            paints[i] = 0;
-        }
-    }*/
 }
