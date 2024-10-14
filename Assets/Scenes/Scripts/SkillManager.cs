@@ -107,6 +107,8 @@ public class SkillManager : MonoBehaviour
         int randomNum = 0;
         SkillData[] skillData = red_SkillData;
 
+        // int errorNum = 0;
+
         // 스킬 색상 확인
         switch (colorNum) {
             case 1:
@@ -136,8 +138,13 @@ public class SkillManager : MonoBehaviour
                 }
             }*/
 
-            // 이미 해당 스킬을 지니고 있는 경우 : 재추점   (무한 for문 대책이 안되있음 주의 : 최소 색상당 2개 이상의 스킬 필요)
+            // 이미 해당 스킬을 지니고 있는 경우 : 재추점   (무한 for문 방지용 : 50회 시도 시 오류로 판정)
             if (skillData[randomNum] == use_SkillData[colorNum - 1]) {
+                /*if (errorNum >= 50) {
+                    Debug.Log("오류 발생!!");
+                    break;
+                }
+                errorNum++;*/
                 continue;
             }
             else {

@@ -40,6 +40,6 @@ public class SpawnManager : MonoBehaviour
         GameObject StoreNPC;
         StoreNPC = Instantiate(NPCPrefebArr[0], position[2].transform.position, Quaternion.Euler(0, 0, 0));
         StoreNPC.transform.parent = position[2].transform;
-        // StoreNPC.name = StoreNPC.GetComponent<Enemy>().data.enemyName;
+        StoreNPC.name = "StoreNPC";
     }
 }

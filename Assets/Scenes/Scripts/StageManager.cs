@@ -88,6 +88,7 @@ public class StageManager : MonoBehaviour
                     break;
             }
         }
+
         // 버튼 활성화
         optionBtnArr[0].SetActive(true);
         optionBtnArr[1].SetActive(true);

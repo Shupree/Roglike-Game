@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class StoreNPCScript : MonoBehaviour
 {
-    
+    void Awake()
+    {
+        GameManager.instance._LogManager.LogAction(gameObject);
+    }
 }

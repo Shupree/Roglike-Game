@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // private StateUpdate _StateScript;
+    private LogManager _LogManager;
+
     public int health;
     public int maxHealth = 100;
     public int shield;
@@ -19,11 +20,22 @@ public class Player : MonoBehaviour
 
     public void Awake()
     {
+        _LogManager = GameManager.instance._LogManager;
+
         // 시작 시 HP 설정
         health = maxHealth;
         shield = 0;
 
         // _StateScript = transform.Find("Canvas").gameObject.transform.Find("StateUI").gameObject.GetComponent<StateUpdate>();
+    }
+
+    void Update()
+    {
+        // log action (대화 로그)
+        if (Input.GetButtonDown("Jump"))  // '&& 로그가 존재 시' 추가
+        {
+            _LogManager.ShowNextLog();
+        }
     }
 
     // 매턴마다 버프/디버프 감소

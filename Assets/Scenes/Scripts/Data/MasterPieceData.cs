@@ -40,8 +40,8 @@ public class MasterPieceData : ScriptableObject
     [Header("# Condition")]
     public ConditionType conditionType;
     public PaintType conditionColor;  // Type이 Paint일 시
-    public int perCondition;    // 조건 1회 충족당 필요한 수치      (기본값 = 1)
-    public int maximumCondition;    // 조건 최대치  (cost: stack 최대치 / Paint류,Gold: 조건 최대 횟수)
+    public int perCondition;    // 조건 1회 충족당 필요한 수치 : 조건이 다회 적용 가능 시      (기본값 = 1)
+    public int maximumCondition;    // 조건 최대치  (cost: stack 최대치 / 그 외: 조건 최대 횟수) (기본값 = 1)
                                     // 모든 재고 소모 시 -1값으로 설정함.
     public int perDamage;       // 조건당 데미지    (기본값 = 0)
     public int perShield;       // 조건당 보호막 양     (기본값 = 0)

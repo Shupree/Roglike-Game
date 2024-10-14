@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
     public PaletteManager _PaletteManager;
     public LootUI _LootManager;
     public StageManager _StageManager;
+    public StoreManager _StoreManager;
+    public LogManager _LogManager;
     public Player _player;
 
     public enum State
@@ -41,8 +43,8 @@ public class GameManager : MonoBehaviour
     public List<GameObject> EnemyList;   // 적 오브젝트
     public List<Enemy> EnemyInfoList;    // 적 Enemy 스크립트
 
-    public MonsterStageData[] EnemySetData;
-    private int randomSetNum;
+    public MonsterStageData[] EnemySetData;     // 랜덤 적 스폰 데이터 (StageManager로 옮겨볼 것)
+    private int randomSetNum;       // 랜덤 정수 => 적 스폰 데이터 확립 (StageManager로 옮겨볼 것)
 
     //private int map;
     public SkillData usingSkill;
@@ -631,12 +633,6 @@ public class GameManager : MonoBehaviour
         // 유물 : 승리 시 효과
         _ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.Victory);
 
-        /* 전리품_걸작 획득
-        if (loot[3] > 0) {
-            _LootManager.SetLootUI(4,loot[3]);
-        }
-        loot[3] = 0;*/
-
         Debug.Log("전투 종료");
         state = State.rest;
 
@@ -660,6 +656,12 @@ public class GameManager : MonoBehaviour
             _LootManager.SetLootUI(3,loot[2]);
         }
         loot[2] = 0;
+
+                /* 전리품_걸작 획득
+        if (loot[3] > 0) {
+            _LootManager.SetLootUI(4,loot[3]);
+        }
+        loot[3] = 0;*/
     }
 
     IEnumerator EnemyTurn()

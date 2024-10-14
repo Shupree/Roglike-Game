@@ -57,7 +57,9 @@ public class ArtifactManager : MonoBehaviour
         int randomNum = 0;
         List<ArtifactData> artifactList = new List<ArtifactData>();
 
-        // 무작위 스킬 추첨
+        //int errorNum = 0;
+
+        // 무작위 장신구 추첨
         for (int i = 0; i < num;)
         {
             randomNum = UnityEngine.Random.Range(0, all_ArtifactData.Length);
@@ -73,10 +75,12 @@ public class ArtifactManager : MonoBehaviour
 
             // 이미 해당 장신구를 지니고 있는 경우 : 재추첨 (무한 for문 대책이 안되있음 주의 : 최소 10개 이상의 장신구 종류 필요)
             if (have_ArtifactData.Contains(all_ArtifactData[randomNum])) {
+                //errorNum++;
                 continue;
             }
             // 중복된 장신구가 있는 경우 : 재추첨
             else if (artifactList.Contains(all_ArtifactData[randomNum])) {
+                //errorNum++;
                 continue;
             }
             else {

@@ -10,7 +10,7 @@ public class MPManager : MonoBehaviour
 {
     // 걸작 효과에 화상 적용 넣을까..
     public MasterPieceData[] all_MPData;      // 모든 걸작 데이터
-    private MasterPieceData[] have_MPData = new MasterPieceData[2];    // 플레이어가 가지고 있는 모든 걸작 데이터
+    //private MasterPieceData[] have_MPData = new MasterPieceData[2];    // 플레이어가 가지고 있는 모든 걸작 데이터
     public MasterPieceData use_MPData;     // 사용할 걸작 데이터
 
     private GameObject UIObject;
@@ -22,7 +22,6 @@ public class MPManager : MonoBehaviour
 
     public GameObject MP_BtnUI;
     //private Image MP_BtnEmptyImg;
-    //private Image MP_BtnImg;
     private Image MP_BtnImg;
 
     private PaletteManager _PaletteManager;
@@ -47,8 +46,8 @@ public class MPManager : MonoBehaviour
         UIObject.SetActive(false);
 
         // 테스트용 걸작 데이터 획득
-        have_MPData[0] = all_MPData[0];
-        use_MPData = have_MPData[0];
+        //have_MPData[0] = all_MPData[0];
+        use_MPData = all_MPData[0];
 
         // 걸작 세팅
         GameManager.instance.MP_Data = use_MPData;
@@ -68,9 +67,9 @@ public class MPManager : MonoBehaviour
         effect = 0;
     }
 
-    public void LateUpdate()
+    void LateUpdate()
     {
-        if (use_MPData.conditionType == MasterPieceData.ConditionType.Cost) {
+        if (use_MPData.conditionType == MasterPieceData.ConditionType.Cost) {   // 걸작 스택 UI 표시
             MP_BtnImg.fillAmount = GameManager.instance._PaletteManager.stack / (float)use_MPData.maximumCondition;
         }
         else {
@@ -78,6 +77,46 @@ public class MPManager : MonoBehaviour
         }
     }
 
+    public void ChangeMasterPiece(int masterPieceId)
+    {
+        use_MPData = all_MPData[masterPieceId];     // 걸작 교체
+
+        // 걸작 아이콘 교체@@@
+    }
+
+    // 무작위 걸작 추첨
+    public MasterPieceData PickRandomMasterPiece()
+    {
+        int randomNum = 0;
+        MasterPieceData MPData = all_MPData[0];
+        
+        //int errorNum = 0;
+
+        // 무작위 걸작 추첨
+        for (int i = 0; i < 1;)
+        {
+            randomNum = UnityEngine.Random.Range(0, all_MPData.Length);
+
+            // 이미 해당 걸작를 지니고 있는 경우 : 재추첨 (무한 for문 대책이 안되있음 주의 : 최소 2개 이상의 걸작 종류 필요)
+            if (use_MPData == all_MPData[randomNum]) {
+                /*if (errorNum >= 50) {
+                    Debug.Log("오류 발생!!");
+                    break;
+                }
+                errorNum++;*/
+                continue;
+            }
+            else {
+                MPData = all_MPData[randomNum];
+                i++;
+            }
+        
+        }
+
+        return MPData;
+    }
+
+    // 걸작 효과
     public void MPFunction()
     {   
         // 걸작 사용 불가능한지 판별
@@ -98,16 +137,16 @@ public class MPManager : MonoBehaviour
                 addValue = 1;
                 break;
             case MasterPieceData.ConditionType.Cost: 
-                addValue = (_PaletteManager.stack - use_MPData.cost) / use_MPData.perCondition;  // 여분 코스트 / 필요 수치
+                addValue = (_PaletteManager.stack - use_MPData.cost) / use_MPData.perCondition + 1;  // 여분 코스트 / 필요 수치 + 1
                 _PaletteManager.stack = 
                     (_PaletteManager.stack - use_MPData.cost) % use_MPData.perCondition;  // 여분 반환
                 break;
             case MasterPieceData.ConditionType.Health:
-                if (_player.health < use_MPData.perCondition) {
+                if (_player.health < use_MPData.maximumCondition) {
                     return;    // HP가 부족하다면 사용 불가능
                 }
                 else {
-                    _player.health -= use_MPData.perCondition;     // 필요 수치만큼 플레이어 HP 감소
+                    _player.health -= use_MPData.maximumCondition;     // 필요 수치만큼 플레이어 HP 감소
                 }
                 _PaletteManager.stack = 0;
                 addValue = 1;   // 횟수는 1회로 한정
@@ -132,22 +171,27 @@ public class MPManager : MonoBehaviour
                 }
                 // 조건: n만큼의 물감
                 else {
-                    if (_PaintScripts[i].currentNum < use_MPData.perCondition) {
-                        Debug.Log("걸작 사용에 물감이 부족합니다!");    // 물감 부족 시 사용 불가능
+                    if (_PaintScripts[i].currentNum < use_MPData.maximumCondition) {
+                        Debug.Log("걸작 사용에 사용할 물감이 부족합니다!");    // 물감 부족 시 사용 불가능
                         return;
                     }
                     else {
-                        _PaintScripts[i].currentNum -= use_MPData.perCondition;    // 물감 수 감소
+                        _PaintScripts[i].currentNum -= use_MPData.maximumCondition;    // 물감 수 감소
                         _PaletteManager.stack = 0;
                         addValue = 1;
                     }
                 }
                 break;
             case MasterPieceData.ConditionType.Gold:
-                //
-                // 골드 및 상점 시스템부터 제작 후 제작할 것!
-                //
-                //
+                if (_player.gold < use_MPData.maximumCondition) {
+                    Debug.Log("걸작 사용에 사용할 골드가 부족합니다.");     // 골드 부족 시 사용 불가능
+                    return;
+                }
+                else {
+                    _player.gold -= use_MPData.maximumCondition;    // 골드 수 감소
+                    _PaletteManager.stack = 0;
+                    addValue = 1;
+                }
                 break;
             
         }
