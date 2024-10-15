@@ -10,10 +10,10 @@ public class StageManager : MonoBehaviour
     // 현재 스테이지 정보 (0비어있음, 1일반몹, 2엘리트몹, 3보스몹, 4상자, 5이벤트, 6상점)
     public int stageInfo = 0;
     private int randomNum = 0;
-    public int[] nextStageInfo = new int[3];
+    private int[] nextStageInfo = new int[3];
 
     // 초기화
-    void Awake() {
+    public void Init() {
         for (int i = 0; i < optionBtnArr.Length; i++)
         {
             optionBtnArr[i] = transform.GetChild(i).gameObject;
@@ -88,7 +88,7 @@ public class StageManager : MonoBehaviour
                     break;
             }
         }
-
+    
         // 버튼 활성화
         optionBtnArr[0].SetActive(true);
         optionBtnArr[1].SetActive(true);

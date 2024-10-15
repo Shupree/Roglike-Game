@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
         _SpawnManager = gameObject.GetComponent<SpawnManager>();
+        _StageManager.Init();
 
         _LootManager.DeactivateAllUI();
 
