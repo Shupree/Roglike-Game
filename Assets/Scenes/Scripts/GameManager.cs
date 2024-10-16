@@ -189,6 +189,11 @@ public class GameManager : MonoBehaviour
                 
                 BattleStart();
                 break;
+            // 보물
+            case 4:
+                // 보물상자 스폰
+                _SpawnManager.TreasureChestSpawn();
+                break;
             // 상점
             case 6:
                 // 상점NPC 스폰

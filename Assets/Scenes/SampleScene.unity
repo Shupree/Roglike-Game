@@ -693,11 +693,13 @@ MonoBehaviour:
   - {fileID: 415004761}
   - {fileID: 1248662162}
   position_Outside: {fileID: 0}
-  enemyPrefebArr:
+  enemyPrefabArr:
   - {fileID: 7438148013805046451, guid: 6b86007fd2d864349b9f6f84a81ba645, type: 3}
   - {fileID: 545617932519167035, guid: cdc39eb8aa710e147b3a977767a20cf5, type: 3}
-  NPCPrefebArr:
+  NPCPrefabArr:
   - {fileID: 2371127670733295619, guid: 8e946e333626234498bb58a611b51ee2, type: 3}
+  ObjectPrefabArr:
+  - {fileID: 5343134230986028319, guid: 842def791f3383b4084d5f2c891ac1b1, type: 3}
 --- !u!1 &66514111
 GameObject:
   m_ObjectHideFlags: 0
@@ -2346,8 +2348,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: []
   position_Outside: {fileID: 0}
-  enemyPrefebArr: []
-  NPCPrefebArr: []
+  enemyPrefabArr: []
+  NPCPrefabArr: []
+  ObjectPrefabArr: []
 --- !u!1 &324593530
 GameObject:
   m_ObjectHideFlags: 0
@@ -3794,7 +3797,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 14.3125
+  orthographic size: 14.625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5517,7 +5520,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 684632779}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 812397866}
+        m_TargetAssemblyTypeName: StoreManager, Assembly-CSharp
+        m_MethodName: BuyProduct
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 23
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &684632779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5714,7 +5729,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 717471912}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 812397866}
+        m_TargetAssemblyTypeName: StoreManager, Assembly-CSharp
+        m_MethodName: BuyProduct
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 31
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &717471912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6080,7 +6107,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 727265514}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 812397866}
+        m_TargetAssemblyTypeName: StoreManager, Assembly-CSharp
+        m_MethodName: BuyProduct
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 11
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &727265514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7351,6 +7390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78249a206d5cc0346a00ff041de3701d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storeNPC: {fileID: 0}
   soldOutImg: {fileID: 0}
 --- !u!1 &821215747
 GameObject:
@@ -12450,7 +12490,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1436604360}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 812397866}
+        m_TargetAssemblyTypeName: StoreManager, Assembly-CSharp
+        m_MethodName: BuyProduct
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 13
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1436604360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12830,7 +12882,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1489894648}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 812397866}
+        m_TargetAssemblyTypeName: StoreManager, Assembly-CSharp
+        m_MethodName: BuyProduct
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 22
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1489894648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14766,7 +14830,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1805693483}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 812397866}
+        m_TargetAssemblyTypeName: StoreManager, Assembly-CSharp
+        m_MethodName: BuyProduct
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 14
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1805693483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15757,7 +15833,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1917006650}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 812397866}
+        m_TargetAssemblyTypeName: StoreManager, Assembly-CSharp
+        m_MethodName: BuyProduct
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 12
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1917006650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16719,7 +16807,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2038057748}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 812397866}
+        m_TargetAssemblyTypeName: StoreManager, Assembly-CSharp
+        m_MethodName: BuyProduct
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 21
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2038057748
 MonoBehaviour:
   m_ObjectHideFlags: 0

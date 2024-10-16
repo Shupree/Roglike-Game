@@ -55,7 +55,8 @@ public class StageManager : MonoBehaviour
                 new int[]{1,6,0}, new int[]{1,5,6}
             };
 
-            randomNum = UnityEngine.Random.Range(1, 7); // 난수 뽑기
+            //randomNum = UnityEngine.Random.Range(1, 7); // 난수 뽑기
+            randomNum = 4;  // 테스트용
             
             nextStageInfo = infoArr[randomNum - 1];     // 다음 스테이지 정보 설정
         }

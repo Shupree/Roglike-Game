@@ -19,10 +19,13 @@ public class GetObject : MonoBehaviour
             {
                 switch(hit.collider.tag){
                     case "Enemy":
-                        Debug.Log(hit.collider.transform.GetChild(0));
-                        //hit.collider.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-                        GameManager.instance.target = hit.collider.gameObject;
+                        Debug.Log(hit.collider.gameObject.name);
+                        GameManager.instance.target = hit.collider.gameObject;      // 타겟팅
                         GameManager.instance.targetInfo = hit.collider.gameObject.GetComponent<Enemy>();
+                        break;
+                    case "Chest":
+                        Debug.Log(hit.collider.gameObject.name);
+                        hit.collider.gameObject.GetComponent<ChestScript>().OpenChest();
                         break;
                 }
             }

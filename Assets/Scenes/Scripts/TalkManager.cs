@@ -14,8 +14,13 @@ public class TalkManager : MonoBehaviour
 
     void GenerateData()
     {
-        // string[]배열 형식으로 여러 문장 구사
-        talkData.Add(1001, new string[] { "Hello.", "I collect some special things.\nMay I do business with you?" });
+        // string[]배열 형식으로 여러 문장을 저장
+
+        // NPC
+        talkData.Add(1001, new string[] { "Hello.", "I collect some special things.\nMay I do business with you?" });   // storeNPC
+
+        // Interactable Object
+        
     }
 
     public string GetTalk(int id, int talkIndex)

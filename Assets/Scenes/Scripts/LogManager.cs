@@ -30,10 +30,15 @@ public class LogManager : MonoBehaviour
     // 대화 상대 확인 및 대사 세팅
     public void LogAction(GameObject talkObj)
     {
-        talkPanel.SetActive(true);  // UI 활성화
-
         talkObject = talkObj;
         objData = talkObject.GetComponent<ObjData>();   // 대상의 ObjData 불러오기
+
+        if (_TalkManager.GetTalk(objData.id, 0) == null) {  // 해당되는 대사 미존재 시 스킵
+            return;
+        }
+        
+        talkPanel.SetActive(true);  // UI 활성화
+
         Talk(objData.id, objData.isNPC);    // 대사 불러오기
         talkIndex++;
     }
