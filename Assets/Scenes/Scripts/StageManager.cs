@@ -27,66 +27,37 @@ public class StageManager : MonoBehaviour
 
     public void SetNextStageInfo() 
     {
+        int[][] spInfoArr = new int[][] {       // 강제 스테이지 종류
+                new int[]{1,1,0}, new int[]{2,2,0},
+                new int[]{1,6,0}, new int[]{3,0,0}
+            };
         // 일반몹 스테이지 강제 (첫 스테이지)
         if (stageNum == 1) {
-            nextStageInfo[0] = 1;
-            nextStageInfo[1] = 1;
-            nextStageInfo[2] = 0;
+            nextStageInfo = spInfoArr[0];
         }
         // 엘리트몹 스테이지 강제
         else if (stageNum == 3) {
-            nextStageInfo[0] = 2;
-            nextStageInfo[1] = 2;
-            nextStageInfo[2] = 0;
+            nextStageInfo = spInfoArr[1];
         }
         // 상점 스테이지 선택 (보스 전 상점)
         else if (stageNum == 5) {
-            nextStageInfo[0] = 1;
-            nextStageInfo[1] = 6;
-            nextStageInfo[2] = 0;
+            nextStageInfo = spInfoArr[2];
         }
         // 보스몹 스테이지 강제
         else if (stageNum == 6) {
-            nextStageInfo[0] = 3;
-            nextStageInfo[1] = 0;
-            nextStageInfo[2] = 0;
+            nextStageInfo = spInfoArr[3];
         }
         // 스테이지 랜덤 설정
         else {
-            randomNum = UnityEngine.Random.Range(1, 7);
+            int[][] infoArr = new int[][] {     // 다음 스테이지 종류
+                new int[]{1,4,0}, new int[]{1,5,0},
+                new int[]{1,5,0}, new int[]{1,5,4},
+                new int[]{1,6,0}, new int[]{1,5,6}
+            };
 
-            switch (randomNum) {
-                case 1:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 4;
-                    nextStageInfo[2] = 0;
-                    break;
-                case 2:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 5;
-                    nextStageInfo[2] = 0;
-                    break;
-                case 3:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 5;
-                    nextStageInfo[2] = 0;
-                    break;
-                case 4:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 4;
-                    nextStageInfo[2] = 5;
-                    break;
-                case 5:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 6;
-                    nextStageInfo[2] = 0;
-                    break;
-                case 6:
-                    nextStageInfo[0] = 1;
-                    nextStageInfo[1] = 5;
-                    nextStageInfo[2] = 6;
-                    break;
-            }
+            randomNum = UnityEngine.Random.Range(1, 7); // 난수 뽑기
+            
+            nextStageInfo = infoArr[randomNum - 1];     // 다음 스테이지 정보 설정
         }
     
         // 버튼 활성화
