@@ -13,6 +13,8 @@ public class StoreManager : MonoBehaviour
     private ArtifactManager _ArtifactManager;
     private MPManager _MasterpieceManager;
 
+    public GameObject storeNPC;     // NPC Object
+
     private GameObject storeUI;
 
     private GameObject[] skillSlotArr = new GameObject[4];  // UI Arr
@@ -69,6 +71,7 @@ public class StoreManager : MonoBehaviour
     public void CloseStore()
     {
         storeUI.SetActive(false);
+        Destroy(storeNPC);      // NPC 제거 (스테이지 넘어가는 연출 + NPC 제거하면 좋을 듯)
 
         GameManager.instance.SetNextStageUI();  // 다음 스테이지로
     }
@@ -122,43 +125,42 @@ public class StoreManager : MonoBehaviour
     }
 
     // 상품 버튼 클릭 시 : 구매
-    public void BuyProduct(int productType, int btnOrder)   // productType : 1스킬, 2장신구, 3걸작
+    public void BuyProduct(int btnOrder)   // BtnOrder : 11~14.스킬 / 21~23.장신구 / 31.걸작 
     {
         // 버튼에 따른 스킬 지급
-        switch (productType) {
-            case 1:     // 스킬 구매
-                if (_Player.gold >= skillPriceArr[btnOrder - 1]) {      // 구매 가능 여부 확인
-                    _Player.gold -= skillPriceArr[btnOrder - 1];
-                    _SkillManager.use_SkillData[btnOrder - 1] = skillDataArr[btnOrder - 1];     // 스킬 교체
+        if (btnOrder < 20) {    // 스킬 구매
+            if (_Player.gold >= skillPriceArr[btnOrder - 11]) {      // 구매 가능 여부 확인
+                _Player.gold -= skillPriceArr[btnOrder - 11];
+                _SkillManager.use_SkillData[btnOrder - 11] = skillDataArr[btnOrder - 11];     // 스킬 교체
 
-                    skillSlotArr[btnOrder - 1].GetComponent<Image>().sprite = soldOutImg;       // 판매 완료 UI 출력
-                    skillSlotArr[btnOrder - 1].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
-                }
-                else {
-                    // 구매 실패
-                }
-                break;
-            case 2:
-                if (_Player.gold >= artifactPriceArr[btnOrder - 1]) {      // 구매 가능 여부 확인
-                    _Player.gold -= artifactPriceArr[btnOrder - 1];
-                    _ArtifactManager.AddArtifact(artifactDataList[btnOrder - 1].ArtifactId);
+                skillSlotArr[btnOrder - 11].GetComponent<Image>().sprite = soldOutImg;       // 판매 완료 UI 출력
+                skillSlotArr[btnOrder - 11].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
+            }
+            else {
+                Debug.Log("구매 실패 : 골드가 부족합니다!");
+                // 구매 실패
+            }
+        }
+        else if (btnOrder < 30) {   // 장신구 구매
+            if (_Player.gold >= artifactPriceArr[btnOrder - 21]) {      // 구매 가능 여부 확인
+                _Player.gold -= artifactPriceArr[btnOrder - 21];
+                _ArtifactManager.AddArtifact(artifactDataList[btnOrder - 21].ArtifactId);
 
-                    artifactSlotArr[btnOrder - 1].GetComponent<Image>().sprite = soldOutImg;    // 판매 완료 UI 출력
-                    artifactSlotArr[btnOrder - 1].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
-                }
-                else {
-                    // 구매 실패
-                }
-                break;
-            case 3:
-                if (_Player.gold >= masterpiecePrice) {      // 구매 가능 여부 확인
-                    _Player.gold -= masterpiecePrice;
-                    _MasterpieceManager.ChangeMasterPiece(masterpieceData.MP_Id);   // MP 교체 함수 만들 걳
+                artifactSlotArr[btnOrder - 21].GetComponent<Image>().sprite = soldOutImg;    // 판매 완료 UI 출력
+                artifactSlotArr[btnOrder - 21].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
+            }
+            else {
+                // 구매 실패
+            }
+        }
+        else if (btnOrder < 40) {   // 걸작 구매
+            if (_Player.gold >= masterpiecePrice) {      // 구매 가능 여부 확인
+                _Player.gold -= masterpiecePrice;
+                _MasterpieceManager.ChangeMasterPiece(masterpieceData.MP_Id);   // MP 교체 함수 만들 걳
 
-                    masterpieceSlot.GetComponent<Image>().sprite = soldOutImg;      // 판매 완료 UI 출력
-                    masterpieceSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
-                }
-                break;
+                masterpieceSlot.GetComponent<Image>().sprite = soldOutImg;      // 판매 완료 UI 출력
+                masterpieceSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
+            }
         }
     }
 }

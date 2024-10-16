@@ -193,7 +193,6 @@ public class GameManager : MonoBehaviour
             case 6:
                 // 상점NPC 스폰
                 _SpawnManager.StoreNPCSpawn();
-
                 break;
         }
     }
