@@ -6,11 +6,11 @@ public class SpawnManager : MonoBehaviour
 {
     public GameObject[] position;
     public GameObject position_Outside;
-    public GameObject[] enemyPrefabArr;     // Enemy Prefab Array
+    public GameObject[] enemyPrefabArr;     // enemy Prefab Array
     private GameObject enemyPrefab;
     public GameObject[] NPCPrefabArr;       // NPC Prefab Array
-    public GameObject[] ObjectPrefabArr;    // Object Prefab Array
-    private GameObject Enemy;
+    public GameObject[] chestPrefabArr;    // chest Prefab Array
+    private GameObject enemy;
 
     void Awake()
     {
@@ -28,10 +28,10 @@ public class SpawnManager : MonoBehaviour
                 // 해당 적 정보 수집    (주의. 'enemyID - 1와 'enemyPrefebArr'의 순서는 같아야 함.)
                 enemyPrefab = enemyPrefabArr[EnemyID[i] - 1];
 
-                Enemy = Instantiate(enemyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));
-                Enemy.transform.parent = position[i].transform;
-                Enemy.name = Enemy.GetComponent<Enemy>().data.enemyName;
-                GameManager.instance.EnemyList.Add(Enemy);
+                enemy = Instantiate(enemyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));
+                enemy.transform.parent = position[i].transform;
+                enemy.name = enemy.GetComponent<Enemy>().data.enemyName;
+                GameManager.instance.EnemyList.Add(enemy);
             }
         }
     }
@@ -45,11 +45,13 @@ public class SpawnManager : MonoBehaviour
         GameManager.instance._StoreManager.storeNPC = NPC;
     }
 
-    public void TreasureChestSpawn()
+    // 상자 등급 : 1.Common 2.Rare 3.Unique 4.Cursed 5.Random
+    //          6 ~.Special
+    public void TreasureChestSpawn(int rate)
     {
-        GameObject Object;
-        Object = Instantiate(ObjectPrefabArr[0], position[2].transform.position, Quaternion.Euler(0, 0, 0));
-        Object.transform.parent = position[2].transform;
-        Object.name = "TreasureChest";
+        GameObject chest;
+        chest = Instantiate(chestPrefabArr[rate - 1], position[2].transform.position, Quaternion.Euler(0, 0, 0));
+        chest.transform.parent = position[2].transform;
+        chest.name = "TreasureChest";
     }
 }

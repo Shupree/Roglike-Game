@@ -6,7 +6,11 @@ using UnityEngine.UI;
 
 public class ArtifactManager : MonoBehaviour
 {
-    public ArtifactData[] all_ArtifactData;   // 모든 유물 데이터
+    public ArtifactData[] all_ArtifactData;   // 모든 장신구 데이터
+    public ArtifactData[] normal_ArtifactData;      // 일반 장신구 데이터
+    public ArtifactData[] rare_AritfactData;        // 희귀 장신구 데이터
+    public ArtifactData[] unique_ArtifactData;      // 유니크 장신구 데이터
+    public ArtifactData[] cursed_ArtifactData;      // 저주받은 장신구 데이터
     private List<ArtifactData> have_ArtifactData = new List<ArtifactData>();  // 플레이어가 지니고 있는 모든 유물 데이터 리스트
     // 리스트이지만 최대 수는 6개이기 때문에 유의해서 코딩해야함.
 
@@ -52,17 +56,35 @@ public class ArtifactManager : MonoBehaviour
         }
     }
 
-    public List<ArtifactData> PickRandomArtifact(int num)     // num 수만큼 뽑기
+    public ArtifactData PickRandomArtifact(int rateNum)     // rateNum : 장신구 등급(0.All, 1.Normal, 2.Rare, 3.Unique, 4.Curesed)
     {
         int randomNum = 0;
-        List<ArtifactData> artifactList = new List<ArtifactData>();
+        ArtifactData[] artifactDataArr = all_ArtifactData;
+        ArtifactData artifact = all_ArtifactData[0];
 
         //int errorNum = 0;
 
         // 무작위 장신구 추첨
-        for (int i = 0; i < num;)
+        for (int i = 0; i < 1;)
         {
-            randomNum = UnityEngine.Random.Range(0, all_ArtifactData.Length);
+            switch (rateNum) {
+                case 0: 
+                    artifactDataArr = all_ArtifactData;
+                    break;
+                case 1:
+                    artifactDataArr = normal_ArtifactData;
+                    break;
+                case 2:
+                    artifactDataArr = rare_AritfactData;
+                    break;
+                case 3:
+                    artifactDataArr = unique_ArtifactData;
+                    break;
+                case 4: 
+                    artifactDataArr = cursed_ArtifactData;
+                    break;
+            }
+            randomNum = UnityEngine.Random.Range(0, artifactDataArr.Length);
 
             /*for (int a = 0; a < pickedSkillId.Count; a++)
             {
@@ -74,22 +96,22 @@ public class ArtifactManager : MonoBehaviour
             }*/
 
             // 이미 해당 장신구를 지니고 있는 경우 : 재추첨 (무한 for문 대책이 안되있음 주의 : 최소 10개 이상의 장신구 종류 필요)
-            if (have_ArtifactData.Contains(all_ArtifactData[randomNum])) {
+            if (have_ArtifactData.Contains(artifactDataArr[randomNum])) {
                 //errorNum++;
                 continue;
             }
             // 중복된 장신구가 있는 경우 : 재추첨
-            else if (artifactList.Contains(all_ArtifactData[randomNum])) {
+            else if (artifact == artifactDataArr[randomNum]) {
                 //errorNum++;
                 continue;
             }
             else {
-                artifactList.Add(all_ArtifactData[randomNum]);
+                artifact = artifactDataArr[randomNum];
                 i++;
             }
         }
 
-        return artifactList;
+        return artifact;
     }
 
     // Data.WhenToTrigger에 따른 함수 작동

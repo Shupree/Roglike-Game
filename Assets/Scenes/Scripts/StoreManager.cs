@@ -71,7 +71,7 @@ public class StoreManager : MonoBehaviour
     public void CloseStore()
     {
         storeUI.SetActive(false);
-        Destroy(storeNPC);      // NPC 제거 (스테이지 넘어가는 연출 + NPC 제거하면 좋을 듯)
+        Destroy(storeNPC);      // 임시로 NPC 제거 (스테이지 넘어가는 연출 + NPC 제거하면 좋을 듯)
 
         GameManager.instance.SetNextStageUI();  // 다음 스테이지로
     }
@@ -86,8 +86,11 @@ public class StoreManager : MonoBehaviour
             skillDataArr[i] = _SkillManager.PickRandomSkill(i + 1);
         }
 
-        // 장신구 추첨
-        artifactDataList = _ArtifactManager.PickRandomArtifact(3);
+        // 장신구 추첨  (3개)
+        for (int i = 0; i < artifactSlotArr.Length; i++)
+        {
+            artifactDataList.Add(_ArtifactManager.PickRandomArtifact(0));
+        }
 
         // 걸작 추첨
         masterpieceData = _MasterpieceManager.PickRandomMasterPiece();

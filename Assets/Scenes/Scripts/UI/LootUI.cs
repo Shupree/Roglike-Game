@@ -24,6 +24,7 @@ public class LootUI : MonoBehaviour
         for (int i = 0; i < UIArr.Length; i++) 
         {
             UIArr[i] = transform.GetChild(1).GetChild(i).gameObject;
+            Debug.Log(UIArr[i]);
             UIArr[i].SetActive(false);
         }
         loot_SkillUI = transform.GetChild(4).gameObject;
@@ -41,6 +42,8 @@ public class LootUI : MonoBehaviour
         }
         loot_SkillDataList = new List<SkillData>();
         loot_SkillUI.SetActive(false);
+
+        DeactivateAllUI();
     }
 
     // UI 기능 정지 (이미지, 기능 전부)
@@ -57,7 +60,8 @@ public class LootUI : MonoBehaviour
     }
 
     // 보상UI 활성화 : int 보상 종류, int 보상 정보 (골드 수, 스킬 선택지 수, 장신구ID)
-    // typeNum : 01.골드, 02.스킬, 03.장신구
+    // typeNum : 01.골드, 02.스킬, 03.장신구, 04.걸작
+    // 장신구 detail : -10.랜덤, -9.Normal랜덤, -8.Rare랜덤, -7.Unique랜덤, -6.Cursed랜덤, 정수.장신구ID
     public void SetLootUI(int typeNum, int detail)
     {
         UIArr[order].SetActive(true);
@@ -77,11 +81,21 @@ public class LootUI : MonoBehaviour
                 break;
             case 3:     // 장신구 보상
                 lootType[order] = 3;
-                lootDetail[order] = detail;
-                UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite
-                    = GameManager.instance._ArtifactManager.all_ArtifactData[detail].sprite;
-                UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text
-                    = GameManager.instance._ArtifactManager.all_ArtifactData[detail].name;
+                if (detail < 0) {       // 랜덤 보상
+                    ArtifactData artifactData = GameManager.instance._ArtifactManager.PickRandomArtifact(detail + 10);
+                    UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite
+                        = artifactData.sprite;
+                    UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text
+                        = artifactData.name;
+                    lootDetail[order] = artifactData.ArtifactId;    // 지급받을 장신구의 ID 저장
+                }
+                else {                  // 특정 보상
+                    UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite
+                        = GameManager.instance._ArtifactManager.all_ArtifactData[detail].sprite;
+                    UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text
+                        = GameManager.instance._ArtifactManager.all_ArtifactData[detail].name;
+                    lootDetail[order] = detail;     // 지급받을 장신구의 ID 저장
+                }
                 break;
             //case 4:     // 걸작 보상
             //    break;

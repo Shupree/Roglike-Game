@@ -70,8 +70,6 @@ public class GameManager : MonoBehaviour
         _SpawnManager = gameObject.GetComponent<SpawnManager>();
         _StageManager.Init();
 
-        _LootManager.DeactivateAllUI();
-
         // 테스트 맵
         //map = 0;
 
@@ -192,7 +190,7 @@ public class GameManager : MonoBehaviour
             // 보물
             case 4:
                 // 보물상자 스폰
-                _SpawnManager.TreasureChestSpawn();
+                _SpawnManager.TreasureChestSpawn(1);    // Common급
                 break;
             // 상점
             case 6:
