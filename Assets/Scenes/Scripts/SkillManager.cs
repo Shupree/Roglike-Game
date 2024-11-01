@@ -7,15 +7,18 @@ using UnityEngine.UI;
 public class SkillManager : MonoBehaviour
 {
     // SkillType(Color), SkillID(int)
+    [Header ("Skill Data")]
     public SkillData noneData;
 
+    [Space (10f)]
     public SkillData[] red_SkillData;       // 모든 빨강계열 스킬데이터
     public SkillData[] blue_SkillData;      // 모든 파랑계열 스킬데이터
     public SkillData[] yellow_SkillData;    // 모든 노랑계열 스킬데이터
     public SkillData[] white_SkillData;     // 모든 하양계열 스킬데이터
 
     //private SkillData[] have_SkillData = new SkillData[4];  // 플레이어가 지니고 있는 모든 스킬 데이터
-    private List<int> pickedSkillId;
+    
+    [Space (10f)]
     public SkillData[] use_SkillData = new SkillData[4];    // 사용할 스킬 데이터 (red, blue, yellow, white 순)
 
     private GameObject UIObject;

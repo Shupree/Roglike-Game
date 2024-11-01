@@ -6,6 +6,7 @@ public class StageManager : MonoBehaviour
 {
     private GameObject[] optionBtnArr = new GameObject[3];  // 다음 스테이지 선택 버튼
 
+    [Header ("Stage Info")]
     public int stageNum = 0;    // 현재 스테이지 수
     // 현재 스테이지 정보 (0비어있음, 1일반몹, 2엘리트몹, 3보스몹, 4상자, 5이벤트, 6상점)
     public int stageInfo = 0;

@@ -7,8 +7,13 @@ using Unity.VisualScripting;
 
 public class NextStageUI : MonoBehaviour
 {
+    [Header ("Object Reference")]
     public GameObject stageInfoUI;
+
+    [Header ("Stage Info")]
     public int stageType = 0;
+
+    [Header ("Sprites")]
     public Sprite[] spriteArr = new Sprite[6];
     // 0비어있음, 1일반몹, 2엘리트몹, 3보스몹, 4상자, 5이벤트, 6상점
 

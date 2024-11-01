@@ -6,23 +6,31 @@ using UnityEngine.UI;
 
 public class ArtifactManager : MonoBehaviour
 {
-    public ArtifactData[] all_ArtifactData;   // 모든 장신구 데이터
-    public ArtifactData[] normal_ArtifactData;      // 일반 장신구 데이터
-    public ArtifactData[] rare_AritfactData;        // 희귀 장신구 데이터
-    public ArtifactData[] unique_ArtifactData;      // 유니크 장신구 데이터
-    public ArtifactData[] cursed_ArtifactData;      // 저주받은 장신구 데이터
-    private List<ArtifactData> have_ArtifactData = new List<ArtifactData>();  // 플레이어가 지니고 있는 모든 유물 데이터 리스트
-    // 리스트이지만 최대 수는 6개이기 때문에 유의해서 코딩해야함.
-
-    private GameObject slotParent;
-    private Image[] slotImgArr = new Image[6];
-
+    [Header ("Reference")]
     private Player _player;
     private Enemy _targetInfo;
     private List<Enemy> _EnemyInfoList;
     private Paint[] _PaintScripts;
-
     private List<Enemy> targetInfoList = new List<Enemy>();
+
+    [Header ("Artifact Data")]
+    public ArtifactData[] all_ArtifactData;   // 모든 장신구 데이터
+
+    [Space (10f)]
+    public ArtifactData[] normal_ArtifactData;      // 일반 장신구 데이터
+    public ArtifactData[] rare_AritfactData;        // 희귀 장신구 데이터
+    public ArtifactData[] unique_ArtifactData;      // 유니크 장신구 데이터
+    public ArtifactData[] cursed_ArtifactData;      // 저주받은 장신구 데이터
+
+    [Space (10f)]
+    private List<ArtifactData> have_ArtifactData = new List<ArtifactData>();  // 플레이어가 지니고 있는 모든 유물 데이터 리스트
+    // 리스트이지만 최대 수는 6개이기 때문에 유의해서 코딩해야함.
+
+    [Header ("Object Reference")]
+    private GameObject slotParent;
+
+    [Header ("Others")]
+    private Image[] slotImgArr = new Image[6];
     private bool canUseArtifact;
 
     void Awake()

@@ -7,15 +7,21 @@ using UnityEngine.UI;
 public class HUD : MonoBehaviour
 {
     public enum InfoType { Player, Enemy }
+
+    [Header ("Object Type")]
     public InfoType type;
+
+    [Header ("target")]
     public GameObject target;
     private Enemy enemyScript;
     
+    [Header ("Reference")]
     Slider HP_Slider;
     GameObject shield_UI;
     //Image shield_Img;
     TextMeshProUGUI shield_Text;
 
+    [Header ("Status")]
     int curHealth;
     int maxHealth;
     int shield;

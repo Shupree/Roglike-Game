@@ -6,11 +6,16 @@ using UnityEngine.EventSystems;
 
 public class Paint : MonoBehaviour
 {
+    [Header ("Object Reference")]
+    public GameObject colorUI;
+
+    [Header ("Figure")]
     public int maxNum;
     public int currentNum;
     public int usedColorNum;
     public bool canUsePaint = false;
-    public GameObject colorUI;
+
+    [Header ("Image Script")]
     private Image icon;
 
     void Awake()

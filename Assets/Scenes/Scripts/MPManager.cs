@@ -9,22 +9,24 @@ using UnityEngine.UI;
 public class MPManager : MonoBehaviour
 {
     // 걸작 효과에 화상 적용 넣을까..
-    public MasterPieceData[] all_MPData;      // 모든 걸작 데이터
-    //private MasterPieceData[] have_MPData = new MasterPieceData[2];    // 플레이어가 가지고 있는 모든 걸작 데이터
-    public MasterPieceData use_MPData;     // 사용할 걸작 데이터
-
-    private GameObject UIObject;
-
+    [Header ("Reference")]
     private Player _player;
     private Enemy _targetInfo;
     private List<Enemy> _EnemyInfoList;
     private Paint[] _PaintScripts;
+    private PaletteManager _PaletteManager;
+
+    [Header ("MasterPiece Data")]
+    public MasterPieceData[] all_MPData;      // 모든 걸작 데이터
+    //private MasterPieceData[] have_MPData = new MasterPieceData[2];    // 플레이어가 가지고 있는 모든 걸작 데이터
+    public MasterPieceData use_MPData;     // 사용할 걸작 데이터
+
+    [Header ("UI")]
+    private GameObject UIObject;    // UI
 
     public GameObject MP_BtnUI;
     //private Image MP_BtnEmptyImg;
     private Image MP_BtnImg;
-
-    private PaletteManager _PaletteManager;
 
     private int finalDamage;
     private int damage;

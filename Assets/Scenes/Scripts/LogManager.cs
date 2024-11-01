@@ -6,13 +6,17 @@ using TMPro;
 
 public class LogManager : MonoBehaviour
 {
+    [Header ("Reference")]
     public TalkManager _TalkManager;
-    public GameObject talkPanel;
-    public TextMeshProUGUI talkText;
-    public GameObject talkObject;
-    ObjData objData;
 
+    [Header ("Object Reference")]
+    public GameObject talkPanel;    // UI Object
+    public GameObject talkObject;
+    private ObjData objData;
+
+    [Header ("Others")]
     public bool isLog;
+    public TextMeshProUGUI talkText;
     public int talkIndex;
 
     void Awake()

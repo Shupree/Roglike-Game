@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    [Header ("Position")]
     public GameObject[] position;
     public GameObject position_Outside;
+
+    [Header ("Prefabs")]
     public GameObject[] enemyPrefabArr;     // enemy Prefab Array
     private GameObject enemyPrefab;
+
+    [Space (10f)]
     public GameObject[] NPCPrefabArr;       // NPC Prefab Array
+
+    [Space (10f)]
     public GameObject[] chestPrefabArr;    // chest Prefab Array
+    
     private GameObject enemy;
 
     void Awake()

@@ -5,8 +5,13 @@ using UnityEngine.UI;
 
 public class PaletteManager : MonoBehaviour
 {
+    [Header ("Object reference")]
     public GameObject[] UIArr = new GameObject[5];
+    
+    [Header ("Image Scripts")]
     public Image[] imageArr = new Image[5];
+
+    [Header ("Figure")]
     private int paletteNum;
     public int limit = 2;       // 최대 페인트 수
     public int order = 0;       // 팔레트 순서

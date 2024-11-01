@@ -8,6 +8,8 @@ public class CanvasScript : MonoBehaviour
 {
     private SkillData skillData;
     public int level;
+
+    [Header ("Sprite")]
     public Sprite basicSprite;
 
     Image icon;

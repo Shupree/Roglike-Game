@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     // static을 통해 메모리에 정보를 저장 후 타 스크립트에서 사용 가능.
     public static GameManager instance;
 
+    [Header ("Reference")]
     public Camera _MainCamera;
     public GameObject _CanvasUI;
     public Paint[] _PaintScripts;   // [0]빨강 [1]파랑 [2]노랑 [3]하양
@@ -34,25 +35,34 @@ public class GameManager : MonoBehaviour
         rest, start, playerTurn, playerAttack, enemyTurn, win, defeat
     }
 
+    [Header ("State")]
     public State state;
 
+    [Header ("Enemy Info")]
     public bool isLive;  // 적 생존 여부
+
+    [Space (10f)]
     public int[] enemyID = new int[4];    // 적 정보
-    public GameObject target;
-    public Enemy targetInfo;   // 타겟의 Enemy 스크립트
     public List<GameObject> EnemyList;   // 적 오브젝트
     public List<Enemy> EnemyInfoList;    // 적 Enemy 스크립트
+    
+    [Space (10f)]
+    public GameObject target;
+    public Enemy targetInfo;   // 타겟의 Enemy 스크립트
 
+    [Header ("Enemy Spawn Data")]
     public MonsterStageData[] EnemySetData;     // 랜덤 적 스폰 데이터 (StageManager로 옮겨볼 것)
     private int randomSetNum;       // 랜덤 정수 => 적 스폰 데이터 확립 (StageManager로 옮겨볼 것)
 
-    //private int map;
+    [Header ("Player Skill Data")]
     public SkillData usingSkill;
     public MasterPieceData MP_Data;
 
+    [Header ("Canvas")]
     public int maxCanvasNum;       // 최대 캔버스 수 (최대 행동 수)
     private int canvasNum;       // 현재 캔버스 수 (현재 행동 수)
 
+    [Header ("Turn")]
     public int turn;            // 현재 턴 수
 
     private int finalDamage;

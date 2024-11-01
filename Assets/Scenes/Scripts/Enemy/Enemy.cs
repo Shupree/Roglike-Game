@@ -7,30 +7,39 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
+    [Header ("Reference")]
     private SpriteRenderer target_SpriteRenderer;
 
+    [Header ("Enemy Data")]
     public EnemyData data;
     private int[] enemyAct = new int[5];
 
+    [Header ("Turn")]
     public int turn;
 
+    [Header ("Status")]
     public int maxHealth;
     public int health;
     public int shield;
+
+    [Header ("Buff / Debuff")]
     // 00화상, 01중독, 02감전, 03추위, 04빙결, 05기절 06공포, 07위압, 08부식
     // 00철갑, 01집중, 02흡수, 03가시
     public int[] debuffArr = new int[9];
     public int[] buffArr = new int[4];
 
+    [Header ("Enemy Skill Figure")]
     public int skillDamage;
     public int skillShield;
     public int effectType;
     public int effectNum;
     public int skillHeal;
 
+    [Header ("Skill Order")]
     private int skillOrder;
     private int maxSkillOrder;
 
+    [Header ("Others")]
     public bool isLive;
     
     void Awake()

@@ -8,14 +8,19 @@ using System;
 
 public class StoreManager : MonoBehaviour
 {
+    [Header ("Reference")]
     private Player _Player;
     private SkillManager _SkillManager;
     private ArtifactManager _ArtifactManager;
     private MPManager _MasterpieceManager;
 
+    [Header ("Object Reference")]
     public GameObject storeNPC;     // NPC Object
 
-    private GameObject storeUI;
+    private GameObject storeUI;     // UI
+
+    [Header ("Sprite")]
+    public Sprite soldOutImg;   // 판매 완료 이미지
 
     private GameObject[] skillSlotArr = new GameObject[4];  // UI Arr
     private GameObject[] artifactSlotArr = new GameObject[3];
@@ -28,8 +33,6 @@ public class StoreManager : MonoBehaviour
     private SkillData[] skillDataArr = new SkillData[4];    // 진열 상품의 Data
     private List<ArtifactData> artifactDataList = new List<ArtifactData>();
     private MasterPieceData masterpieceData;
-
-    public Sprite soldOutImg;   // 판매 완료 이미지
 
     void Awake()
     {
