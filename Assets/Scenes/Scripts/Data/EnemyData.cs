@@ -12,7 +12,8 @@ public class EnemyData : ScriptableObject
     public EnemyType enemyType;
     public int enemyId;
     public string enemyName;
-    public string enemyDesc;
+    [TextArea (3, 5)]
+    public string enemyDesc;    // 적 정보
     public Sprite enemyModel;
     public int gold;
     public int skillNum;
