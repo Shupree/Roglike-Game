@@ -22,7 +22,8 @@ public class MasterPieceData : ScriptableObject
     public MP_Class MP_class;
     public int MP_Id;
     public string MP_Name;
-    public string MP_Desc;
+    [TextArea (3, 5)]
+    public string MP_Desc;      // 걸작 정보
     public Sprite MP_Sprite;
     public int cost;
 

@@ -15,6 +15,7 @@ public class SkillData : ScriptableObject
     public AttackType attackType;   // 공격 방식
     public int skillId;         // 스킬 ID
     public string skillName;    // 스킬 이름
+    [TextArea (3, 5)]
     public string skillDesc;    // 스킬 설명
     public Sprite skillIcon;    // 스킬 아이콘
 

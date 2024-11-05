@@ -15,6 +15,7 @@ public class ArtifactData : ScriptableObject
     public ArtifactRate artifactRate;   // 유물 등급
     public int ArtifactId;                   // 유물 ID
     public string ArtifactName;              // 유물 이름
+    [TextArea (3, 5)]
     public string ArtifactDesc;              // 유물 설명
     public Sprite sprite;               // 유물 아이콘
     public TargetType targetType;       // 타겟 종류
