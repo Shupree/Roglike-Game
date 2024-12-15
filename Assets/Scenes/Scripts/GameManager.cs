@@ -65,6 +65,11 @@ public class GameManager : MonoBehaviour
     [Header ("Turn")]
     public int turn;            // 현재 턴 수
 
+    [Header ("Stage")]
+    public int stage;          // 현재 스테이지
+
+    private int chapter;        // 현재 챕터
+
     private int finalDamage;
     private int damage;
     private int shield;
@@ -80,8 +85,11 @@ public class GameManager : MonoBehaviour
         _SpawnManager = gameObject.GetComponent<SpawnManager>();
         _StageManager.Init();
 
-        // 테스트 맵
-        //map = 0;
+        // 테스트 챕터
+        chapter = 0;
+
+        // 스테이지 초기화
+        stage = 0;
 
         // 임시 : 캔버스 수 2개
         maxCanvasNum = 2;
@@ -208,6 +216,9 @@ public class GameManager : MonoBehaviour
                 _SpawnManager.StoreNPCSpawn();
                 break;
         }
+
+        stage++;    // 스테이지 + 1
+        Debug.Log("스테이지 : "+chapter+"-"+stage);
     }
 
     public void SetNextStageUI()
@@ -631,6 +642,8 @@ public class GameManager : MonoBehaviour
 
     void EndBattle()
     {
+        turn = 0;   // 턴 초기화
+
         // 플레이어 상태 이상 초기화
         _player.ClearStatusEffect();
 
