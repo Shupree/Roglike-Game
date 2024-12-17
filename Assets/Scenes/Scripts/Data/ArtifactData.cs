@@ -17,7 +17,7 @@ public class ArtifactData : ScriptableObject
     public string ArtifactName;              // 유물 이름
     [TextArea (3, 5)]
     public string ArtifactDesc;              // 유물 설명
-    public Sprite sprite;               // 유물 아이콘
+    public Sprite AritfactIcon;               // 유물 아이콘
     public TargetType targetType;       // 타겟 종류
     public int damage;                  // 데미지
     public int shield;                  // 보호막

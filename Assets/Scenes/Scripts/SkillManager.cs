@@ -21,21 +21,23 @@ public class SkillManager : MonoBehaviour
     [Space (10f)]
     public SkillData[] use_SkillData = new SkillData[4];    // 사용할 스킬 데이터 (red, blue, yellow, white 순)
 
-    private GameObject UIObject;
-    private GameObject[] skillSlots = new GameObject[4];       // 색상별 스킬 슬롯 (빨강, 파랑, 노랑, 흰색)
+    //private GameObject UIObject;
+    //private GameObject[] skillSlots = new GameObject[4];       // 색상별 스킬 슬롯 (빨강, 파랑, 노랑, 흰색)
 
-    private bool isOpend;
+    //private bool isOpend;
 
     void Awake()
     {
+        /*
         UIObject = transform.GetChild(0).gameObject;
         UIObject.SetActive(false);
         for (int i = 0; i < 4; i++) 
         {
             skillSlots[i] = UIObject.transform.GetChild(i).gameObject;
         }
+        */
 
-        isOpend = false;
+        // isOpend = false;
 
         // 테스트용 스킬 데이터 획득
         use_SkillData[0] = red_SkillData[0];
@@ -46,12 +48,13 @@ public class SkillManager : MonoBehaviour
 
         use_SkillData[3] = white_SkillData[0];
 
-        ConvertImage(SkillData.SkillType.Red, use_SkillData[0]);
-        ConvertImage(SkillData.SkillType.Blue, use_SkillData[1]);
-        ConvertImage(SkillData.SkillType.Yellow, use_SkillData[2]);
-        ConvertImage(SkillData.SkillType.White, use_SkillData[3]);
+        GameManager.instance._StorageManager.ConvertSkillImage(SkillData.SkillType.Red, use_SkillData[0]);
+        GameManager.instance._StorageManager.ConvertSkillImage(SkillData.SkillType.Blue, use_SkillData[1]);
+        GameManager.instance._StorageManager.ConvertSkillImage(SkillData.SkillType.Yellow, use_SkillData[2]);
+        GameManager.instance._StorageManager.ConvertSkillImage(SkillData.SkillType.White, use_SkillData[3]);
     }
 
+    /*
     public void BagBtn()
     {
         if (isOpend == false) {
@@ -63,7 +66,9 @@ public class SkillManager : MonoBehaviour
             isOpend = false;
         }
     }
+    */
 
+    /*
     public void ConvertImage(SkillData.SkillType colorType, SkillData data)     // colorType : 1 빨강, 2 파랑, 3 노랑, 4 하양
     {
         // 색상확인 후 스킬 교체
@@ -82,6 +87,7 @@ public class SkillManager : MonoBehaviour
                 break;
         }
     }
+    */
 
     public void ConvertSkill(SkillData skillData)
     {
@@ -102,7 +108,7 @@ public class SkillManager : MonoBehaviour
         }
 
         // 가방 내 스킬 아이콘 교체
-        ConvertImage(skillData.skillType, use_SkillData[0]);
+        GameManager.instance._StorageManager.ConvertSkillImage(skillData.skillType, use_SkillData[0]);
     }
 
     public SkillData PickRandomSkill(int colorNum)   // colorNum : 1.빨강, 2.파랑, 3.노랑, 4.하양

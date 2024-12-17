@@ -108,7 +108,7 @@ public class StoreManager : MonoBehaviour
         // 상품 이미지 변경 & 가격 설정_장신구
         for (int i = 0; i < artifactSlotArr.Length; i++)
         {
-            artifactSlotArr[i].GetComponent<Image>().sprite = artifactDataList[i].sprite;
+            artifactSlotArr[i].GetComponent<Image>().sprite = artifactDataList[i].AritfactIcon;
             switch (artifactDataList[i].artifactRate) {
                 case ArtifactData.ArtifactRate.Common:
                     break;

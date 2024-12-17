@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public StageManager _StageManager;
     public StoreManager _StoreManager;
     public LogManager _LogManager;
+    public StorageManager _StorageManager;
     public Player _player;
 
     public enum State

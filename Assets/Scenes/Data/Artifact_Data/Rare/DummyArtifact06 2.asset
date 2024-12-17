@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: DummyArtifact06 2
   m_EditorClassIdentifier: 
   artifactRate: 1
-  ArtifactId: 5
+  ArtifactId: 8
   ArtifactName: "\uB354\uBBF8 \uC720\uBB3C06"
   ArtifactDesc: "\uC804\uD22C \uC2DC\uC791 \uC2DC, \uBAA8\uB4E0 \uC801\uC5D0\uAC8C
     4\uD654\uC0C1"
-  sprite: {fileID: 154122315, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  AritfactIcon: {fileID: -5908743213997753785, guid: 4d701fb8bab94204e92af20e3e7b6a8a, type: 3}
   targetType: 2
   damage: 0
   shield: 0

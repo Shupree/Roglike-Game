@@ -84,14 +84,14 @@ public class LootUI : MonoBehaviour
                 if (detail < 0) {       // 랜덤 보상
                     ArtifactData artifactData = GameManager.instance._ArtifactManager.PickRandomArtifact(detail + 10);
                     UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite
-                        = artifactData.sprite;
+                        = artifactData.AritfactIcon;
                     UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text
                         = artifactData.name;
                     lootDetail[order] = artifactData.ArtifactId;    // 지급받을 장신구의 ID 저장
                 }
                 else {                  // 특정 보상
                     UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite
-                        = GameManager.instance._ArtifactManager.all_ArtifactData[detail].sprite;
+                        = GameManager.instance._ArtifactManager.all_ArtifactData[detail].AritfactIcon;
                     UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text
                         = GameManager.instance._ArtifactManager.all_ArtifactData[detail].name;
                     lootDetail[order] = detail;     // 지급받을 장신구의 ID 저장

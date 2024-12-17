@@ -17,7 +17,7 @@ MonoBehaviour:
   ArtifactName: "\uB354\uBBF8 \uC720\uBB3C05"
   ArtifactDesc: "\uC801 \uACF5\uACA9 \uC2DC, \uD50C\uB808\uC774\uC5B4\uAC00 HP\uB97C
     4 \uC783\uACE0 \uBAA8\uB4E0 \uC801 7\uAC10\uC804"
-  sprite: {fileID: -966563848, guid: c4d2ccab0c2ad7e47853b6e31a7ac7c2, type: 3}
+  AritfactIcon: {fileID: 8777974672713614842, guid: 4d701fb8bab94204e92af20e3e7b6a8a, type: 3}
   targetType: 2
   damage: 2
   shield: 0

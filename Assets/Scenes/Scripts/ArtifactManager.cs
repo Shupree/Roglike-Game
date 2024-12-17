@@ -24,23 +24,25 @@ public class ArtifactManager : MonoBehaviour
 
     [Space (10f)]
     private List<ArtifactData> have_ArtifactData = new List<ArtifactData>();  // 플레이어가 지니고 있는 모든 유물 데이터 리스트
-    // 리스트이지만 최대 수는 6개이기 때문에 유의해서 코딩해야함.
+    // 리스트이지만 최대 수는 5개이기 때문에 유의해서 코딩해야함.
 
     [Header ("Object Reference")]
-    private GameObject slotParent;
+    //private GameObject slotParent;
 
     [Header ("Others")]
-    private Image[] slotImgArr = new Image[6];
+    //private Image[] slotImgArr = new Image[5];
     private bool canUseArtifact;
 
     void Awake()
     {
-        slotParent = transform.GetChild(0).GetChild(0).gameObject;
+        //slotParent = transform.GetChild(0).GetChild(0).gameObject;
 
-        for (int i = 0; i < 6; i++) 
+        /*
+        for (int i = 0; i < 5; i++) 
         {
             slotImgArr[i] = slotParent.transform.GetChild(i).GetComponent<Image>();
         }
+        */
 
         _player = GameManager.instance._player;
         _EnemyInfoList = GameManager.instance.EnemyInfoList;
@@ -53,10 +55,10 @@ public class ArtifactManager : MonoBehaviour
 
     public void AddArtifact(int artifactId) 
     {   
-        // 아티팩트가 최대(6개) 개수 미만일 때
-        if (have_ArtifactData.Count < 6) {
+        // 아티팩트가 최대(5개) 개수 미만일 때
+        if (have_ArtifactData.Count < 5) {
             have_ArtifactData.Add(all_ArtifactData[artifactId]);
-            slotImgArr[have_ArtifactData.Count - 1].sprite = have_ArtifactData[have_ArtifactData.Count - 1].sprite;
+            GameManager.instance._StorageManager.ConvertArtifactImage(have_ArtifactData.Count, all_ArtifactData[artifactId]);   // 장신구 숫자 = 현재 슬롯 순서
         }
         // 아티팩트가 최대(6개) 개수를 넘었을 때
         else {
