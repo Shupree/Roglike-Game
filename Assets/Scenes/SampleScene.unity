@@ -628,7 +628,7 @@ MonoBehaviour:
   _ArtifactManager: {fileID: 1186961439}
   _ThemeManager: {fileID: 82714236}
   _PaletteManager: {fileID: 1995579606}
-  _LootManager: {fileID: 748426488}
+  _LootManager: {fileID: 1788747356}
   _StageManager: {fileID: 970653728}
   _StoreManager: {fileID: 812397866}
   _LogManager: {fileID: 1502220570}
@@ -2053,7 +2053,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 748426488}
+      - m_Target: {fileID: 1788747356}
         m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
         m_MethodName: ClickLoot_SkillBtn
         m_Mode: 3
@@ -2648,9 +2648,9 @@ RectTransform:
   - {fileID: 1718342956}
   m_Father: {fileID: 764119329}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 15, y: -20}
   m_SizeDelta: {x: 24, y: 26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &359781418
@@ -2697,7 +2697,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 748426488}
+      - m_Target: {fileID: 1788747356}
         m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
         m_MethodName: ClickLootBtn
         m_Mode: 3
@@ -4097,7 +4097,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 748426488}
+      - m_Target: {fileID: 1788747356}
         m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
         m_MethodName: ClickLoot_SkillBtn
         m_Mode: 3
@@ -6402,14 +6402,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 748426487}
-  - component: {fileID: 748426488}
   m_Layer: 5
-  m_Name: LootUI
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &748426487
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6417,7 +6416,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 748426486}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6427,29 +6426,13 @@ RectTransform:
   - {fileID: 421269793}
   - {fileID: 1679925203}
   - {fileID: 1110159475}
-  m_Father: {fileID: 828916829}
+  m_Father: {fileID: 1788747355}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 90, y: 6}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &748426488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748426486}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b8db4c43184bb84fa2bd10fef57cce0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteArr:
-  - {fileID: -1997803578, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
-  - {fileID: 934571490, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
-  - {fileID: -155058199, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
 --- !u!1 &756236259
 GameObject:
   m_ObjectHideFlags: 0
@@ -7667,7 +7650,7 @@ RectTransform:
   - {fileID: 762431495}
   - {fileID: 1208187669}
   - {fileID: 618275309}
-  - {fileID: 748426487}
+  - {fileID: 1788747355}
   - {fileID: 812397865}
   - {fileID: 290734020}
   - {fileID: 1502220569}
@@ -9145,9 +9128,9 @@ RectTransform:
   - {fileID: 2028268150}
   m_Father: {fileID: 764119329}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 45, y: -20}
   m_SizeDelta: {x: 24, y: 26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &956512062
@@ -9194,7 +9177,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 748426488}
+      - m_Target: {fileID: 1788747356}
         m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
         m_MethodName: ClickLootBtn
         m_Mode: 3
@@ -14426,7 +14409,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 748426488}
+      - m_Target: {fileID: 1788747356}
         m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
         m_MethodName: ClickNextBtn
         m_Mode: 1
@@ -14696,7 +14679,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 748426488}
+      - m_Target: {fileID: 1788747356}
         m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
         m_MethodName: ClickLoot_SkillBtn
         m_Mode: 3
@@ -14973,6 +14956,60 @@ RectTransform:
   m_AnchoredPosition: {x: -148, y: -54}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1788747354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1788747355}
+  - component: {fileID: 1788747356}
+  m_Layer: 5
+  m_Name: LootUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1788747355
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1788747354}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 748426487}
+  m_Father: {fileID: 828916829}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 90, y: 6}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1788747356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1788747354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b8db4c43184bb84fa2bd10fef57cce0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootUI: {fileID: 748426486}
+  spriteArr:
+  - {fileID: -1997803578, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: 934571490, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: -155058199, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
 --- !u!1 &1805693480
 GameObject:
   m_ObjectHideFlags: 0
@@ -15877,9 +15914,9 @@ RectTransform:
   - {fileID: 2104394788}
   m_Father: {fileID: 764119329}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 75, y: -20}
   m_SizeDelta: {x: 24, y: 26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1898067952
@@ -15926,7 +15963,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 748426488}
+      - m_Target: {fileID: 1788747356}
         m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
         m_MethodName: ClickLootBtn
         m_Mode: 3

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 // 전투 승리 보상 버튼UI
 public class LootUI : MonoBehaviour
 {
+    public GameObject lootUI;   // 메인 오브젝트
     private GameObject[] UIArr = new GameObject[3];     // 전리품 UI 버튼
     private GameObject loot_SkillUI;         // 전리품_스킬 선택 시 열리는 선택지 UI
     private GameObject[] loot_SkillUIArr = new GameObject[3];       // 전리품_스킬 선택지 UI 버튼
@@ -23,11 +24,10 @@ public class LootUI : MonoBehaviour
         // UI 불러오기
         for (int i = 0; i < UIArr.Length; i++) 
         {
-            UIArr[i] = transform.GetChild(1).GetChild(i).gameObject;
-            Debug.Log(UIArr[i]);
+            UIArr[i] = lootUI.transform.GetChild(1).GetChild(i).gameObject;
             UIArr[i].SetActive(false);
         }
-        loot_SkillUI = transform.GetChild(4).gameObject;
+        loot_SkillUI = lootUI.transform.GetChild(4).gameObject;
         for (int i = 0; i < loot_SkillUIArr.Length; i++)
         {
             loot_SkillUIArr[i] = loot_SkillUI.transform.GetChild(0).GetChild(i).gameObject;
@@ -55,7 +55,7 @@ public class LootUI : MonoBehaviour
             lootType[i] = 0;
             lootDetail[i] = 0;
         }
-        gameObject.SetActive(false);
+        lootUI.SetActive(false);
         order = 0;      // 전리품 초기화
     }
 
@@ -64,7 +64,10 @@ public class LootUI : MonoBehaviour
     // 장신구 detail : -10.랜덤, -9.Normal랜덤, -8.Rare랜덤, -7.Unique랜덤, -6.Cursed랜덤, 정수.장신구ID
     public void SetLootUI(int typeNum, int detail)
     {
+        // UI 활성화
+        lootUI.SetActive(true);
         UIArr[order].SetActive(true);
+
         // 해당 UI 이미지 변경
         switch (typeNum) {
             case 1:     // 골드 보상
@@ -143,7 +146,6 @@ public class LootUI : MonoBehaviour
                 for (int i = 0; i < 3; i++)
                 {
                     loot_SkillUIArr[i].SetActive(true);
-                    Debug.Log(randomNumList[i]);
                     loot_SkillDataList.Add(GameManager.instance._SkillManager.PickRandomSkill(randomNumList[i]));
                     loot_SkillUIArr[i].GetComponent<Image>().sprite = loot_SkillDataList[i].skillIcon;
                 }
