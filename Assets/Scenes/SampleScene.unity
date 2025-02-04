@@ -8043,7 +8043,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 64
+  m_ReferencePixelsPerUnit: 128
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 320, y: 180}
   m_ScreenMatchMode: 0
@@ -11731,16 +11731,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   all_ArtifactData:
   - {fileID: 11400000, guid: adb2a9d9e355a5a45a0e25d877abe5a1, type: 2}
-  - {fileID: 11400000, guid: 39c7d4efe8e78be4d9628f23cf25203c, type: 2}
   - {fileID: 11400000, guid: 3ac3ae42417aaf641abcb5b81e5a4b1e, type: 2}
-  - {fileID: 11400000, guid: bc3e4305f9d54ec418a69177cabfecf1, type: 2}
-  - {fileID: 11400000, guid: c2442f38caecf0947b549146e7bb7f3c, type: 2}
-  - {fileID: 11400000, guid: 1026949b5ab44214a86dec5b2c79ae0c, type: 2}
   - {fileID: 11400000, guid: b850f2674b4e6944f9dc38e1227dd89e, type: 2}
-  - {fileID: 11400000, guid: 3124958d748af1c47807a1c468c45db5, type: 2}
   - {fileID: 11400000, guid: 0f4582b24a62d2e49b9de8013a2a0d4d, type: 2}
+  - {fileID: 11400000, guid: bc3e4305f9d54ec418a69177cabfecf1, type: 2}
+  - {fileID: 11400000, guid: 1026949b5ab44214a86dec5b2c79ae0c, type: 2}
   - {fileID: 11400000, guid: 5a4e2c9e5ac0b8c4ebb524c741366b4f, type: 2}
   - {fileID: 11400000, guid: 3d62b98da65544e499d4a0a8dcfb6b22, type: 2}
+  - {fileID: 11400000, guid: 39c7d4efe8e78be4d9628f23cf25203c, type: 2}
+  - {fileID: 11400000, guid: c2442f38caecf0947b549146e7bb7f3c, type: 2}
+  - {fileID: 11400000, guid: 3124958d748af1c47807a1c468c45db5, type: 2}
   normal_ArtifactData:
   - {fileID: 11400000, guid: adb2a9d9e355a5a45a0e25d877abe5a1, type: 2}
   - {fileID: 11400000, guid: 3ac3ae42417aaf641abcb5b81e5a4b1e, type: 2}
@@ -11753,9 +11753,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3d62b98da65544e499d4a0a8dcfb6b22, type: 2}
   unique_ArtifactData:
   - {fileID: 11400000, guid: 39c7d4efe8e78be4d9628f23cf25203c, type: 2}
-  - {fileID: 11400000, guid: 3124958d748af1c47807a1c468c45db5, type: 2}
-  cursed_ArtifactData:
   - {fileID: 11400000, guid: c2442f38caecf0947b549146e7bb7f3c, type: 2}
+  - {fileID: 11400000, guid: 3124958d748af1c47807a1c468c45db5, type: 2}
+  cursed_ArtifactData: []
 --- !u!1 &1188181098
 GameObject:
   m_ObjectHideFlags: 0
@@ -12158,7 +12158,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1262471244
 RectTransform:
   m_ObjectHideFlags: 0

@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c46d04224bc2ee94db7dcb8fccf9e158, type: 3}
-  m_Name: DummyArtifact
+  m_Name: U_Acc_02
   m_EditorClassIdentifier: 
-  artifactRate: 0
-  ArtifactId: 0
-  ArtifactName: "\uB354\uBBF8 \uC720\uBB3C"
-  ArtifactDesc: "\uC801 \uACF5\uACA9 \uC2DC, \uD50C\uB808\uC774\uC5B4\uC758 \uCCB4\uB825
-    - 1, \uBAA8\uB4E0 \uC801\uC5D0\uAC8C 2\uB370\uBBF8\uC9C0"
-  AritfactIcon: {fileID: 21300000, guid: 2b4560a3f7073b44e947a756afab0feb, type: 3}
+  artifactRate: 3
+  ArtifactId: 9
+  ArtifactName: "\uB354\uBBF8 \uC720\uBB3C05"
+  ArtifactDesc: "\uC801 \uACF5\uACA9 \uC2DC, \uD50C\uB808\uC774\uC5B4\uAC00 HP\uB97C
+    4 \uC783\uACE0 \uBAA8\uB4E0 \uC801 7\uAC10\uC804"
+  AritfactIcon: {fileID: 8777974672713614842, guid: 4d701fb8bab94204e92af20e3e7b6a8a, type: 3}
   targetType: 2
   damage: 2
   shield: 0
   heal: 0
-  effectType: 0
-  effect: 0
+  effectType: 3
+  effect: 7
   eraseEffectType: 0
   eraseEffect: 0
   whenToTrigger: 2
   conditionType: 3
   conditionEffect: 0
   conditionColor: 
-  conditionNum: 1
+  conditionNum: 4

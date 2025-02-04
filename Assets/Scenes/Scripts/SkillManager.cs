@@ -108,7 +108,7 @@ public class SkillManager : MonoBehaviour
         }
 
         // 가방 내 스킬 아이콘 교체
-        GameManager.instance._StorageManager.ConvertSkillImage(skillData.skillType, use_SkillData[0]);
+        GameManager.instance._StorageManager.ConvertSkillImage(skillData.skillType, skillData);
     }
 
     public SkillData PickRandomSkill(int colorNum)   // colorNum : 1.빨강, 2.파랑, 3.노랑, 4.하양
