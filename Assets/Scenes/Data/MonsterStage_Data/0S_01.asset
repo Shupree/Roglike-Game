@@ -16,6 +16,6 @@ MonoBehaviour:
   stageStr: 0S
   setNum: 1
   monster01: 1
-  monster02: 1
+  monster02: 0
   monster03: 0
   monster04: 0

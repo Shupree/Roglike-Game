@@ -40,6 +40,7 @@ public class SpawnManager : MonoBehaviour
                 enemy.transform.parent = position[i].transform;
                 enemy.name = enemy.GetComponent<Enemy>().data.enemyName;
                 GameManager.instance.EnemyList.Add(enemy);
+                GameManager.instance._HUDManager.ActivateHUD(i, enemy.GetComponent<Enemy>());
             }
         }
     }

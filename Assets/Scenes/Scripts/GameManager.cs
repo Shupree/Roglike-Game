@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public StoreManager _StoreManager;
     public LogManager _LogManager;
     public StorageManager _StorageManager;
+    public HUDManager _HUDManager;
     public Player _player;
 
     public enum State
@@ -97,7 +98,6 @@ public class GameManager : MonoBehaviour
 
         // 임시 : 첫 스테이지 적 스폰 ID
         enemyID[0] = 1;
-        enemyID[3] = 2;
 
         damage = 0;
         shield = 0;

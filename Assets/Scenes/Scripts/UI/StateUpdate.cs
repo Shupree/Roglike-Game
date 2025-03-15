@@ -9,7 +9,8 @@ public class StateUpdate : MonoBehaviour
     public enum TargetInfo { Player, Enemy }
 
     [Header ("Target Info")]
-    public TargetInfo targetType;
+    public TargetInfo targetType;   //
+    public Enemy enemyScript;  // 해당 오브젝트의 Enemy 스크립트
 
     [Header ("UI Scripts")]
     private Image[] UIArr = new Image[6];   // 상태이상 UI 배열 (stateUI)
@@ -34,6 +35,7 @@ public class StateUpdate : MonoBehaviour
 
     void Awake()
     {
+        // 각 UI 오브젝트 할당
         for (int i = 0; i < UIArr.Length; i++) {
             UIArr[i] = transform.GetChild(i).gameObject.GetComponent<Image>();
             UIArr[i].enabled = false;
@@ -68,15 +70,18 @@ public class StateUpdate : MonoBehaviour
                 }
                 break;
             case TargetInfo.Enemy:
-                Enemy EnemyComponent = transform.parent.parent.gameObject.GetComponent<Enemy>();
-                // 모든 버프/디버프 불러오기
-                for (int i = 0; i < EnemyComponent.debuffArr.Length; i++) 
-                {
-                    effectArr[i] = EnemyComponent.debuffArr[i];
+                if (enemyScript == null) {
+                    return;     // 오류 방지
                 }
-                for (int i = 9; i < EnemyComponent.buffArr.Length + 9; i++) 
+
+                // 모든 버프/디버프 불러오기
+                for (int i = 0; i < enemyScript.debuffArr.Length; i++) 
                 {
-                    effectArr[i] = EnemyComponent.buffArr[i - 9];
+                    effectArr[i] = enemyScript.debuffArr[i];
+                }
+                for (int i = 9; i < enemyScript.buffArr.Length + 9; i++) 
+                {
+                    effectArr[i] = enemyScript.buffArr[i - 9];
                 }
                 break;
         }
