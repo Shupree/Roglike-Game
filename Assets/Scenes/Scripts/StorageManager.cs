@@ -12,8 +12,6 @@ public class StorageManager : MonoBehaviour
     public GameObject MPSlotArr;
     public GameObject[] themeSkillSlotArr = new GameObject[2];
 
-    private bool isOpend = false;
-
     void Awake()
     {
         UIObject = transform.GetChild(1).gameObject;    // StorageUI 오브젝트 받아오기
@@ -34,20 +32,11 @@ public class StorageManager : MonoBehaviour
             themeSkillSlotArr[i] = UIObject.transform.GetChild(2).GetChild(1).GetChild(i).gameObject;
         }
         */
-
-        isOpend = false;
     }
 
-    public void BagBtn()
+    public void BagBtn_clicked()
     {
-        if (isOpend == false) {
-            UIObject.SetActive(true);
-            isOpend = true;
-        }
-        else {
-            UIObject.SetActive(false);
-            isOpend = false;
-        }
+        UIObject.SetActive(!UIObject.activeSelf);
     }
 
     public void ConvertSkillImage(SkillData.SkillType colorType, SkillData data)     // colorType : 1 빨강, 2 파랑, 3 노랑, 4 하양

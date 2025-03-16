@@ -39,8 +39,8 @@ public class Enemy : MonoBehaviour
     private int skillOrder;
     private int maxSkillOrder;
 
-    [Header ("Others")]
-    public bool isLive;
+    [Header ("Placement Order")]
+    public int order = 0;  // 적 순서 (배치 넘버)
     
     void Awake()
     {
@@ -75,8 +75,9 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("적 처치");
 
-            GameManager.instance.EnemyInfoList.Remove(gameObject.GetComponent<Enemy>());
-            GameManager.instance.EnemyList.Remove(gameObject);
+            GameManager.instance.EnemyInfoList.Remove(gameObject.GetComponent<Enemy>());    // GameManager에서 Enemy 스크립트 정보 삭제
+            GameManager.instance.EnemyList.Remove(gameObject);      // GameManager에서 Enemy 오브젝트 삭제
+            GameManager.instance._HUDManager.DeActivateHUD(order);
             //GameManager.instance.EnemyNum--;
             //isLive = false;
             //gameObject.SetActive(false);
@@ -84,7 +85,7 @@ public class Enemy : MonoBehaviour
             // 플레이어의 승리 확인
             GameManager.instance.CheckVictory();
 
-            Destroy(gameObject);
+            Destroy(gameObject);    // 적 제거
         }
     }
 

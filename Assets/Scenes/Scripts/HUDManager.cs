@@ -18,11 +18,13 @@ public class HUDManager : MonoBehaviour
         }
     }
 
-    // HUD 활성화
-    public void ActivateHUD (int order, Enemy script)  // 활성화할 HUD 넘버(order), 해당 Enemy 오브젝트 받기
+    // 적 HUD 활성화
+    public void ActivateHUD (int order, GameObject obj)  // 활성화할 HUD 넘버(order), 해당 Enemy 오브젝트 받기
     {
-        ObjArr[order].GetComponent<HUD>().enemyScript = script;     // HUD의 대상 설정
-        ObjArr[order].transform.GetChild(2).GetComponent<StateUpdate>().enemyScript = script;   // 
+        Enemy enemyScript = obj.GetComponent<Enemy>();
+        ObjArr[order].GetComponent<HUD>().enemyScript = enemyScript;     // HUD의 대상 설정
+        ObjArr[order].transform.GetChild(2).GetComponent<StateUpdate>().enemyScript = enemyScript;   // HUD 하위의 StateUpdate 대상 설정
+        ObjArr[order].GetComponent<RectTransform>().position = obj.transform.position;      // HUD 위치 조정 (적 이미지 아래)
         ObjArr[order].SetActive(true);
     }
 

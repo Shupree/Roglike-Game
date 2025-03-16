@@ -73,20 +73,20 @@ public class LootUI : MonoBehaviour
             case 1:     // 골드 보상
                 lootType[order] = 1;
                 lootDetail[order] = detail;
-                UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = spriteArr[0];
+                UIArr[order].transform.GetChild(0).GetComponent<Image>().sprite = spriteArr[0];
                 UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = detail.ToString() + " Golds";
                 break;
             case 2:     // 일반스킬 보상
                 lootType[order] = 2;
                 lootDetail[order] = detail;
-                UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = spriteArr[1];
+                UIArr[order].transform.GetChild(0).GetComponent<Image>().sprite = spriteArr[1];
                 UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Skills";
                 break;
             case 3:     // 장신구 보상
                 lootType[order] = 3;
                 if (detail < 0) {       // 랜덤 보상
                     ArtifactData artifactData = GameManager.instance._ArtifactManager.PickRandomArtifact(detail + 10);
-                    UIArr[order].transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite
+                    UIArr[order].transform.GetChild(0).GetComponent<Image>().sprite
                         = artifactData.AritfactIcon;
                     UIArr[order].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text
                         = artifactData.name;
@@ -107,7 +107,7 @@ public class LootUI : MonoBehaviour
     }
 
     // 보상 버튼 클릭 시
-    public void ClickLootBtn(int btnOrder)
+    public void Click_LootBtn(int btnOrder)
     {
         switch (lootType[btnOrder - 1]) {
             case 1:     // 보상: 골드
@@ -120,7 +120,7 @@ public class LootUI : MonoBehaviour
 
                 // 만약 전리품이 더 없을 시 자동 진행
                 if (order == 0) {
-                    ClickNextBtn();
+                    Click_NextBtn();
                 }
                 break;
             case 2:     // 보상: 스킬
@@ -164,20 +164,20 @@ public class LootUI : MonoBehaviour
 
                 // 만약 전리품이 더 없을 시 자동 진행
                 if (order == 0) {
-                    ClickNextBtn();
+                    Click_NextBtn();
                 }
                 break;
         }
     }
 
     // 전리품UI Off + 다음 선택지UI ON
-    public void ClickNextBtn()
+    public void Click_NextBtn()
     {
         DeactivateAllUI();
         GameManager.instance.SetNextStageUI();
     }
 
-    public void ClickLoot_SkillBtn(int btnOrder)
+    public void Click_SkillLootBtn(int btnOrder)
     {
         // 버튼에 따른 스킬 지급
         switch (btnOrder) {
@@ -204,7 +204,26 @@ public class LootUI : MonoBehaviour
 
         // 만약 전리품이 더 없을 시 자동 진행
         if (order == 0) {
-            ClickNextBtn();
+            Click_NextBtn();
+        }
+    }
+
+    // 스킬 보상 스킵
+    public void Click_SkipSkillLootBtn()
+    {
+        // 초기화
+        loot_SkillDataList = new List<SkillData>();
+
+        // UI 비활성화
+        for (int i = 0; i < loot_SkillUIArr.Length; i++)
+        {
+            loot_SkillUIArr[i].SetActive(false);
+        }
+        loot_SkillUI.SetActive(false);
+
+        // 만약 전리품이 더 없을 시 자동 진행
+        if (order == 0) {
+            Click_NextBtn();
         }
     }
 }

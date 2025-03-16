@@ -39,8 +39,9 @@ public class SpawnManager : MonoBehaviour
                 enemy = Instantiate(enemyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));
                 enemy.transform.parent = position[i].transform;
                 enemy.name = enemy.GetComponent<Enemy>().data.enemyName;
+                enemy.GetComponent<Enemy>().order = i;
                 GameManager.instance.EnemyList.Add(enemy);
-                GameManager.instance._HUDManager.ActivateHUD(i, enemy.GetComponent<Enemy>());
+                GameManager.instance._HUDManager.ActivateHUD(i, enemy);
             }
         }
     }
