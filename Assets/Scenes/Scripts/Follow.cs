@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class Follow : MonoBehaviour
 {
     public GameObject target;
@@ -17,3 +17,4 @@ public class Follow : MonoBehaviour
         rect.position = Camera.main.WorldToScreenPoint(GameManager.instance._player.transform.position);
     }
 }
+*/

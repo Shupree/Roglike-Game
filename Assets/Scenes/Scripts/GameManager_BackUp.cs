@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,10 +10,10 @@ using UnityEngine.UI;
 // 플레이어 사망 시 추가
 // StateUpdate 전부 리스트로 바꿀 것!
 
-public class GameManager : MonoBehaviour
+public class GameManager_BackUp : MonoBehaviour
 {
     // static을 통해 메모리에 정보를 저장 후 타 스크립트에서 사용 가능.
-    public static GameManager instance;
+    public static GameManager_BackUp instance;
 
     [Header ("Reference")]
     public Camera _MainCamera;
@@ -324,7 +325,7 @@ public class GameManager : MonoBehaviour
 
         // 적 행동 확정
         for(int i = 0; i < EnemyList.Count; i++) {
-            EnemyInfoList[i].TakeActInfo();
+            EnemyInfoList[i].TakeSkillInfo();
         }
 
         // 승리 시
@@ -403,6 +404,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(PlayerAttack());
     }
 
+    // 지우기 버튼
     public void PlayerEraseBtn()
     {
         for (int i = 0; i < 4; i++)
@@ -684,11 +686,11 @@ public class GameManager : MonoBehaviour
         }
         loot[2] = 0;
 
-                /* 전리품_걸작 획득
+                전리품_걸작 획득
         if (loot[3] > 0) {
             _LootManager.SetLootUI(4,loot[3]);
         }
-        loot[3] = 0;*/
+        loot[3] = 0;
     }
 
     IEnumerator EnemyTurn()
@@ -812,4 +814,4 @@ public class GameManager : MonoBehaviour
             NextTurnStart();
         }
     }
-}
+}*/

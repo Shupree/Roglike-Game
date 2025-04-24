@@ -13,6 +13,8 @@ public class DummyBot2 : MonoBehaviour
         dataArr = new int[5];
     }
 
+    /*
+
     //dataArr[0] = 행동 타입(공격, 효과 등), dataArr[1] = 수치
     public int[] SetPattern(int turn) 
     {
@@ -37,4 +39,5 @@ public class DummyBot2 : MonoBehaviour
             return dataArr;
         }
     }
+    */
 }

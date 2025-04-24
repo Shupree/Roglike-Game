@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-
+/*
 // MasterPiece(걸작) Manager
 public class MPManager : MonoBehaviour
 {
@@ -101,11 +101,11 @@ public class MPManager : MonoBehaviour
 
             // 이미 해당 걸작를 지니고 있는 경우 : 재추첨 (무한 for문 대책이 안되있음 주의 : 최소 2개 이상의 걸작 종류 필요)
             if (use_MPData == all_MPData[randomNum]) {
-                /*if (errorNum >= 50) {
-                    Debug.Log("오류 발생!!");
-                    break;
-                }
-                errorNum++;*/
+                //if (errorNum >= 50) {
+                //    Debug.Log("오류 발생!!");
+                //    break;
+                //}
+                //errorNum++;
                 continue;
             }
             else {
@@ -396,3 +396,4 @@ public class MPManager : MonoBehaviour
         }
     }
 }
+*/

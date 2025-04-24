@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class SkillManager : MonoBehaviour
 {
+    /*
+
     // SkillType(Color), SkillID(int)
     [Header ("Skill Data")]
     public SkillData noneData;
@@ -28,14 +30,14 @@ public class SkillManager : MonoBehaviour
 
     void Awake()
     {
-        /*
-        UIObject = transform.GetChild(0).gameObject;
-        UIObject.SetActive(false);
-        for (int i = 0; i < 4; i++) 
-        {
-            skillSlots[i] = UIObject.transform.GetChild(i).gameObject;
-        }
-        */
+        
+        //UIObject = transform.GetChild(0).gameObject;
+        //UIObject.SetActive(false);
+        //for (int i = 0; i < 4; i++) 
+        //{
+        //    skillSlots[i] = UIObject.transform.GetChild(i).gameObject;
+        //}
+        
 
         // isOpend = false;
 
@@ -88,7 +90,8 @@ public class SkillManager : MonoBehaviour
         }
     }
     */
-
+    
+    /*
     public void ConvertSkill(SkillData skillData)
     {
         // 색상확인 후 스킬 교체
@@ -138,22 +141,22 @@ public class SkillManager : MonoBehaviour
         for (int i = 0; i < 1;)
         {
             randomNum = UnityEngine.Random.Range(0, skillData.Length);
-            /*for (int a = 0; a < pickedSkillId.Count; a++)
-            {
+            //for (int a = 0; a < pickedSkillId.Count; a++)
+            //{
                 // 이미 뽑았던 스킬은 재추점 1회 방지 (새로운 스킬 추첨률 증가)
-                if (randomNum == pickedSkillId[a]) {
-                    i = 0;
-                    pickedSkillId.Remove(randomNum);
-                }
-            }*/
+            //    if (randomNum == pickedSkillId[a]) {
+            //        i = 0;
+            //        pickedSkillId.Remove(randomNum);
+            //    }
+            //}
 
             // 이미 해당 스킬을 지니고 있는 경우 : 재추점   (무한 for문 방지용 : 50회 시도 시 오류로 판정)
             if (skillData[randomNum] == use_SkillData[colorNum - 1]) {
-                /*if (errorNum >= 50) {
-                    Debug.Log("오류 발생!!");
-                    break;
-                }
-                errorNum++;*/
+                //if (errorNum >= 50) {
+                //    Debug.Log("오류 발생!!");
+                //    break;
+                //}
+                //errorNum++;
                 continue;
             }
             else {
@@ -165,4 +168,5 @@ public class SkillManager : MonoBehaviour
 
         return skillData[randomNum];
     }
+    */
 }

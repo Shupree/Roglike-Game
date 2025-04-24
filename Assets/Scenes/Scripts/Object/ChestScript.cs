@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ChestScript : MonoBehaviour
 {
+    /*
     public enum ChestRate { Common, Rare, Unique, Cursed, Random, Special }
     [Header ("Reference")]
     private LootUI _LootManager;
@@ -49,4 +50,5 @@ public class ChestScript : MonoBehaviour
 
         Destroy(gameObject);      // 임시로 NPC 제거 (스테이지 넘어가는 연출 + NPC 제거하면 좋을 듯)
     }
+    */
 }

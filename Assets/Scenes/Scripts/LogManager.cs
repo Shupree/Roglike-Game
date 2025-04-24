@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+/*
 public class LogManager : MonoBehaviour
 {
     [Header ("Reference")]
@@ -78,3 +78,4 @@ public class LogManager : MonoBehaviour
         isLog = true;
     }
 }
+*/

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
-
+/*
 public class NextStageUI : MonoBehaviour
 {
     [Header ("Object Reference")]
@@ -53,3 +53,4 @@ public class NextStageUI : MonoBehaviour
         }
     }
 }
+*/

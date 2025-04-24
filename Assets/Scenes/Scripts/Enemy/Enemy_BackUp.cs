@@ -5,14 +5,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour
+public class Enemy_BackUp : MonoBehaviour
 {
+    /*
     [Header ("Reference")]
     private SpriteRenderer target_SpriteRenderer;
+    private SetPattern _SetPattern;
 
     [Header ("Enemy Data")]
     public EnemyData data;
-    private int[] enemyAct = new int[5];
+    // private int[] enemyAct = new int[5];
 
     [Header ("Turn")]
     public int turn;
@@ -30,14 +32,18 @@ public class Enemy : MonoBehaviour
 
     [Header ("Enemy Skill Figure")]
     public int skillDamage;
+    public int skillCount;
     public int skillShield;
     public int effectType;
     public int effectNum;
     public int skillHeal;
 
-    [Header ("Skill Order")]
-    private int skillOrder;
-    private int maxSkillOrder;
+    // [Header ("Skill Order")]
+    // private int skillOrder;
+    // private int maxSkillOrder;
+
+    [Header ("Skill Data")]
+    private MonsterSkillData skillData;
 
     [Header ("Placement Order")]
     public int order = 0;  // 적 순서 (배치 넘버)
@@ -45,12 +51,13 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         target_SpriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        _SetPattern = transform.gameObject.GetComponent<SetPattern>();
 
         turn = GameManager.instance.turn;
         maxHealth = data.maxHealth;
         health = maxHealth;
 
-        maxSkillOrder = data.skillNum;
+        // maxSkillOrder = data.skillNum;
     }
 
     void Update() 
@@ -89,10 +96,20 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void TakeActInfo()
+    // 적 패턴 정보 가져오기
+    public void TakeSkillInfo()
     {
-        // 몹 패턴
-        switch (skillOrder) {
+        skillData = _SetPattern.SetSkill();
+
+        // 최종 데미지 = 기본 데미지 + 집중 수치 + 플레이어 화상 수치
+        skillDamage = skillData.baseDamage + buffArr[1] + GameManager.instance._player.debuffArr[0];
+        skillCount = skillData.baseCount;
+        skillShield = skillData.baseShield;
+        effectType = skillData.effectType;
+        effectNum = skillData.baseEffect;
+        skillHeal = skillData.baseHeal;
+
+        /* switch (skillOrder) {
             case 0:
                 skillOrder++;
                 enemyAct[0] = data.damage_01;
@@ -162,7 +179,9 @@ public class Enemy : MonoBehaviour
         // 회복 수치 확정
         if (enemyAct[4] != 0) {
             skillHeal = enemyAct[4];
-        }
+        } */
+
+        /*
     }
 
     // 매턴마다 버프/디버프 감소
@@ -228,4 +247,5 @@ public class Enemy : MonoBehaviour
             Debug.Log("빙결!");
         }
     }
+    */
 }

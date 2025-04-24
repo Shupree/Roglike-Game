@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
+/*
 public class GoldUI : MonoBehaviour
 {
     private TextMeshProUGUI textUI;
@@ -17,3 +17,4 @@ public class GoldUI : MonoBehaviour
         textUI.text = GameManager.instance._player.gold.ToString();
     }
 }
+*/

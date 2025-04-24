@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
 public class ArtifactManager : MonoBehaviour
 {
     [Header ("Reference")]
@@ -37,12 +38,11 @@ public class ArtifactManager : MonoBehaviour
     {
         //slotParent = transform.GetChild(0).GetChild(0).gameObject;
 
-        /*
-        for (int i = 0; i < 5; i++) 
-        {
-            slotImgArr[i] = slotParent.transform.GetChild(i).GetComponent<Image>();
-        }
-        */
+        //for (int i = 0; i < 5; i++) 
+        //{
+        //    slotImgArr[i] = slotParent.transform.GetChild(i).GetComponent<Image>();
+        //}
+        
 
         _player = GameManager.instance._player;
         _EnemyInfoList = GameManager.instance.EnemyInfoList;
@@ -96,14 +96,14 @@ public class ArtifactManager : MonoBehaviour
             }
             randomNum = UnityEngine.Random.Range(0, artifactDataArr.Length);
 
-            /*for (int a = 0; a < pickedSkillId.Count; a++)
-            {
+            //for (int a = 0; a < pickedSkillId.Count; a++)
+            //{
                 // 이미 뽑았던 장신구는 재추점 1회 방지 (새로운 스킬 추첨률 증가)
-                if (randomNum == pickedSkillId[a]) {
-                    i = 0;
-                    pickedSkillId.Remove(randomNum);
-                }
-            }*/
+            //    if (randomNum == pickedSkillId[a]) {
+            //        i = 0;
+            //        pickedSkillId.Remove(randomNum);
+            //    }
+            //}
 
             // 이미 해당 장신구를 지니고 있는 경우 : 재추첨 (무한 for문 대책이 안되있음 주의 : 최소 10개 이상의 장신구 종류 필요)
             if (have_ArtifactData.Contains(artifactDataArr[randomNum])) {
@@ -364,3 +364,4 @@ public class ArtifactManager : MonoBehaviour
         }
     }
 }
+*/

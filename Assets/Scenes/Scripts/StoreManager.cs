@@ -8,6 +8,7 @@ using System;
 
 public class StoreManager : MonoBehaviour
 {
+    /*
     [Header ("Reference")]
     private Player _Player;
     private SkillManager _SkillManager;
@@ -169,4 +170,5 @@ public class StoreManager : MonoBehaviour
             }
         }
     }
+    */
 }

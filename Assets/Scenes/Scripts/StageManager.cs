@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
+    /*
     private GameObject[] optionBtnArr = new GameObject[3];  // 다음 스테이지 선택 버튼
 
     [Header ("Stage Info")]
@@ -81,4 +82,5 @@ public class StageManager : MonoBehaviour
         optionBtnArr[1].SetActive(false);
         optionBtnArr[2].SetActive(false);
     }
+    */
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 // 하위의 HUD 오브젝트를 관리하는 HUDManager
 // (Enemy의 HUD를 관리하기 위함.)
 
-public class HUDManager : MonoBehaviour
+/*public class HUDManager : MonoBehaviour
 {
     private GameObject[] ObjArr = new GameObject[4];
 
@@ -37,3 +37,4 @@ public class HUDManager : MonoBehaviour
         ObjArr[order].transform.GetChild(2).GetComponent<StateUpdate>().enemyScript = null;
     }
 }
+*/

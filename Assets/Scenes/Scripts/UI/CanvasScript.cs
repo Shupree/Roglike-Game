@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using UnityEngine;
 using UnityEngine.UI;
-
+/*
 public class CanvasScript : MonoBehaviour
 {
     private SkillData skillData;
@@ -44,3 +44,4 @@ public class CanvasScript : MonoBehaviour
         
     }
 }
+*/

@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
 public class HUD : MonoBehaviour
 {
     public enum InfoType { Player, Enemy }
@@ -77,3 +78,4 @@ public class HUD : MonoBehaviour
         }
     }
 }
+*/

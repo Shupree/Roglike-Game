@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    /*
+
     [Header ("Position")]
     public GameObject[] position;
     public GameObject position_Outside;
@@ -64,4 +66,5 @@ public class SpawnManager : MonoBehaviour
         chest.transform.parent = position[2].transform;
         chest.name = "TreasureChest";
     }
+    */
 }

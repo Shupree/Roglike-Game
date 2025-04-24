@@ -1,0 +1,9 @@
+Status_Effects.json => 상태이상별 스탯 정의
+StatusEffect.cs => 상태이상의 스탯 자료형 결정, 해당 상태이상 추가/제거 함수 존재
+EffectManager => 유닛마다 Status_Effects.json 파일을 로드할 수 있도록 하는 장치(함수)
+유닛별.cs => 유닛별 AddStatusEffect()로 특정 상태이상을 부여 가능.
+            TakeTurn() 함수 내에서 ApplyEffect()로 상태이상의 효과 적용
+            및 RemoveEffect()로 상태이상 제거 가능
+            
+            유닛별로 ActiveStatusEffect[]에 상태이상 정보를 저장해서 사용하게 되는데,
+            각 상태이상 정보를 수정(중첩 수 같은 정보)할 수 있다.

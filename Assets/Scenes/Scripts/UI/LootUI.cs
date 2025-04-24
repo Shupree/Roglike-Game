@@ -4,7 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-
+/*
 // 전투 승리 보상 버튼UI
 public class LootUI : MonoBehaviour
 {
@@ -227,3 +227,4 @@ public class LootUI : MonoBehaviour
         }
     }
 }
+*/

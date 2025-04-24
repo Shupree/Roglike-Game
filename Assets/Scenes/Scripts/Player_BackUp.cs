@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Player : MonoBehaviour
+/*
+public class Player_BackUp : MonoBehaviour
 { 
     [Header ("Reference")]
     private LogManager _LogManager;
@@ -123,3 +123,4 @@ public class Player : MonoBehaviour
         }
     }
 }
+*/

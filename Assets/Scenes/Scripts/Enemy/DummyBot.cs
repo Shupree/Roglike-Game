@@ -13,6 +13,8 @@ public class DummyBot : MonoBehaviour
         dataArr = new int[5];
     }
 
+    /*
+
     //dataArr[] 0:공격력, 1:효과타입 2:효과수치
     // 00없음, 01화상, 02중독, 03감전, 04추위, 05빙결, 06기절, 07공포, 08위압, 09부식
     // 11회복 12보호막 13집중
@@ -39,4 +41,5 @@ public class DummyBot : MonoBehaviour
             return dataArr;
         }
     }
+    */
 }

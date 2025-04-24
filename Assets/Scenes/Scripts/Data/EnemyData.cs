@@ -24,6 +24,8 @@ public class EnemyData : ScriptableObject
     // 스킬은 위에서부터 채워주어야 함.
     // skillNum은 공격 패턴의 개수와 같아야 함.
 
+    /*
+
     // 공격1
     [Header("# Attack01")]
     public int damage_01;
@@ -63,4 +65,6 @@ public class EnemyData : ScriptableObject
     public int effectType_05;
     public int effectNum_05;
     public int heal_05;
+
+    */
 }

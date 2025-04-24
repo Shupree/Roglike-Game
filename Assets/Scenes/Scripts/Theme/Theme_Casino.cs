@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Theme_Casino : MonoBehaviour
 {
+    /*
     // ThemeManager로 Theme프리팹을 ThemeManager 자식으로 추가/제거하는 방식
     // 턴 시작 시 GameManager에서 ThemeManager 호출해서 턴 시작 시 효과 호출할 것
     // 무력감 디버프 추가할 것
@@ -178,4 +179,5 @@ public class Theme_Casino : MonoBehaviour
         _ThemeManager.onThemeSkill = true;
         onCardTrick = true;
     }
+    */
 }

@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
 public class StateUpdate : MonoBehaviour
 {
     public enum TargetInfo { Player, Enemy }
@@ -20,8 +21,8 @@ public class StateUpdate : MonoBehaviour
     [Header ("Buff / Debuff")]
     // -01없음, 00화상, 01중독, 02감전, 03추위, 04빙결, 05기절, 06공포, 07위압, 08부식
     // 09철갑, 10집중, 11흡수, 12가시
-    /*public int[] debuffArr = new int[9];
-    public int[] buffArr = new int[4];*/
+    // public int[] debuffArr = new int[9];
+    // public int[] buffArr = new int[4];
     public int[] effectArr = new int[13];   // player, Enemy에게서 받은 Effect 전부
 
     private int[] UIOrderArr = new int[13];  // UI 배치 순서 배열
@@ -144,3 +145,4 @@ public class StateUpdate : MonoBehaviour
         }
     }
 }
+*/

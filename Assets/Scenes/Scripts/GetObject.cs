@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/*
 public class GetObject : MonoBehaviour
 {
     private RaycastHit2D hit;
@@ -32,3 +33,4 @@ public class GetObject : MonoBehaviour
         }
     }
 }
+*/
