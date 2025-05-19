@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4be5639ce8205b499eec167f019f83e, type: 3}
+  m_Name: TrippleShot
+  m_EditorClassIdentifier: 
+  skillName: "\uC0BC\uC5F0\uC0AC\uACA9"
+  skillDesc: "1\uC774 1\uC5D0\uAC8C 3\uD558\uB294 \uAC83"
+  skillType: 0
+  skillIcon: {fileID: 3690784489133827997, guid: 4d701fb8bab94204e92af20e3e7b6a8a, type: 3}
+  baseDamage: 2
+  baseCount: 3
+  baseShield: 0
+  baseHeal: 0
+  effectType: None
+  baseEffect: 0

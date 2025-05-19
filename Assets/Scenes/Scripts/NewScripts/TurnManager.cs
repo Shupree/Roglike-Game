@@ -1,17 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public interface ITurn
 {
     void TakeTurn();
-    int GetHP();        // 대상의 현재 체력 가져오기
-    void TakeDamage(int damage);    // 데미지를 받는 메서드
     bool IsDead();      // 사망여부 확인
+
+    int GetStatus(string status);   // 스테이터스 값 가져오기 (HP, MaxHP, Shield)
+    void TakeDamage(int damage);    // 데미지를 받는 메서드
+    void AddStatusEffect(StatusEffect effect, int stack);     // 상태이상을 추가하는 메서드
 
     public bool HasFreezeDebuff();      // 빙결 디버프 존재 확인
     public void RemoveFreezeDebuff();   // 빙결 디버프 제거
+
+    public int HasBurnDebuff();         // 화상 디버프 수치 확인
+
+    UnitSkillData GetSkillInfo();      // 아군, 적군이 사용할 스킬 정보 반환
 }
 
 public class TurnManager : MonoBehaviour
@@ -30,8 +37,12 @@ public class TurnManager : MonoBehaviour
     public List<ITurn> enemies = new List<ITurn>();
     private Player player;       // 플레이어
     private PaintManager paintManager;  // 페인트 매니저
+    private StageManager stageManager;  // 스테이지 매니저
 
     private int canvas;     // 캔버스 수 (사용가능한 스킬 수)
+
+    [Header ("Target")]
+    public List<ITurn> targets = new List<ITurn>();
 
     [Header ("Figure")]
     private int totalTurns = 0; // 경과한 턴 수
@@ -50,7 +61,7 @@ public class TurnManager : MonoBehaviour
     public event BattleEndEvent OnBattleEnded;          // 전투 종료 이벤트
 
     public void Initialize()
-    {   
+    {
         // 초기화
         state = State.rest;
 
@@ -73,7 +84,7 @@ public class TurnManager : MonoBehaviour
     }
 
     // 전투 시작
-    private void BattleStart()
+    public void BattleStart()
     {
         state = State.turnStart;
 
@@ -96,7 +107,7 @@ public class TurnManager : MonoBehaviour
         Debug.Log($"총 경과 턴: {totalTurns}");      // Log : 경과 턴
 
         canvas = player.canvas;     // 캔버스 수 초기화
-        // 캔버스관련 디버프에 어떻게 대응할 것인가?
+                                    // 캔버스관련 디버프에 어떻게 대응할 것인가?
 
         // 플레이어 물감 보충 (delegate event)
 
@@ -104,14 +115,6 @@ public class TurnManager : MonoBehaviour
         //if (_player.buffArr[0] <= 0) {
         //    _player.shield = 0;
         //}
-
-        // 자동 타겟팅
-        /*
-        if (!target) {
-            target = EnemyList[0];
-            targetInfo = EnemyInfoList[0];
-        }
-        */
 
         // 유물 : 플레이어의 턴 시작 시 효과   (유물의 Awake보다 일찍 발동되는 문제 발생)
         //_ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.StartTurn);
@@ -130,8 +133,26 @@ public class TurnManager : MonoBehaviour
         // 승리 시
         //CheckVictory();
 
+        foreach (var enemy in enemies)
+        {
+            enemy.GetSkillInfo();
+        }
+        foreach (var ally in allies)
+        {
+            if (ally == allies[0])
+            {
+                continue;
+            }
+            ally.GetSkillInfo();
+        }
+
+        // 플레이어 턴 잡기
+            Debug.Log("아군의 턴입니다.");
+        player.TakeTurn();
+        
+
         // 플레이어 빙결/기절 효과  (플레이어 턴 스킵)
-        if(player.HasFreezeDebuff())
+        if (player.HasFreezeDebuff())
         {
             Debug.Log("플레이어 빙결!!");
             player.RemoveFreezeDebuff();
@@ -140,8 +161,10 @@ public class TurnManager : MonoBehaviour
             StartCoroutine(AllyTurn());
             Debug.Log("아군의 턴입니다.");
         }
+
         // 플레이어의 턴 진행
-        else {
+        else
+        {
             // 물감 기능 On
             paintManager.canUsePaint = true;
 
@@ -188,6 +211,8 @@ public class TurnManager : MonoBehaviour
     // 지우기 버튼
     public void ClickEraseBtn()
     {
+        targets.Clear();
+
         for (int i = 0; i < 4; i++)
         {
             paintManager.ReturnPaint();
@@ -224,15 +249,6 @@ public class TurnManager : MonoBehaviour
         // 물감 버튼 Off
         paintManager.canUsePaint = false;
 
-        for (int i = 0; i < 4; i++)
-        {
-            paintManager.usedPaintArr[i] = 0;       // 반환용 물감 초기화
-        }
-        // 걸작 기능 Off
-        //_MasterPieceManager.canUseMP = false;
-
-        paintManager.stack += paintManager.paletteOrder;     // 사용한 물감 수만큼 스택 적립
-
         /*
         if (MP_Data.conditionType == MasterPieceData.ConditionType.Cost) {
             if (MP_Data.maximumCondition < _PaletteManager.stack) {
@@ -246,10 +262,32 @@ public class TurnManager : MonoBehaviour
         }
         */
 
+        // 공격 단계로
+        StartCoroutine(PlayerTurn());
+    }
+
+    // 플레이어의 공격 진행
+    private IEnumerator PlayerTurn()
+    {
+        player.targets = targets;     // 플레이어에게 타겟 넘기기
+        Debug.Log(player.targets[0]);
+        targets.Clear();      // 타겟팅 초기화
+
+        player.ExecuteSkill();      // 플레이어 스킬 발동
+
+        yield return null;
+
+        for (int i = 0; i < 4; i++)
+        {
+            paintManager.usedPaintArr[i] = 0;       // 반환용 물감 초기화
+        }
+        // 걸작 기능 Off
+        //_MasterPieceManager.canUseMP = false;
+
+        paintManager.stack += paintManager.paletteOrder;     // 사용한 물감 수만큼 스택 적립
+
         paintManager.ClearPaint();      // 페인트 & 팔레트 초기화
 
-        Debug.Log("아군의 턴입니다.");
-        // 공격 단계로
         StartCoroutine(AllyTurn());
     }
 
@@ -259,7 +297,7 @@ public class TurnManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         // 아군 행동 실행
-        yield return ExecuteTurn(allies);
+        yield return ExecuteTurn(allies);   // 플레이어 및 아군
 
         /*// 아군 턴 후 조건 확인
         if (CheckBattleEndConditions())
@@ -297,51 +335,55 @@ public class TurnManager : MonoBehaviour
     private IEnumerator ExecuteTurn(List<ITurn> participants)
     {
         // 반복 중 리스트를 수정하면 문제가 발생하므로 복사본을 사용
-        var currentParticipants = new List<ITurn>(participants);
+        var currentParticipants = new List<ITurn>(participants);    // 플레이어 제외
+        if (currentParticipants.Exists(n => n == allies[0]))
+        {
+            currentParticipants.Remove(currentParticipants.Find(n => n == allies[0]));
+        }
 
         // 각 유닛의 행동 진행
-        foreach (var participant in currentParticipants)
-        {
-            /* 행동 전 HP가 0인지 확인
-            if (participant.IsDead())
+            foreach (var participant in currentParticipants)
             {
-                Debug.Log($"{participant}는 이미 사망한 상태입니다.");
-                participants.Remove(participant);   // 리스트에서 유닛 제거
-                continue;   // 다음 유닛으로 넘어감
-            }*/
-
-            // 빙결 시 턴 스킵
-            if (participant.HasFreezeDebuff())
-            {
-                Debug.Log("빙결 상태로 인해 턴을 스킵합니다.");
-                participant.RemoveFreezeDebuff();
-                continue;
-            }
-
-            // 해당 유닛의 행동 수행
-            participant.TakeTurn();
-
-            /* 행동 후 HP가 0인지 확인
-            if (participant.IsDead())
-            {
-                Debug.Log($"{participant}가 행동 중에 사망했습니다.");
-                participants.Remove(participant);   // 리스트에서 유닛 제거
-                continue;   // 리스트에서 제거되었으므로 다음 유닛으로 넘어감
-            }*/
-
-            /* 상대 팀 유닛의 사망 여부 확인
-            var opposingTeamCopy = new List<ITurn>(opposingTeam);
-            foreach (var enemy in opposingTeamCopy)
-            {
-                if (enemy.IsDead())
+                /* 행동 전 HP가 0인지 확인
+                if (participant.IsDead())
                 {
-                    Debug.Log($"{enemy}가 처치되었습니다.");
-                    opposingTeam.Remove(enemy);     // 리스트에서 유닛 제거
-                }
-            }*/
+                    Debug.Log($"{participant}는 이미 사망한 상태입니다.");
+                    participants.Remove(participant);   // 리스트에서 유닛 제거
+                    continue;   // 다음 유닛으로 넘어감
+                }*/
 
-            yield return null;
-        }
+                // 빙결 시 턴 스킵
+                if (participant.HasFreezeDebuff())
+                {
+                    Debug.Log("빙결 상태로 인해 턴을 스킵합니다.");
+                    participant.RemoveFreezeDebuff();
+                    continue;
+                }
+
+                // 해당 유닛의 행동 수행
+                participant.TakeTurn();
+
+                /* 행동 후 HP가 0인지 확인
+                if (participant.IsDead())
+                {
+                    Debug.Log($"{participant}가 행동 중에 사망했습니다.");
+                    participants.Remove(participant);   // 리스트에서 유닛 제거
+                    continue;   // 리스트에서 제거되었으므로 다음 유닛으로 넘어감
+                }*/
+
+                /* 상대 팀 유닛의 사망 여부 확인
+                var opposingTeamCopy = new List<ITurn>(opposingTeam);
+                foreach (var enemy in opposingTeamCopy)
+                {
+                    if (enemy.IsDead())
+                    {
+                        Debug.Log($"{enemy}가 처치되었습니다.");
+                        opposingTeam.Remove(enemy);     // 리스트에서 유닛 제거
+                    }
+                }*/
+
+                yield return null;
+            }
     }
 
     private void RemoveDeadUnits(List<ITurn> units)

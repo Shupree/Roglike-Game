@@ -1,0 +1,44 @@
+{
+    "StatusEffects": [
+        {
+            "name": "Concentration",
+            "type": "Buff",
+            "duration": 1,
+            "stackable": 99,
+            "stackCount" : 0,
+            "secreaseRate" : 0,
+            "effectType": "추가 데미지",
+            "effectValue": 1
+        },
+        {
+            "name": "Freeze",
+            "type": "Debuff",
+            "duration": 99,
+            "stackable": 1,
+            "stackCount" : 0,
+            "decreaseRate" : 0,
+            "effectType": "턴 스킵",
+            "effectValue": 0
+        },
+        {
+            "name": "Burn",
+            "type": "Debuff",
+            "duration": 99,
+            "stackable": 20,
+            "stackCount" : 0,
+            "decreaseRate" : 33,
+            "effectType": "추가 데미지",
+            "effectValue": 1
+        },
+        {
+            "name": "ElectricShock",
+            "type": "Debuff",
+            "duration": 99,
+            "stackable": 99,
+            "stackCount" : 0,
+            "decreaseRate" : 0,
+            "effectType": "즉시 데미지",
+            "effectValue": 7
+        }
+    ]
+}

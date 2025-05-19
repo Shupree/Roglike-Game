@@ -9,6 +9,7 @@ public class PaintManager : MonoBehaviour
 {
     [Header ("Reference")]
     private TurnManager turnManager;
+    private Player player;
 
     public GameObject[] paintObjArr = new GameObject[4];    // 색상별 PaintUI
     public GameObject[] paletteObjArr = new GameObject[5];      // 팔레트별 PaletteUI
@@ -35,6 +36,7 @@ public class PaintManager : MonoBehaviour
     {
         // 초기화
         turnManager = GameManager.instance.turnManager;
+        player = GameManager.instance.player;
 
         for(int i = 0; i < 4; i++) {
             usedPaintArr[i] = 0;
@@ -61,52 +63,76 @@ public class PaintManager : MonoBehaviour
     public void ClickPaintBtn(Paint paintSc)
     {
         // 공격 가능할때만 버튼 On
-        if (canUsePaint == false) {
+        if (canUsePaint == false)
+        {
             return;
         }
 
         Debug.Log("물감 클릭");
-        
+
         GameObject clickObject = EventSystem.current.currentSelectedGameObject;
-        
-        if (paintSc.GetNum() == 0) {
+
+        if (paintSc.GetNum() == 0)
+        {
             Debug.Log("해당 페인트가 없어요!");
         }
-        else if (paletteOrder > maxPalette) {
+        else if (paletteOrder > maxPalette)
+        {
             Debug.Log("이미 팔레트가 꽉 찼어!");
         }
-        else {
-            switch (clickObject.name) {
+        else
+        {
+            int colorType = 0;
+            switch (clickObject.name)
+            {
                 // 빨강 페인트 추가
                 case "RedPaint":
-                    //GameManager.instance.AddColor(1, false);
-                    ColorInPalette(1);
-                    usedPaintArr[0]++;      // 사용 중인 페인트 수 증가
+                    colorType = 1;
                     break;
                 // 파랑 페인트 추가
                 case "BluePaint":
-                    //GameManager.instance.AddColor(2, false);
-                    ColorInPalette(2);
-                    usedPaintArr[1]++;
+                    colorType = 2;
                     break;
                 // 노랑 페인트 추가
                 case "YellowPaint":
-                    //GameManager.instance.AddColor(3, false);
-                    ColorInPalette(3);
-                    usedPaintArr[2]++;
+                    colorType = 3;
                     break;
                 // 하양 페인트 추가
                 case "WhitePaint":
-                    //GameManager.instance.AddColor(4, false);
-                    ColorInPalette(4);
-                    usedPaintArr[3]++;
+                    colorType = 4;
+                    break;
+                default:
+                    Debug.LogError("페인트를 추가하는 과정에서 문제 발생!");
                     break;
             }
+
+            if (paletteOrder == 0)
+            {            // 처음 페인트 추가 시 스킬 지정
+                player.mainSkill = player.skillArr[colorType - 1];
+                Debug.Log(player.mainSkill.name);
+                switch (player.mainSkill.skillType)
+                {
+                    case Skill.SkillType.SingleAtk:
+                        turnManager.targets.Add(turnManager.enemies[0]);
+                        break;
+                    case Skill.SkillType.SplashAtk:
+                        turnManager.targets = turnManager.enemies;    // 수정 필요
+                        break;
+                    case Skill.SkillType.SingleSup:
+                        turnManager.targets.Add(player);
+                        break;
+                    case Skill.SkillType.SplashSup:
+                        turnManager.targets = turnManager.allies;        // 수정 필요
+                        break;
+                }
+            }
+            ColorInPalette(colorType);          // 팔레트에 페인트 추가
+            usedPaintArr[colorType - 1]++;      // 사용 중인 페인트 수 증가
 
             paintSc.paint--;    // 페인트 수 감소
             //usedColorNum += 1;
             //currentNum--;
-            
+
         }
     }
 
@@ -145,7 +171,7 @@ public class PaintManager : MonoBehaviour
     // 취소 버튼 클릭 시 페인트 반환
     public void ReturnPaint()
     {
-        for(int i = 0; i < paintScArr.Length; i++) {
+        for (int i = 0; i < paintScArr.Length; i++) {
             paintScArr[i].FillNum(usedPaintArr[i]);     // 사용한 물감 다시 보충
             usedPaintArr[i] = 0;                // 초기화
         }

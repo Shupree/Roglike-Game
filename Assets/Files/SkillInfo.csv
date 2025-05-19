@@ -1,0 +1,9 @@
+nameEn,nameKr,icon,desc,colorType,skillType,paintCondition,damage,count,shield,heal,effectType,effect
+FlameShot,ȭ  ź,Icons/FlameShot,            1      ظ   ְ  1   ȭ      ο  մϴ .    4ȸ      մϴ .,1,SingleAtk,1,1,4,0,0,Burn,1
+Thunder,    ,Icons/Thunder,           3      ظ              3    ο  մϴ .,2,SplashAtk,1,3,1,0,0,ElectricShock,3
+Brinicle, 긮  Ŭ,Icons/Icicle,            4      ظ         1           ο  մϴ .,3,SingleAtk,1,4,1,0,0,Freezen,1
+AcrylShield,  ũ    ǵ ,Icons/AcrylShield, ڽ    6     ȣ         ϴ .,4,SingleSup,1,0,1,6,0,None,0
+HealingRain,ġ       ,Icons/HealingRain,     Ʊ    ü     3  ŭ ȸ   մϴ .,4,SplashSup,1,0,1,0,3,None,0
+Dripping, 帮  ,Icons/Dripping,           2      ظ         4    ߵ     ο  մϴ .,2,SplashAtk,1,2,1,0,0,Poision,4
+StampPainting,             ,Icons/StampPainting,            6      ظ       ϴ .,1,SingleAtk,1,6,1,0,0,None,0
+Making,  ŷ,Icons/Making,            3      ظ   ְ  2          ο  մϴ .,3,SingleAtk,1,3,1,0,0,Weak,2

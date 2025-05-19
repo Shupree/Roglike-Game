@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4be5639ce8205b499eec167f019f83e, type: 3}
+  m_Name: Slam
+  m_EditorClassIdentifier: 
+  skillName: "\uAC15\uD0C0"
+  skillDesc: "\uB354\uBBF8\uC758 \uAC15\uB825\uD55C \uC77C\uACA9!"
+  skillType: 0
+  skillIcon: {fileID: 7893245450136125235, guid: 4d701fb8bab94204e92af20e3e7b6a8a, type: 3}
+  baseDamage: 3
+  baseCount: 1
+  baseShield: 0
+  baseHeal: 0
+  effectType: None
+  baseEffect: 0
