@@ -135,8 +135,13 @@ public class Enemy : MonoBehaviour, ITurn
     public void TakeDamage(int damage)
     {
         health -= damage;
-        if (health < 0) health = 0;
-        Debug.Log($"적이 {damage} 데미지를 받았습니다! 남은 체력: {health}");
+        if (health < 0)
+        {
+            health = 0;     // 음수값 제외     
+            GameManager.instance.turnManager.RemoveDeadUnit(this,"Enemy");    // 유닛 제거
+            DestroyObject();
+        }
+        Debug.Log($"{gameObject.name}이 {damage} 데미지를 받았습니다! 남은 체력: {health}");
     }
 
     // 특정 상태이상 추가 ( StatusEffect 상태이상 종류, int 중첩 수 )
@@ -169,6 +174,12 @@ public class Enemy : MonoBehaviour, ITurn
             statusEffects.Add(effect);
             Debug.Log($"{gameObject.name}에게 {effect.name}이(가) 새로 추가되었습니다.");
         }
+    }
+
+    // 해당 오브젝트 사망 시
+    private void DestroyObject()
+    {
+        Destroy(gameObject);      // 해당 유닛 제거
     }
 
     // 처치 확인

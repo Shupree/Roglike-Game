@@ -25,7 +25,7 @@ public class TurnManager : MonoBehaviour
 {
     public enum State
     {
-        rest, turnStart, playerAct, allyTurn, enemyTurn, win, defeat
+        rest, turnStart, playerAct, allyTurn, enemyTurn, victory, defeat
     }
 
     [Header ("State")]
@@ -103,6 +103,7 @@ public class TurnManager : MonoBehaviour
     // 턴 시작
     public void StartTurns()
     {
+        if (state == State.victory || state == State.defeat) return;    // 전투 종료 시 함수 끊기
         totalTurns++;       // 턴 수 증가
         Debug.Log($"총 경과 턴: {totalTurns}");      // Log : 경과 턴
 
@@ -180,29 +181,29 @@ public class TurnManager : MonoBehaviour
         // 플레이어가 행동 결정 시 (공격버튼 클릭 시) 다음 스탭으로
     }
 
-    private bool CheckBattleEndConditions()
+    private void CheckBattleEndConditions()
     {
         // 적군이 모두 제거되었는지 확인 (승리 조건)
         if (enemies.Count == 0)
         {
+            state = State.victory;      // 승리
+            StopAllCoroutines();        // 모든 코루틴 종료
+            paintManager.canUsePaint = false;   // 물감 버튼 Off
+
             EndBattle(); // 전투 종료
             Debug.Log("적군이 모두 제거되었습니다. 전투에서 승리했습니다!");
-            return true;
         }
 
         // 플레이어가 사망했는지 확인 (패배 조건)
         if (player.IsDead())
         {
             Debug.Log("플레이어가 사망했습니다. 게임 오버!");
-            return true;
         }
-
-        return false; // 전투 종료 조건 미충족
     }
 
     private void EndBattle()
     {
-        Debug.Log("전투가 종료되었습니다.");
+        Debug.Log("전투가 종료되었습니다. -승리-");
         // 전투 종료 로직 추가
 
         OnBattleEnded?.Invoke();
@@ -271,7 +272,6 @@ public class TurnManager : MonoBehaviour
     {
         player.targets = targets;     // 플레이어에게 타겟 넘기기
         Debug.Log(player.targets[0]);
-        targets.Clear();      // 타겟팅 초기화
 
         player.ExecuteSkill();      // 플레이어 스킬 발동
 
@@ -288,6 +288,8 @@ public class TurnManager : MonoBehaviour
 
         paintManager.ClearPaint();      // 페인트 & 팔레트 초기화
 
+        targets.Clear();                // 타겟팅 초기화
+
         StartCoroutine(AllyTurn());
     }
 
@@ -299,16 +301,8 @@ public class TurnManager : MonoBehaviour
         // 아군 행동 실행
         yield return ExecuteTurn(allies);   // 플레이어 및 아군
 
-        /*// 아군 턴 후 조건 확인
-        if (CheckBattleEndConditions())
-            yield break;
-
         // 적의 행동
         yield return ExecuteTurn(enemies);
-
-        // 적군 턴 후 조건 확인
-        if (CheckBattleEndConditions())
-            yield break;*/
 
         Debug.Log("적군의 턴입니다.");
         state = State.enemyTurn;
@@ -343,14 +337,13 @@ public class TurnManager : MonoBehaviour
 
         // 각 유닛의 행동 진행
             foreach (var participant in currentParticipants)
-            {
-                /* 행동 전 HP가 0인지 확인
+            {   
+                // 행동 전 HP가 0인지 확인
                 if (participant.IsDead())
                 {
                     Debug.Log($"{participant}는 이미 사망한 상태입니다.");
-                    participants.Remove(participant);   // 리스트에서 유닛 제거
                     continue;   // 다음 유닛으로 넘어감
-                }*/
+                }
 
                 // 빙결 시 턴 스킵
                 if (participant.HasFreezeDebuff())
@@ -363,40 +356,27 @@ public class TurnManager : MonoBehaviour
                 // 해당 유닛의 행동 수행
                 participant.TakeTurn();
 
-                /* 행동 후 HP가 0인지 확인
-                if (participant.IsDead())
-                {
-                    Debug.Log($"{participant}가 행동 중에 사망했습니다.");
-                    participants.Remove(participant);   // 리스트에서 유닛 제거
-                    continue;   // 리스트에서 제거되었으므로 다음 유닛으로 넘어감
-                }*/
-
-                /* 상대 팀 유닛의 사망 여부 확인
-                var opposingTeamCopy = new List<ITurn>(opposingTeam);
-                foreach (var enemy in opposingTeamCopy)
-                {
-                    if (enemy.IsDead())
-                    {
-                        Debug.Log($"{enemy}가 처치되었습니다.");
-                        opposingTeam.Remove(enemy);     // 리스트에서 유닛 제거
-                    }
-                }*/
-
                 yield return null;
             }
     }
 
-    private void RemoveDeadUnits(List<ITurn> units)
+    public void RemoveDeadUnit(ITurn unit, string unitType)
     {
-        // 유닛이 처치된 경우
-        units.RemoveAll(unit =>
+        // 적 유닛이 처치된 경우
+        if (unitType == "Enemy")
         {
-            if (unit.IsDead())
-            {
-                Debug.Log($"{unit}이 처치되었습니다.");
-                return true;
-            }
-            return false;
-        });
+            enemies.Remove(unit);
+            Debug.Log($"{unit}이 처치되었습니다.");
+            CheckBattleEndConditions();     // 플레이어 승리 확인
+        }
+        // 아군 유닛이 처치된 경우
+        else if (unitType == "Ally")
+        {
+            allies.Remove(unit);
+            Debug.Log($"{unit}이 처치되었습니다.");
+        }
+        else {
+            Debug.LogError("알 수 없는 유닛입니다!");
+        }
     }
 }
