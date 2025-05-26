@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class StorageManager : MonoBehaviour
 {
-    /*
+    
     private GameObject UIObject;
     public GameObject[] skillSlotArr = new GameObject[4];      // 색상별 스킬 슬롯 (빨강, 파랑, 노랑, 흰색)
     public GameObject[] artifactSlotArr = new GameObject[5];
@@ -18,7 +18,7 @@ public class StorageManager : MonoBehaviour
         UIObject = transform.GetChild(1).gameObject;    // StorageUI 오브젝트 받아오기
         UIObject.SetActive(false);                      // UI 비활성화
         // 스킬 슬롯 불러오기
-        /*
+        
         for (int i = 0; i < 4; i++) 
         {
             skillSlotArr[i] = UIObject.transform.GetChild(0).GetChild(i).gameObject;
@@ -32,9 +32,9 @@ public class StorageManager : MonoBehaviour
         {
             themeSkillSlotArr[i] = UIObject.transform.GetChild(2).GetChild(1).GetChild(i).gameObject;
         }
-        */
         
-        /*
+        
+        
     }
 
     public void BagBtn_clicked()
@@ -65,5 +65,5 @@ public class StorageManager : MonoBehaviour
     {
         artifactSlotArr[order - 1].GetComponent<Image>().sprite = data.AritfactIcon;
     }
-    */
+    
 }

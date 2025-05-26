@@ -8,9 +8,12 @@ public class Player : MonoBehaviour, ITurn
     [Header("Reference")]
     private PaintManager paintManager;
 
+    [Header("HUD")]
+    private HUD hud;     // HUD
+
     [Header("Status")]
-    private int maxHealth;
-    public int health;     // 체력
+    private int maxHealth = 50;
+    public int health = 50;     // 체력
     private int shield;      // 보호막
 
     public int canvas;
@@ -31,6 +34,13 @@ public class Player : MonoBehaviour, ITurn
     // 초기화
     void Awake()
     {
+        //maxHealth = 50;
+        health = maxHealth;    // 임의 HP 설정값
+        if (hud != null)
+        {
+            hud.HUDUpdate();
+        }
+
         paintManager = GameManager.instance.paintManager;
 
         skillLoader = GameManager.instance.skillLoader;
@@ -41,17 +51,13 @@ public class Player : MonoBehaviour, ITurn
         skillArr[3] = skillLoader.skillList.Find(s => s.name == "AcrylShield");
 
         mainSkill = null;
-
-        health = 50;    // 임의 설정값
     }
 
-    /*
-    public Player()
+    public void SetHUD(GameObject hudObject)
     {
-        maxHealth = 50;
-        health = maxHealth;
+        hud = hudObject.GetComponent<HUD>();    // HUD 가져오기
+        hud.HUDUpdate();                        // HUD 정보 업데이트
     }
-    */
 
     public void TakeTurn()
     {
@@ -153,6 +159,8 @@ public class Player : MonoBehaviour, ITurn
     {
         health -= damage;
         if (health < 0) health = 0;
+
+        hud.HUDUpdate();        // HUD의 HP 변화
         Debug.Log($"플레이어가 {damage} 데미지를 받았습니다! 남은 체력: {health}");
     }
 

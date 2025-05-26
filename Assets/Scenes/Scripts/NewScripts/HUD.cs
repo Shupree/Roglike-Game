@@ -11,13 +11,10 @@ public class HUD : MonoBehaviour
     
     [Header ("Reference")]
     Slider HP_Slider;
-    GameObject shield_UI;
-    //Image shield_Img;
-    TextMeshProUGUI shield_Text;
 
     [Header ("Status")]
-    int curHealth;
-    int maxHealth;
+    int curHealth = 100;
+    int maxHealth = 100;
     int shield;
 
     // 초기화
@@ -25,24 +22,33 @@ public class HUD : MonoBehaviour
     {
         // 각 프로퍼티 할당
         HP_Slider = transform.GetChild(0).GetComponent<Slider>();
-        shield_UI = transform.GetChild(1).gameObject;
+        //shield_UI = transform.GetChild(1).gameObject;
         //shield_Img = shield_UI.GetComponent<Image>();
-        shield_Text = shield_UI.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        //shield_Text = shield_UI.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
     }
 
-    // 데이터 갱신
-    void LateUpdate() {
+    public void SetHUD(ITurn target)
+    {
+        unit = target;      // HUD 주인 설정
+    }
+
+    // HUD 데이터 갱신
+    public void HUDUpdate()
+    {
         curHealth = unit.GetStatus("HP");
         maxHealth = unit.GetStatus("MaxHP");
         HP_Slider.value = curHealth / (float)maxHealth;
 
-        //shield = unit.shield;
-        if (shield == 0) {
+        /*shield = unit.shield;
+        if (shield == 0)
+        {
             shield_UI.SetActive(false);
         }
-        else {
+        else
+        {
             shield_UI.SetActive(true);
             shield_Text.text = shield.ToString();
         }
+        */
     }
 }

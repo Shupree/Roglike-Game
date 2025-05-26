@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     public PaintManager paintManager;
     public StageManager stageManager;
     public SpawnManager spawnManager;
+    public HUDPoolManager hudPoolManager;
 
     public CsvSkillLoader skillLoader;
 
@@ -32,9 +34,22 @@ public class GameManager : MonoBehaviour
     {
         instance = this;    // 인스턴스화
 
-        // TurnManager 초기화
+        // TurnManager & GetObject 초기화
         turnManager.Initialize(); // TurnManager 초기화 메서드 호출
         getObject.Initialize();
+        hudPoolManager.Initialize();
+        spawnManager.Initialize();
+
+        // Player HUD 활성화
+        GameObject hud = hudPoolManager.GetHUD();
+        if (hud != null)
+        {
+            hud.GetComponent<RectTransform>().SetParent(GameObject.Find("Canvas").GetComponent<RectTransform>(), false);  // Screen Space Canvas 기준으로 배치
+            hud.GetComponent<RectTransform>().position = player.gameObject.transform.position;
+            // 플레이어 하단에 HUD 위치
+            hud.GetComponent<HUD>().SetHUD(player);
+            player.SetHUD(hud);
+        }
 
         // 아군 등록 (Test)
         turnManager.RegisterAlly(player);
@@ -45,7 +60,7 @@ public class GameManager : MonoBehaviour
 
         // JSON 데이터 로드 (상태이상)
         StatusEffectLoader loader = new StatusEffectLoader();
-        statusEffects = loader.LoadStatusEffects("Status_Effects"); // 파일명에서 확장자 제외
+        statusEffects = loader.LoadStatusEffects("Status_Effects");     // 파일명에서 확장자 제외
 
         // 턴 진행 시작
         turnManager.BattleStart();

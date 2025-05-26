@@ -16,9 +16,9 @@ MonoBehaviour:
   skillDesc: "\uB354\uBBF8\uC758 \uAC15\uB825\uD55C \uC77C\uACA9!"
   skillType: 0
   skillIcon: {fileID: 7893245450136125235, guid: 4d701fb8bab94204e92af20e3e7b6a8a, type: 3}
-  baseDamage: 3
-  baseCount: 1
-  baseShield: 0
-  baseHeal: 0
+  damage: 4
+  count: 1
+  shield: 0
+  heal: 0
   effectType: None
-  baseEffect: 0
+  effect: 0

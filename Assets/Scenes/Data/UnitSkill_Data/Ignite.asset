@@ -17,9 +17,9 @@ MonoBehaviour:
     \uD654\uB454\uC744..!"
   skillType: 0
   skillIcon: {fileID: -537537479, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
-  baseDamage: 1
-  baseCount: 1
-  baseShield: 0
-  baseHeal: 0
+  damage: 2
+  count: 2
+  shield: 0
+  heal: 0
   effectType: Burn
-  baseEffect: 2
+  effect: 2

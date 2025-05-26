@@ -12,6 +12,9 @@ public class Enemy : MonoBehaviour, ITurn
     public EnemyData data;
     private UnitSkillData curSkillData;     // 현재 사용할 스킬 data
 
+    [Header("HUD")]
+    private HUD hud;     // HUD
+
     [Header("Status")]
     public int health;     // 체력
     private int maxHealth;  // 최대 체력
@@ -34,6 +37,12 @@ public class Enemy : MonoBehaviour, ITurn
         health = maxHealth;
 
         currentTurn = 1;
+    }
+
+    public void SetHUD(GameObject hudObject)
+    {
+        hud = hudObject.GetComponent<HUD>();    // HUD 가져오기
+        hud.HUDUpdate();                        // HUD 정보 업데이트
     }
 
     public void TakeTurn()
@@ -141,6 +150,8 @@ public class Enemy : MonoBehaviour, ITurn
             GameManager.instance.turnManager.RemoveDeadUnit(this,"Enemy");    // 유닛 제거
             DestroyObject();
         }
+
+        hud.HUDUpdate();        // HUD의 HP 변화
         Debug.Log($"{gameObject.name}이 {damage} 데미지를 받았습니다! 남은 체력: {health}");
     }
 

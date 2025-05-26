@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    [Header ("Position")]
+    [Header("References")]
+    private HUDPoolManager hudPoolManager;  // HUDPoolManager
+
+    [Header("Position")]
     public GameObject[] position;
     public GameObject position_Outside;
 
@@ -12,42 +15,89 @@ public class SpawnManager : MonoBehaviour
     public GameObject[] enemyPrefabArr;     // enemy Prefab Array
     private GameObject enemyPrefab;
 
-    [Space (10f)]
+    public GameObject[] allyPrefabArr;      // ally Prefab Array
+    private GameObject allyPrefab;
+
+    [Space(10f)]
     public GameObject[] NPCPrefabArr;       // NPC Prefab Array
 
     [Space (10f)]
     public GameObject[] chestPrefabArr;    // chest Prefab Array
     
-    private GameObject enemy;
+    // private GameObject enemy;
+    // private GameObject ally;
 
-    void Awake()
+    public void Initialize()
     {
-        
+        hudPoolManager = gameObject.GetComponent<HUDPoolManager>();
     }
 
     public void EnemySpawn(int[] EnemyID)
     {
         for (int i = 0; i < 4; i++)
         {
-            if (EnemyID[i] == 0) {
+            if (EnemyID[i] == 0)
+            {
                 // 적이 존재하지 않음.
-            } 
-            else {
+            }
+            else
+            {
                 // 해당 적 정보 수집    (주의. 'enemyID - 1와 'enemyPrefebArr'의 순서는 같아야 함.)
                 enemyPrefab = enemyPrefabArr[EnemyID[i] - 1];   // 몬스터Prefab 확인
 
-                enemy = Instantiate(enemyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));    // 몬스터 스폰
+                GameObject enemy = Instantiate(enemyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));    // 몬스터 스폰
                 enemy.transform.parent = position[i].transform;             // Parent 설정
                 enemy.name = enemy.GetComponent<Enemy>().data.unitName;    // 몬스터 이름 명명
-                // enemy.GetComponent<Enemy>().order = i;                   // 몬스터별 순서 메기기
-                //GameManager.instance.EnemyList.Add(enemy);
                 GameManager.instance.turnManager.RegisterEnemy(enemy.GetComponent<Enemy>());
-                //GameManager.instance._HUDManager.ActivateHUD(i, enemy);
+
+                // Enemy HUD 활성화
+                Debug.Log(hudPoolManager);
+                GameObject hud = hudPoolManager.GetHUD();
+                if (hud != null)
+                {
+                    hud.GetComponent<RectTransform>().SetParent(GameObject.Find("Canvas").GetComponent<RectTransform>(), false);  // Screen Space Canvas 기준으로 배치
+                    hud.GetComponent<RectTransform>().position = enemy.gameObject.transform.position;
+                    // 유닛 하단에 HUD 위치
+                    hud.GetComponent<HUD>().SetHUD(enemy.GetComponent<Enemy>());
+                    enemy.GetComponent<Enemy>().SetHUD(hud);
+                }
+            }
+        }
+    }
+    
+    public void AllySpawn(int[] AllyID)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (AllyID[i] == 0)
+            {
+                // 적이 존재하지 않음.
+            }
+            else
+            {
+                // 해당 적 정보 수집    (주의. 'allyID - 1와 'allyPrefebArr'의 순서는 같아야 함.)
+                allyPrefab = allyPrefabArr[AllyID[i] - 1];   // 몬스터Prefab 확인
+
+                GameObject ally = Instantiate(allyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));    // 몬스터 스폰
+                ally.transform.parent = position[i].transform;             // Parent 설정
+                ally.name = ally.GetComponent<Ally>().data.unitName;    // 몬스터 이름 명명
+                GameManager.instance.turnManager.RegisterAlly(ally.GetComponent<Ally>());
+
+                // Ally HUD 활성화
+                GameObject hud = hudPoolManager.GetHUD();
+                if (hud != null)
+                {
+                    hud.GetComponent<RectTransform>().SetParent(GameObject.Find("Canvas").GetComponent<RectTransform>(), false);  // Screen Space Canvas 기준으로 배치
+                    hud.GetComponent<RectTransform>().position = ally.gameObject.transform.position;
+                    // 유닛 하단에 HUD 위치
+                    hud.GetComponent<HUD>().SetHUD(ally.GetComponent<Ally>());
+                    ally.GetComponent<Ally>().SetHUD(hud);
+                }
             }
         }
     }
 
-    public void StoreNPCSpawn() 
+    public void StoreNPCSpawn()
     {
         GameObject NPC;
         NPC = Instantiate(NPCPrefabArr[0], position[2].transform.position, Quaternion.Euler(0, 0, 0));
