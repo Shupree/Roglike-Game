@@ -15,14 +15,17 @@ public class GameManager : MonoBehaviour
 
     [Header ("Reference")]
     public TurnManager turnManager;
-    public GetObject getObject;
     public PaintManager paintManager;
     public StageManager stageManager;
     public SpawnManager spawnManager;
     public HUDPoolManager hudPoolManager;
+    public StorageManager storageManager;
 
     public CsvSkillLoader skillLoader;
 
+    private GetObject getObject;
+
+    [Header ("Unit")]
     public Player player;
     public Ally ally1;
     private int[] enemyIdArr = new int[4]{1,1,0,0};     // 임시 몬스터ID 저장용
@@ -34,9 +37,11 @@ public class GameManager : MonoBehaviour
     {
         instance = this;    // 인스턴스화
 
+        getObject = gameObject.GetComponent<GetObject>();
+
         // TurnManager & GetObject 초기화
-        turnManager.Initialize(); // TurnManager 초기화 메서드 호출
-        getObject.Initialize();
+        turnManager.Initialize();       // TurnManager 초기화 메서드 호출
+        getObject.Initialize();         
         hudPoolManager.Initialize();
         spawnManager.Initialize();
 

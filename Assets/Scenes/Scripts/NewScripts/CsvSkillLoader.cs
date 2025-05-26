@@ -36,7 +36,7 @@ public class CsvSkillLoader : MonoBehaviour
     void Awake()
     {
         path = "Files/SkillInfo.csv";
-        ReadSkillCsv("Skills");
+        ReadSkillCsv();
 
         foreach (var skill in skillList)
         {
@@ -44,7 +44,7 @@ public class CsvSkillLoader : MonoBehaviour
         }
     }
 
-    void ReadSkillCsv(string fileName)
+    void ReadSkillCsv()
     {
         if (!File.Exists(Application.dataPath + "/" + path))
         {

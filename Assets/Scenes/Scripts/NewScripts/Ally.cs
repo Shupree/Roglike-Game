@@ -76,7 +76,7 @@ public class Ally : MonoBehaviour, ITurn
 
             // 전체 공격
             case UnitSkillData.SkillType.SplashAtk:
-                targets = GameManager.instance.turnManager.enemies;
+                targets = new List<ITurn> (GameManager.instance.turnManager.enemies);
                 break;
             // 자신 보조
             case UnitSkillData.SkillType.SingleSup:    // 자기자신 타겟 스킬
@@ -86,7 +86,7 @@ public class Ally : MonoBehaviour, ITurn
 
             // 전체 아군 보조
             case UnitSkillData.SkillType.SplashSup:
-                targets = GameManager.instance.turnManager.allies;
+                targets = new List<ITurn> (GameManager.instance.turnManager.allies);
                 isTrueDamage = true;    // 아군 대상은 고정데미지
                 break;
         }

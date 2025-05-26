@@ -6,7 +6,8 @@ using UnityEngine;
 public class Player : MonoBehaviour, ITurn
 {
     [Header("Reference")]
-    private PaintManager paintManager;
+    //private PaintManager paintManager;
+    [HideInInspector] public StorageManager storageManager;
 
     [Header("HUD")]
     private HUD hud;     // HUD
@@ -19,8 +20,8 @@ public class Player : MonoBehaviour, ITurn
     public int canvas;
 
     [Header("Skill")]
-    private CsvSkillLoader skillLoader;
-    public Skill[] skillArr = new Skill[4];     // 기본 스킬 4종 (빨강, 노랑, 파랑, 하양)
+    // private CsvSkillLoader skillLoader;
+    // public Skill[] skillArr = new Skill[4];     // 기본 스킬 4종 (빨강, 노랑, 파랑, 하양)
     public Skill mainSkill;        // 현재 사용하는 스킬
 
     [Header("Target")]
@@ -41,14 +42,9 @@ public class Player : MonoBehaviour, ITurn
             hud.HUDUpdate();
         }
 
-        paintManager = GameManager.instance.paintManager;
-
-        skillLoader = GameManager.instance.skillLoader;
-
-        skillArr[0] = skillLoader.skillList.Find(s => s.name == "FlameShot");
-        skillArr[1] = skillLoader.skillList.Find(s => s.name == "Thunder");
-        skillArr[2] = skillLoader.skillList.Find(s => s.name == "Brinicle");
-        skillArr[3] = skillLoader.skillList.Find(s => s.name == "AcrylShield");
+        // paintManager = GameManager.instance.paintManager;
+        storageManager = GameManager.instance.storageManager;   // 스크립트 가져오기
+        storageManager.Initialize();    // storageManager 강제 초기화
 
         mainSkill = null;
     }
@@ -233,7 +229,7 @@ public class Player : MonoBehaviour, ITurn
         }
     }
 
-    // Unit별 AI 코드 사용 X
+    // Unit별 AI 코드. 사용 X
     public UnitSkillData GetSkillInfo()
     {
         Debug.LogError("사용하지 않는 코드입니다.");

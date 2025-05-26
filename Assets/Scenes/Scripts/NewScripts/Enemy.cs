@@ -75,7 +75,7 @@ public class Enemy : MonoBehaviour, ITurn
 
             // 전체 공격
             case UnitSkillData.SkillType.SplashAtk:
-                targets = GameManager.instance.turnManager.allies;
+                targets = new List<ITurn> (GameManager.instance.turnManager.allies);
                 break;
             // 자신 보조
             case UnitSkillData.SkillType.SingleSup:    // 자기자신 타겟 스킬
@@ -85,7 +85,7 @@ public class Enemy : MonoBehaviour, ITurn
 
             // 전체 아군 보조
             case UnitSkillData.SkillType.SplashSup:
-                targets = GameManager.instance.turnManager.enemies;
+                targets = new List<ITurn> (GameManager.instance.turnManager.enemies);
                 isTrueDamage = true;    // 아군 대상은 고정데미지
                 break;
         }
@@ -147,7 +147,8 @@ public class Enemy : MonoBehaviour, ITurn
         if (health < 0)
         {
             health = 0;     // 음수값 제외     
-            GameManager.instance.turnManager.RemoveDeadUnit(this,"Enemy");    // 유닛 제거
+            GameManager.instance.turnManager.RemoveDeadUnit(this,"Enemy");      // 유닛 제거
+            GameManager.instance.hudPoolManager.ReturnHUD(hud.gameObject);                 // HUD를 Pool로 반환
             DestroyObject();
         }
 

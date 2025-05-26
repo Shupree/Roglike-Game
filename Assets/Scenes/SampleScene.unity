@@ -772,11 +772,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusEffects: []
   turnManager: {fileID: 59903919}
-  getObject: {fileID: 59903922}
   paintManager: {fileID: 1776894077}
   stageManager: {fileID: 970653728}
   spawnManager: {fileID: 59903921}
   hudPoolManager: {fileID: 59903924}
+  storageManager: {fileID: 141996796}
   skillLoader: {fileID: 59903923}
   player: {fileID: 821215751}
   ally1: {fileID: 1891535145}
@@ -802,6 +802,7 @@ MonoBehaviour:
   enemyPrefabArr:
   - {fileID: 1686529460794565254, guid: 2c2ca5460e297b6409ed0d1a403ac665, type: 3}
   - {fileID: 1686529460794565254, guid: 2c2ca5460e297b6409ed0d1a403ac665, type: 3}
+  allyPrefabArr: []
   NPCPrefabArr: []
   chestPrefabArr: []
 --- !u!114 &59903922
@@ -2034,6 +2035,7 @@ GameObject:
   m_Component:
   - component: {fileID: 141996794}
   - component: {fileID: 141996795}
+  - component: {fileID: 141996796}
   m_Layer: 5
   m_Name: StorageManager
   m_TagString: Untagged
@@ -2074,6 +2076,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562bb6db045bff24399ded3355c0abc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UIObject: {fileID: 0}
+  skillSlotArr:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  artifactSlotArr:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  MPSlotArr: {fileID: 0}
+  themeSkillSlotArr:
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &141996796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 141996793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89347d7f5a8a06c47a99ca5d0e840dec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillSlotArr:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &154055708
 GameObject:
   m_ObjectHideFlags: 0
@@ -11347,61 +11382,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64ba292a26a390b4b89f3c8879652234, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storageManager: {fileID: 0}
   health: 0
   canvas: 2
-  skillArr:
-  - name: 
-    notation: 
-    icon: 
-    desc: 
-    colorType: 0
-    skillType: 0
-    paintCondition: 0
-    damage: 0
-    count: 0
-    shield: 0
-    heal: 0
-    effectType: 
-    effect: 0
-  - name: 
-    notation: 
-    icon: 
-    desc: 
-    colorType: 0
-    skillType: 0
-    paintCondition: 0
-    damage: 0
-    count: 0
-    shield: 0
-    heal: 0
-    effectType: 
-    effect: 0
-  - name: 
-    notation: 
-    icon: 
-    desc: 
-    colorType: 0
-    skillType: 0
-    paintCondition: 0
-    damage: 0
-    count: 0
-    shield: 0
-    heal: 0
-    effectType: 
-    effect: 0
-  - name: 
-    notation: 
-    icon: 
-    desc: 
-    colorType: 0
-    skillType: 0
-    paintCondition: 0
-    damage: 0
-    count: 0
-    shield: 0
-    heal: 0
-    effectType: 
-    effect: 0
   mainSkill:
     name: 
     notation: 
@@ -22733,11 +22716,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 271288374e5604d448822a21ccb3784b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paintObjArr:
-  - {fileID: 1359008118}
-  - {fileID: 1167545010}
-  - {fileID: 247171441}
-  - {fileID: 1176373358}
   paletteObjArr:
   - {fileID: 224839211}
   - {fileID: 1490384797}
@@ -22748,6 +22726,12 @@ MonoBehaviour:
   maxPalette: 0
   paletteOrder: 0
   stack: 0
+  skillIconUI: {fileID: 71378648}
+  paintScArr:
+  - {fileID: 1359008123}
+  - {fileID: 1167545016}
+  - {fileID: 247171447}
+  - {fileID: 1176373364}
   canUsePaint: 0
 --- !u!1 &1788747354
 GameObject:
