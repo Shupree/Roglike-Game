@@ -8,22 +8,20 @@ using Unity.VisualScripting;
 
 public class PaintManager : MonoBehaviour
 {
-    [Header ("Reference")]
+    [Header("Reference")]
     private TurnManager turnManager;
     private Player player;
 
     // public GameObject[] paintObjArr = new GameObject[4];    // 색상별 PaintUI
     public GameObject[] paletteObjArr = new GameObject[5];      // 팔레트별 PaletteUI
 
-    [Header ("Figure")]
+    [Header("Figure")]
     public int[] usedPaintArr = new int[4];     // 사용 중인 색상별 물감 수
-    
+
     public int maxPalette;      // 사용가능한 최대 팔레트 수
     public int paletteOrder = 0;       // 현재 팔레트 순서
 
-    public int stack = 0;       // 걸작 사용을 위한 사용한 물감 수
-
-    [Header ("Image Script")]
+    [Header("Image Script")]
     private Image[] paletteImgArr = new Image[5];       // 팔레트별 PaletteImage 스크립트
 
     public Image skillIconUI;                         // 메인 스킬 Image 스크립트
@@ -31,7 +29,7 @@ public class PaintManager : MonoBehaviour
     [Header("Paint Script")]
     public Paint[] paintScArr = new Paint[4];      // 색상별 Paint 스크립트
 
-    [Header ("Others")]
+    [Header("Others")]
     public bool canUsePaint = false;            // 공격 가능할때만 버튼 On용 장치
 
     void Awake()
@@ -40,16 +38,18 @@ public class PaintManager : MonoBehaviour
         turnManager = GameManager.instance.turnManager;
         player = GameManager.instance.player;
 
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++)
+        {
             usedPaintArr[i] = 0;
             // paintScArr[i] = paintObjArr[i].GetComponent<Paint>();
         }
-        
-        for(int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < 5; i++)
+        {
             paletteImgArr[i] = paletteObjArr[i].GetComponent<Image>();
         }
 
-        paletteOrder = 0; 
+        paletteOrder = 0;
         maxPalette = 3;     // 임의 설정값 : 사용가능한 팔레트 수
 
         //canUsePaint = false;
@@ -112,25 +112,11 @@ public class PaintManager : MonoBehaviour
             {            // 처음 페인트 추가 시 스킬 지정
                 player.mainSkill = player.storageManager.GetSkillData(colorType - 1);   // 스킬 정보 가져오기
                 Debug.Log(player.mainSkill.name);
-                switch (player.mainSkill.skillType)
-                {
-                    case Skill.SkillType.SingleAtk:
-                        turnManager.targets.Add(turnManager.enemies[0]);
-                        break;
-                    case Skill.SkillType.SplashAtk:
-                        turnManager.targets = new List<ITurn> (turnManager.enemies);
-                        break;
-                    case Skill.SkillType.SingleSup:
-                        turnManager.targets.Add(player);
-                        break;
-                    case Skill.SkillType.SplashSup:
-                        turnManager.targets = new List<ITurn> (turnManager.allies);
-                        break;
-                }
-                
-                skillIconUI.sprite = Resources.Load<Sprite>(player.mainSkill.icon);   // 메인 스킬 이미지 변경
+                turnManager.SetTarget(player.mainSkill.skillType);
+
+                SetSkillImg(Resources.Load<Sprite>(player.mainSkill.icon));         // 메인 스킬 이미지 변경
             }
-            
+
             ColorInPalette(colorType);          // 팔레트에 페인트 추가
             usedPaintArr[colorType - 1]++;      // 사용 중인 페인트 수 증가
 
@@ -170,10 +156,31 @@ public class PaintManager : MonoBehaviour
     }
     */
 
+    // 특정 페인트 수를 가져오기
+    public int GetPaintInfo(int colorType)              // colorNum : 1.빨강, 2.파랑, 3.노랑, 4.하양
+    {
+        return paintScArr[colorType].paint;
+    }
+
+    // 특정 페인트를 강제 소모
+    public void ReducePaint(int colorType, int num)       // colorNum : 1.빨강, 2.파랑, 3.노랑, 4.하양 / num : 소모 수
+    {
+        if (paintScArr[colorType].paint >= num)
+        {
+            paintScArr[colorType].paint -= num;
+        }
+        // 예외 처리(음수)
+        else
+        {
+            paintScArr[colorType].paint = 0;
+        }
+    }
+
     // 취소 버튼 클릭 시 페인트 반환
     public void ReturnPaint()
     {
-        for (int i = 0; i < paintScArr.Length; i++) {
+        for (int i = 0; i < paintScArr.Length; i++)
+        {
             paintScArr[i].FillNum(usedPaintArr[i]);     // 사용한 물감 다시 보충
             usedPaintArr[i] = 0;                // 초기화
         }
@@ -189,10 +196,12 @@ public class PaintManager : MonoBehaviour
             int currentNum = paint.GetNum();
 
             // 최대치의 절반만큼 보충 (최소 2)
-            if (currentNum < maxNum - 2) {
+            if (currentNum < maxNum - 2)
+            {
                 paint.FillNum(maxNum / 2);
             }
-            else {
+            else
+            {
                 paint.FillUp();
             }
         }
@@ -209,9 +218,11 @@ public class PaintManager : MonoBehaviour
     }
 
     // ---- Palette 관련 함수 ----
+
     public void ColorInPalette(int colorType)
     {
-        switch (colorType) {
+        switch (colorType)
+        {
             // 빨강
             case 1:
                 paletteImgArr[paletteOrder].color = Color.red;
@@ -248,5 +259,13 @@ public class PaintManager : MonoBehaviour
         }
 
         skillIconUI.sprite = Resources.Load<Sprite>($"Icons/Canvas");   // 메인 스킬 이미지 기본으로 변경
+    }
+
+    // ---- CanvasUI 관련 함수 ----
+
+    // 메인 스킬 이미지 변경
+    public void SetSkillImg(Sprite sprite)
+    {
+        skillIconUI.sprite = sprite;
     }
 }

@@ -17,6 +17,8 @@ public class Ally : MonoBehaviour, ITurn
     private int maxHealth;  // 최대 체력
     private int shield;     // 보호막
 
+    private bool isDead = false;
+
     [Header("Target")]
     public List<ITurn> targets = new List<ITurn>();    // 공격 타겟
 
@@ -102,8 +104,14 @@ public class Ally : MonoBehaviour, ITurn
                     {
                         damage += targets[c].HasBurnDebuff();   // 화상 데미지
                     }
-                    targets[c].TakeDamage(damage);      // 공격
+                    targets[c].TakeDamage(damage, false);      // 공격
                     Debug.Log($"{targets[c]}은 {damage} 의 데미지를 입었다.");
+                }
+
+                if (curSkillData.heal > 0)
+                {
+                    targets[c].TakeHeal(curSkillData.heal);
+                    Debug.Log($"{targets[c]}은 {curSkillData.heal} 만큼 체력을 회복했다.");
                 }
 
                 // 적 상태이상 부여
@@ -142,18 +150,59 @@ public class Ally : MonoBehaviour, ITurn
     }
 
     // 피격 시 데미지 연산
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, bool isTrueDamage)
     {
-        health -= damage;
-        if (health < 0)
+        if (isTrueDamage)
         {
-            health = 0;     // 음수값 제외     
-            GameManager.instance.turnManager.RemoveDeadUnit(this,"Ally");    // 유닛 제거
-            DestroyObject();
+            health -= damage;
+        }
+        else
+        {
+            if (shield > damage)
+            {
+                shield -= damage;
+            }
+            else
+            {
+                damage -= shield;
+                shield = 0;
+                health -= damage;
+            }
         }
 
+        if (health <= 0 && isDead == false)
+        {
+            isDead = true;
+            health = 0;     // 음수값 제외
+            //GameManager.instance.hudPoolManager.ReturnHUD(hud.gameObject);      // HUD를 Pool로 반환
+            GameManager.instance.turnManager.RemoveDeadUnit(this, "Ally");      // 유닛 제거
+            DestroyObject();
+        }
+        else
+        {
+            hud.HUDUpdate();        // HUD의 HP 변화
+            Debug.Log($"{gameObject.name}이(가) {damage} 데미지를 받았습니다! 남은 체력: {health}");
+        }
+    }
+
+    // 회복 시 연산
+    public void TakeHeal(int heal)
+    {
+        if (maxHealth <= health + heal)
+        {
+            health = maxHealth;
+        }
+        else
+        {
+            health += heal;
+        }
         hud.HUDUpdate();        // HUD의 HP 변화
-        Debug.Log($"{gameObject.name}이(가) {damage} 데미지를 받았습니다! 남은 체력: {health}");
+    }
+
+    // 보호막 획득 시 연산
+    public void TakeShield(int shield)
+    {
+
     }
 
     // 특정 상태이상 추가 ( StatusEffect 상태이상 종류, int 중첩 수 )

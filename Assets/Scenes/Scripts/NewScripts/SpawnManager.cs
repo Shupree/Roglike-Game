@@ -5,7 +5,8 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [Header("References")]
-    private HUDPoolManager hudPoolManager;  // HUDPoolManager
+    private HUDPoolManager hudPoolManager;       // HUDPoolManager
+    private EnemyPoolManager enemyPoolManager;   // EnemyPoolManager
 
     [Header("Position")]
     public GameObject[] position;
@@ -23,13 +24,14 @@ public class SpawnManager : MonoBehaviour
 
     [Space (10f)]
     public GameObject[] chestPrefabArr;    // chest Prefab Array
-    
+
     // private GameObject enemy;
     // private GameObject ally;
 
     public void Initialize()
     {
         hudPoolManager = gameObject.GetComponent<HUDPoolManager>();
+        enemyPoolManager = gameObject.GetComponent<EnemyPoolManager>();
     }
 
     public void EnemySpawn(int[] EnemyID)

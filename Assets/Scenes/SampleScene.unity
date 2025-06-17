@@ -724,6 +724,7 @@ GameObject:
   - component: {fileID: 59903922}
   - component: {fileID: 59903923}
   - component: {fileID: 59903924}
+  - component: {fileID: 59903925}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -758,6 +759,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9265b5ce268bd7c4c9aab0ed18bdd1ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
 --- !u!114 &59903920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -771,13 +773,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusEffects: []
-  turnManager: {fileID: 59903919}
   paintManager: {fileID: 1776894077}
   stageManager: {fileID: 970653728}
-  spawnManager: {fileID: 59903921}
-  hudPoolManager: {fileID: 59903924}
   storageManager: {fileID: 141996796}
   skillLoader: {fileID: 59903923}
+  turnManager: {fileID: 59903919}
+  spawnManager: {fileID: 59903921}
+  hudPoolManager: {fileID: 59903924}
+  enemyPoolManager: {fileID: 0}
   player: {fileID: 821215751}
   ally1: {fileID: 1891535145}
   stage: 0
@@ -843,6 +846,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hudPrefab: {fileID: 6672299194414626351, guid: 0ff0a9d4e24aff846857407e2f3a056d, type: 3}
+  poolSize: 5
+  maxPoolSize: 9
+--- !u!114 &59903925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59903914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b24ae27f3c3b1b42915d0e7cde55b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 0}
   poolSize: 5
   maxPoolSize: 9
 --- !u!1 &66514111
@@ -2034,7 +2052,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 141996794}
-  - component: {fileID: 141996795}
   - component: {fileID: 141996796}
   m_Layer: 5
   m_Name: StorageManager
@@ -2064,34 +2081,6 @@ RectTransform:
   m_AnchoredPosition: {x: -40, y: -40}
   m_SizeDelta: {x: 750, y: 450}
   m_Pivot: {x: 1, y: 1}
---- !u!114 &141996795
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 141996793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 562bb6db045bff24399ded3355c0abc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UIObject: {fileID: 0}
-  skillSlotArr:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  artifactSlotArr:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  MPSlotArr: {fileID: 0}
-  themeSkillSlotArr:
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &141996796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2104,11 +2093,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89347d7f5a8a06c47a99ca5d0e840dec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _MPManager: {fileID: 1208187670}
   skillSlotArr:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1676460560}
+  - {fileID: 1850945502}
+  - {fileID: 6386838}
+  - {fileID: 1890980898}
+  MPSlot: {fileID: 0}
 --- !u!1 &154055708
 GameObject:
   m_ObjectHideFlags: 0
@@ -3356,8 +3347,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
+      - m_Target: {fileID: 1788747356}
+        m_TargetAssemblyTypeName: LootManager, Assembly-CSharp
         m_MethodName: Click_SkillLootBtn
         m_Mode: 3
         m_Arguments:
@@ -3968,7 +3959,6 @@ GameObject:
   - component: {fileID: 323911133}
   - component: {fileID: 323911132}
   - component: {fileID: 323911131}
-  - component: {fileID: 323911134}
   m_Layer: 5
   m_Name: SpawnBtn
   m_TagString: Untagged
@@ -4040,7 +4030,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 323911134}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Spawn, Assembly-CSharp
         m_MethodName: ClickToSpawn
         m_Mode: 1
@@ -4090,18 +4080,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 323911129}
   m_CullTransparentMesh: 1
---- !u!114 &323911134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 323911129}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5b38cbae7cae4446bba18917eb05dfc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &324593530
 GameObject:
   m_ObjectHideFlags: 0
@@ -4261,8 +4239,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
+      - m_Target: {fileID: 1788747356}
+        m_TargetAssemblyTypeName: LootManager, Assembly-CSharp
         m_MethodName: Click_LootBtn
         m_Mode: 3
         m_Arguments:
@@ -6623,8 +6601,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
+      - m_Target: {fileID: 1788747356}
+        m_TargetAssemblyTypeName: LootManager, Assembly-CSharp
         m_MethodName: Click_SkillLootBtn
         m_Mode: 3
         m_Arguments:
@@ -7096,9 +7074,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MPManager, Assembly-CSharp
-        m_MethodName: MPFunction
+      - m_Target: {fileID: 59903919}
+        m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
+        m_MethodName: ClickMasterPieceBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9469,6 +9447,7 @@ GameObject:
   - component: {fileID: 718527226}
   - component: {fileID: 718527223}
   - component: {fileID: 718527225}
+  - component: {fileID: 718527227}
   m_Layer: 5
   m_Name: Btn02
   m_TagString: Untagged
@@ -9540,10 +9519,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 718527227}
         m_TargetAssemblyTypeName: NextStageUI, Assembly-CSharp
         m_MethodName: ClickStageBtn
-        m_Mode: 3
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -9590,6 +9569,29 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &718527227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718527220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d47decc3ba5f4f45b5ebef178a68d18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageManager: {fileID: 970653728}
+  image: {fileID: 649377563}
+  stageType: 0
+  spriteArr:
+  - {fileID: -8390244, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  - {fileID: 1184597123, guid: 99a24620d31e5ce4e823c32d11e17c2c, type: 3}
+  - {fileID: 172626504, guid: c4d2ccab0c2ad7e47853b6e31a7ac7c2, type: 3}
+  - {fileID: -966563848, guid: c4d2ccab0c2ad7e47853b6e31a7ac7c2, type: 3}
+  - {fileID: -38345435, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: 6492391481879774325, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
+  - {fileID: 1807624531, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
 --- !u!1 &720720281
 GameObject:
   m_ObjectHideFlags: 0
@@ -11115,6 +11117,7 @@ GameObject:
   - component: {fileID: 789233902}
   - component: {fileID: 789233899}
   - component: {fileID: 789233901}
+  - component: {fileID: 789233903}
   m_Layer: 5
   m_Name: Btn03
   m_TagString: Untagged
@@ -11186,10 +11189,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 789233903}
         m_TargetAssemblyTypeName: NextStageUI, Assembly-CSharp
         m_MethodName: ClickStageBtn
-        m_Mode: 3
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -11236,6 +11239,29 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &789233903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789233896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d47decc3ba5f4f45b5ebef178a68d18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageManager: {fileID: 970653728}
+  image: {fileID: 649377563}
+  stageType: 0
+  spriteArr:
+  - {fileID: -8390244, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  - {fileID: 1184597123, guid: 99a24620d31e5ce4e823c32d11e17c2c, type: 3}
+  - {fileID: 172626504, guid: c4d2ccab0c2ad7e47853b6e31a7ac7c2, type: 3}
+  - {fileID: -966563848, guid: c4d2ccab0c2ad7e47853b6e31a7ac7c2, type: 3}
+  - {fileID: -38345435, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: 6492391481879774325, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
+  - {fileID: 1807624531, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
 --- !u!1 &812397864
 GameObject:
   m_ObjectHideFlags: 0
@@ -11383,11 +11409,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storageManager: {fileID: 0}
-  health: 0
-  canvas: 2
+  gold: 0
+  health: 50
+  canvas: 0
   mainSkill:
+    nameEn: 
     name: 
-    notation: 
     icon: 
     desc: 
     colorType: 0
@@ -12937,8 +12964,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
+      - m_Target: {fileID: 1788747356}
+        m_TargetAssemblyTypeName: LootManager, Assembly-CSharp
         m_MethodName: Click_LootBtn
         m_Mode: 3
         m_Arguments:
@@ -13189,6 +13216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5021ce2861c29a1408bc52119b15dbdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lootManager: {fileID: 1788747356}
   curStageType: 0
 --- !u!1 &979817629
 GameObject:
@@ -13887,7 +13915,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 141996795}
+      - m_Target: {fileID: 141996796}
         m_TargetAssemblyTypeName: StorageManager, Assembly-CSharp
         m_MethodName: BagBtn_clicked
         m_Mode: 1
@@ -16346,6 +16374,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1208187669}
+  - component: {fileID: 1208187670}
   m_Layer: 5
   m_Name: MPManager
   m_TagString: Untagged
@@ -16373,6 +16402,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1208187670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208187668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72e25b4fe18d2ef4d8394b1fe503f0d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 499733693}
+  MPDataArr:
+  - {fileID: 11400000, guid: 9caa96e3301f1974dbda21292ef2d023, type: 2}
+  - {fileID: 11400000, guid: 1207c765aa711f64da844a8ea29f5db1, type: 2}
+  - {fileID: 11400000, guid: 07cc0acff6e972742be36a052e47623d, type: 2}
+  stack: 0
+  canUseMP: 0
+  isTrueDamage: 0
 --- !u!1 &1209835800
 GameObject:
   m_ObjectHideFlags: 0
@@ -17491,7 +17540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1317080064
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17556,8 +17605,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
+      - m_Target: {fileID: 1788747356}
+        m_TargetAssemblyTypeName: LootManager, Assembly-CSharp
         m_MethodName: Click_SkipSkillLootBtn
         m_Mode: 1
         m_Arguments:
@@ -21965,8 +22014,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
+      - m_Target: {fileID: 1788747356}
+        m_TargetAssemblyTypeName: LootManager, Assembly-CSharp
         m_MethodName: Click_NextBtn
         m_Mode: 1
         m_Arguments:
@@ -22538,8 +22587,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
+      - m_Target: {fileID: 1788747356}
+        m_TargetAssemblyTypeName: LootManager, Assembly-CSharp
         m_MethodName: Click_SkillLootBtn
         m_Mode: 3
         m_Arguments:
@@ -22725,7 +22774,6 @@ MonoBehaviour:
   usedPaintArr: 00000000000000000000000000000000
   maxPalette: 0
   paletteOrder: 0
-  stack: 0
   skillIconUI: {fileID: 71378648}
   paintScArr:
   - {fileID: 1359008123}
@@ -22742,6 +22790,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1788747355}
+  - component: {fileID: 1788747356}
   m_Layer: 5
   m_Name: LootUI
   m_TagString: Untagged
@@ -22769,6 +22818,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 598.2322, y: 600}
   m_Pivot: {x: 1, y: 0.5}
+--- !u!114 &1788747356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1788747354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758dbdfbaf1863c43b9a053c983c8290, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageManager: {fileID: 0}
+  lootUI: {fileID: 748426486}
+  spriteArr:
+  - {fileID: -1997803578, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: 1777749549, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
 --- !u!1 &1802718786
 GameObject:
   m_ObjectHideFlags: 0
@@ -24453,7 +24519,7 @@ GameObject:
   - component: {fileID: 1891535146}
   - component: {fileID: 1891535145}
   m_Layer: 0
-  m_Name: Player (1)
+  m_Name: Ally
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24624,8 +24690,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LootUI, Assembly-CSharp
+      - m_Target: {fileID: 1788747356}
+        m_TargetAssemblyTypeName: LootManager, Assembly-CSharp
         m_MethodName: Click_LootBtn
         m_Mode: 3
         m_Arguments:
@@ -28353,6 +28419,7 @@ GameObject:
   - component: {fileID: 2143699466}
   - component: {fileID: 2143699463}
   - component: {fileID: 2143699465}
+  - component: {fileID: 2143699467}
   m_Layer: 5
   m_Name: Btn01
   m_TagString: Untagged
@@ -28424,10 +28491,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2143699467}
         m_TargetAssemblyTypeName: NextStageUI, Assembly-CSharp
         m_MethodName: ClickStageBtn
-        m_Mode: 3
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -28474,6 +28541,29 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2143699467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143699460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d47decc3ba5f4f45b5ebef178a68d18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageManager: {fileID: 970653728}
+  image: {fileID: 649377563}
+  stageType: 0
+  spriteArr:
+  - {fileID: -8390244, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  - {fileID: 1184597123, guid: 99a24620d31e5ce4e823c32d11e17c2c, type: 3}
+  - {fileID: 172626504, guid: c4d2ccab0c2ad7e47853b6e31a7ac7c2, type: 3}
+  - {fileID: -966563848, guid: c4d2ccab0c2ad7e47853b6e31a7ac7c2, type: 3}
+  - {fileID: -38345435, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
+  - {fileID: 6492391481879774325, guid: 3765a367fb48f9040bca18add088d6d3, type: 3}
+  - {fileID: 1807624531, guid: 0d5e657ee5a074e4baa53d5b248a01d2, type: 3}
 --- !u!1001 &3570229036870837447
 PrefabInstance:
   m_ObjectHideFlags: 0

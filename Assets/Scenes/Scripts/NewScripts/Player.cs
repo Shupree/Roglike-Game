@@ -12,6 +12,8 @@ public class Player : MonoBehaviour, ITurn
     [Header("HUD")]
     private HUD hud;     // HUD
 
+    public int gold;   // 골드 수
+
     [Header("Status")]
     private int maxHealth = 50;
     public int health = 50;     // 체력
@@ -96,35 +98,45 @@ public class Player : MonoBehaviour, ITurn
     {
         int damage = 0;             // 최종 데미지
         bool isTrueDamage = false;  // 고정 데미지 유무
-        Debug.Log(targets[0]);
+
+        int count = 0;              // 스킬 타수
 
         // 공격 type에 따른 분류    (targets는 turnManager로부터 받음)
         switch (mainSkill.skillType)
         {
             // 단타 공격
             case Skill.SkillType.SingleAtk:
-
+                count = mainSkill.count;
                 break;
-
             // 전체 공격
             case Skill.SkillType.SplashAtk:
-
+                count = mainSkill.count;
+                break;
+            // 바운스 공격
+            case Skill.SkillType.BounceAtk:
+                count = 1;
                 break;
             // 자신 보조
             case Skill.SkillType.SingleSup:    // 자기자신 타겟 스킬
+                count = mainSkill.count;
                 isTrueDamage = true;    // 자신 대상은 고정데미지
                 break;
 
             // 전체 아군 보조
             case Skill.SkillType.SplashSup:
+                count = mainSkill.count;
                 isTrueDamage = true;    // 아군 대상은 고정데미지
                 break;
         }
 
         for (int c = 0; c < targets.Count; c++)
         {
-            for (int i = 0; i < mainSkill.count; i++)   // 타수만큼 반복
+            for (int i = 0; i < count; i++)   // 타수만큼 반복
             {
+                if (targets[i] == null)     // 적 제거 시 스킬 이펙트만 보여줄 것!
+                {
+                    continue;
+                }
                 if (mainSkill.damage > 0)    // 기본 데미지가 0일 시 스킵
                 {
                     damage = mainSkill.damage;   // 기본 데미지
@@ -132,16 +144,22 @@ public class Player : MonoBehaviour, ITurn
                     {
                         damage += targets[c].HasBurnDebuff();   // 화상 데미지
                     }
-                    targets[c].TakeDamage(damage);      // 공격
+                    targets[c].TakeDamage(damage, false);      // 공격
                     Debug.Log($"{targets[c]}은 {damage} 의 데미지를 입었다.");
                 }
 
-                // 적 상태이상 부여
-                if (mainSkill.effect > 0)
+                if (mainSkill.heal > 0)
                 {
-                    targets[c].AddStatusEffect(GameManager.instance.statusEffects.Find(s => s.name == mainSkill.effectType), mainSkill.effect);
-                    Debug.Log($"{targets[c]}은 {mainSkill.effectType}을 {mainSkill.effect}만큼 받었다.");
+                    targets[c].TakeHeal(mainSkill.heal);
+                    Debug.Log($"{targets[c]}은 {mainSkill.heal} 만큼 체력을 회복했다.");
                 }
+
+                // 적 상태이상 부여
+                    if (mainSkill.effect > 0)
+                    {
+                        targets[c].AddStatusEffect(GameManager.instance.statusEffects.Find(s => s.name == mainSkill.effectType), mainSkill.effect);
+                        Debug.Log($"{targets[c]}은 {mainSkill.effectType}을 {mainSkill.effect}만큼 받었다.");
+                    }
             }
         }
         // 데미지 연산 : 기본 데미지 + 화상 데미지 + 집중 효과
@@ -151,13 +169,50 @@ public class Player : MonoBehaviour, ITurn
     }
 
     // 피격 시 데미지 연산
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, bool isTrueDamage)
     {
-        health -= damage;
-        if (health < 0) health = 0;
+        if (isTrueDamage)
+        {
+            health -= damage;
+            if (health < 0) health = 0;
+        }
+        else
+        {
+            if (shield > damage)
+            {
+                shield -= damage;
+            }
+            else
+            {
+                damage -= shield;
+                shield = 0;
+                health -= damage;
+                if (health < 0) health = 0;
+            }
+        }
 
         hud.HUDUpdate();        // HUD의 HP 변화
         Debug.Log($"플레이어가 {damage} 데미지를 받았습니다! 남은 체력: {health}");
+    }
+
+    // 회복 시 연산
+    public void TakeHeal(int heal)
+    {
+        if (maxHealth <= health + heal)
+        {
+            health = maxHealth;
+        }
+        else
+        {
+            health += heal;
+        }
+        hud.HUDUpdate();        // HUD의 HP 변화
+    }
+
+    // 보호막 획득 시 연산
+    public void TakeShield(int shield)
+    {
+
     }
 
     // 특정 상태이상 추가 ( StatusEffect 상태이상 종류, int 중첩 수 )

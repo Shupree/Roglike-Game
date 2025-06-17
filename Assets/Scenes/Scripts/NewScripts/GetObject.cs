@@ -6,6 +6,7 @@ using UnityEngine;
 public class GetObject : MonoBehaviour
 {
     private TurnManager turnManager;
+    private StorageManager storageManager;
     private Player player;
 
     private RaycastHit2D hit;
@@ -13,6 +14,7 @@ public class GetObject : MonoBehaviour
     public void Initialize()
     {
         turnManager = GameManager.instance.turnManager;
+        storageManager = GameManager.instance.storageManager;
         player = GameManager.instance.player;
     }
 
@@ -29,8 +31,17 @@ public class GetObject : MonoBehaviour
                 switch(hit.collider.tag){
                     case "Enemy":
                         Debug.Log(hit.collider.gameObject.name);
-                        if (player.mainSkill != null && player.mainSkill.skillType == Skill.SkillType.SingleAtk)    // 단일 스킬일때만
+                        if (player.mainSkill != null &&
+                            player.mainSkill.skillType == Skill.SkillType.SingleAtk &&
+                            turnManager.GetState() == TurnManager.State.playerAct)      // 단일 스킬일 경우
                         {
+                            turnManager.targets.Clear();
+                            turnManager.targets.Add(hit.collider.gameObject.GetComponent<Enemy>());      // 타겟팅
+                        }
+                        else if (storageManager._MPManager.GetMPData() != null &&
+                                storageManager._MPManager.GetMPData().skillType == Skill.SkillType.SingleAtk &&
+                                turnManager.GetState() == TurnManager.State.useMP)      // 걸작 스킬이 단일 스킬일 경우
+                        { 
                             turnManager.targets.Clear();
                             turnManager.targets.Add(hit.collider.gameObject.GetComponent<Enemy>());      // 타겟팅
                         }

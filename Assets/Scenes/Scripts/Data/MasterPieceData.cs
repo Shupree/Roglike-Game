@@ -6,50 +6,35 @@ using UnityEngine;
 public class MasterPieceData : ScriptableObject
 {
     // 걸작 스크립터블 오브젝트
-    public enum MP_Class { White, Red, Blue, Yellow, Orange, Purple, Green, Black, Hidden }
-    public enum AttackType { Single, Bounce, Splash }
-    public enum ConditionType { None, Cost, Health, Paint, Gold }
-    public enum PaintType { R, B, Y, W }
-
-    // 걸작 형태
-    // 1. 조건부 (물감, 체력, 재화) _ 조건에 따른 효과 변화
-    // 2. 공격/디버프/버프
-    // 3. 공격형태 (Single, Multiple, Splash)
-    // 4. 자신 대상 효과
-    // 5. 
+    // public enum MP_Color { White, Red, Blue, Yellow, Orange, Purple, Green, Black }
+    public enum ConditionType { None, OverCost, Health, Paint ,Gold }
 
     [Header("# Main Info")]
-    public MP_Class MP_class;
-    public int MP_Id;
+    // public MP_Color MP_class;
     public string MP_Name;
     [TextArea (3, 5)]
-    public string MP_Desc;      // 걸작 정보
-    public Sprite MP_Sprite;
-    public int cost;
+    public string desc;      // 걸작 정보
+    public Sprite icon;
+    public int cost;            // 사용 시 스택 수
+    public int maxCost;         // 스택 최대치
 
     [Header("# Basic Ability")]
-    public AttackType attackType;
-    public int basicDamage;  // 기본 데미지
+    public Skill.SkillType skillType;
+    public int damage;  // 기본 데미지
     public int count;   // 타수
-    public int baseShield;  // 기본 보호막 양
-    public int baseHeal;    // 기본 회복량
-    public int effectType;  // 효과 분류
-    public int basicEffect;   // 효과 수치    (순수 효과 수치)
-    public int self_EffectType;     // 자신에 대한 효과 타입    (없을 시 0)
-    public int self_Effect;      // 자신에 대한 효과 수치
+    public int shield;  // 기본 보호막 양
+    public int heal;    // 기본 회복량
+    public string[] effectType;    // 효과 분류
+    public int[] effect;        // 효과 수치    (순수 효과 수치)
 
     [Header("# Condition")]
     public ConditionType conditionType;
-    public PaintType conditionColor;  // Type이 Paint일 시
-    public int perCondition;    // 조건 1회 충족당 필요한 수치 : 조건이 다회 적용 가능 시      (기본값 = 1)
-    public int maximumCondition;    // 조건 최대치  (cost: stack 최대치 / 그 외: 조건 최대 횟수) (기본값 = 1)
-                                    // 모든 재고 소모 시 -1값으로 설정함.
+    public int conditionColorType;  // 'conditionType = Paint'시, 물감 타입 (1.빨강, 2.파랑, 3.노랑, 4.하양)
+    public int perCondition;        // 조건 1회 충족당 필요한 수치 : 조건이 다회 적용 가능 시      (기본값 = 1)
+    public int maxCondition;    // 조건 최대치 (조건의 최대 중첩 횟수) (기본값 = 1)
     public int perDamage;       // 조건당 데미지    (기본값 = 0)
+    public int perCount;        // 조건당 타수      (기본값 = 0)
     public int perShield;       // 조건당 보호막 양     (기본값 = 0)
     public int perHeal;         // 조건당 회복량        (기본값 = 0)
-    public int perEffect;       // 조건당 효과 수치     (기본값 = 0)
-
-    [Header("Extra Info")]
-    public int extraEffectType;    // 추가 효과
-    public int extraEffect;         // 추가 효과 수치
+    public int[] perEffect;       // 조건당 효과 수치     (기본값 = 0)
 }

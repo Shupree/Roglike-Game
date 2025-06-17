@@ -9,11 +9,11 @@ public class Skill
 {
     public enum SkillType
     {
-        SingleAtk, SplashAtk, SingleSup, SplashSup
+        SingleAtk, SplashAtk, BounceAtk, SingleSup, SplashSup
     }
 
+    public string nameEn;
     public string name;
-    public string notation;
     public string icon;
     public string desc;
     public int colorType;       // 1 : 빨강, 2 : 파랑, 3 : 노랑, 4 : 하양
@@ -81,8 +81,8 @@ public class CsvSkillLoader : MonoBehaviour
             // Skill 객체 선언
             Skill skill = new Skill();
 
-            skill.name = splitData[0];
-            skill.notation = splitData[1];
+            skill.nameEn = splitData[0];
+            skill.name = splitData[1];
             skill.icon = splitData[2];
             skill.desc = splitData[3];
             skill.colorType = int.Parse(splitData[4]);

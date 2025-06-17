@@ -18,7 +18,7 @@ MonoBehaviour:
   desc: "\uD14C\uC2A4\uD2B8\uC6A9 \uB354\uBBF8 \uC778"
   model: {fileID: 0}
   gold: 12
-  maxHealth: 200
+  maxHealth: 20
   skillPatterns:
   - skill: {fileID: 11400000, guid: 6227a0a90239bc84098a1925c16f8907, type: 2}
     turnNumber: -1

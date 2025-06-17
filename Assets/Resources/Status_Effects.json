@@ -7,17 +7,27 @@
             "stackable": 99,
             "stackCount" : 0,
             "secreaseRate" : 0,
-            "effectType": "추가 데미지",
+            "effectType": "AddStatus",
             "effectValue": 1
         },
         {
-            "name": "Freeze",
+            "name": "Frostbite",
+            "type": "Debuff",
+            "duration": 99,
+            "stackable": 7,
+            "stackCount" : 0,
+            "decreaseRate" : 0,
+            "effectType": "Convert",
+            "effectValue": 0
+        },
+        {
+            "name": "Freezen",
             "type": "Debuff",
             "duration": 99,
             "stackable": 1,
             "stackCount" : 0,
             "decreaseRate" : 0,
-            "effectType": "턴 스킵",
+            "effectType": "TurnSkip",
             "effectValue": 0
         },
         {
@@ -26,8 +36,18 @@
             "duration": 99,
             "stackable": 20,
             "stackCount" : 0,
+            "decreaseRate" : 50,
+            "effectType": "ExtraDamange",
+            "effectValue": 1
+        },
+        {
+            "name": "Poision",
+            "type": "Debuff",
+            "duration": 99,
+            "stackable": 99,
+            "stackCount" : 0,
             "decreaseRate" : 33,
-            "effectType": "추가 데미지",
+            "effectType": "ExtraDamange",
             "effectValue": 1
         },
         {
@@ -37,7 +57,7 @@
             "stackable": 99,
             "stackCount" : 0,
             "decreaseRate" : 0,
-            "effectType": "즉시 데미지",
+            "effectType": "ExtraDamange",
             "effectValue": 7
         }
     ]

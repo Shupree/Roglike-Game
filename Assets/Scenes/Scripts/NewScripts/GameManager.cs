@@ -14,18 +14,23 @@ public class GameManager : MonoBehaviour
     public List<StatusEffect> statusEffects;   // 상태이상 정보
 
     [Header ("Reference")]
-    public TurnManager turnManager;
     public PaintManager paintManager;
     public StageManager stageManager;
-    public SpawnManager spawnManager;
-    public HUDPoolManager hudPoolManager;
     public StorageManager storageManager;
 
     public CsvSkillLoader skillLoader;
 
+    [HideInInspector] 
+    public TurnManager turnManager;
+    [HideInInspector] 
+    public SpawnManager spawnManager;
+    [HideInInspector] 
+    public HUDPoolManager hudPoolManager;       // HUDPoolManager
+    [HideInInspector] 
+    public EnemyPoolManager enemyPoolManager;   // EnemyPoolManager
     private GetObject getObject;
 
-    [Header ("Unit")]
+    [Header("Unit")]
     public Player player;
     public Ally ally1;
     private int[] enemyIdArr = new int[4]{1,1,0,0};     // 임시 몬스터ID 저장용
@@ -37,16 +42,21 @@ public class GameManager : MonoBehaviour
     {
         instance = this;    // 인스턴스화
 
+        turnManager = gameObject.GetComponent<TurnManager>();
+        spawnManager = gameObject.GetComponent<SpawnManager>();
+        hudPoolManager = gameObject.GetComponent<HUDPoolManager>();
+        enemyPoolManager = gameObject.GetComponent<EnemyPoolManager>();
         getObject = gameObject.GetComponent<GetObject>();
 
         // TurnManager & GetObject 초기화
         turnManager.Initialize();       // TurnManager 초기화 메서드 호출
-        getObject.Initialize();         
+        getObject.Initialize();    
         hudPoolManager.Initialize();
+        enemyPoolManager.Initialize();     
         spawnManager.Initialize();
 
         // Player HUD 활성화
-        GameObject hud = hudPoolManager.GetHUD();
+        GameObject hud = gameObject.GetComponent<HUDPoolManager>().GetHUD();
         if (hud != null)
         {
             hud.GetComponent<RectTransform>().SetParent(GameObject.Find("Canvas").GetComponent<RectTransform>(), false);  // Screen Space Canvas 기준으로 배치
