@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e995e784c4102434c8c12513bb211768, type: 3}
+  m_Script: {fileID: 11500000, guid: eccd1e5feced7e844afa5bb3c6b3ad34, type: 3}
   m_Name: DummyAlly
   m_EditorClassIdentifier: 
   allyId: 0
-  unitName: "\uC2E4\uD5D8\uC6A9 \uACE0\uC591\uC774"
-  desc: "\uB354\uBBF8\uC6A9 \uC2E4\uD5D8\uC6A9 \uACE0\uC591\uC774"
-  model: {fileID: 381631601, guid: 0c187a32c5bde4747be8d00770b07403, type: 3}
-  maxHealth: 30
+  unitName: "\uB354\uBBF8 \uB3C4\uD654"
+  desc: "\uD50C\uB808\uC774\uC5B4\uB97C \uB3C4\uC640\uC8FC\uB294 \uB3C4\uD654 \uC778\uD615"
+  model: {fileID: 21300000, guid: a46454ead1bfb824488705138b3516b1, type: 3}
+  maxHealth: 20
   skillPatterns:
-  - skill: {fileID: 11400000, guid: 5adab13953242a24992881e187083dd4, type: 2}
+  - skill: {fileID: 11400000, guid: 382984e6d5eb89440a053928fbce5410, type: 2}
     turnNumber: -1
     probability: 0
     healthPoint: 0

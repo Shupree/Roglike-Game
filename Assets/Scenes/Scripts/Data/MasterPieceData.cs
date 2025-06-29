@@ -29,7 +29,7 @@ public class MasterPieceData : ScriptableObject
 
     [Header("# Condition")]
     public ConditionType conditionType;
-    public int conditionColorType;  // 'conditionType = Paint'시, 물감 타입 (1.빨강, 2.파랑, 3.노랑, 4.하양)
+    public string conditionDetail;  // 'conditionType = Paint'시, 물감 타입 (Red, Blue, Yellow, White)
     public int perCondition;        // 조건 1회 충족당 필요한 수치 : 조건이 다회 적용 가능 시      (기본값 = 1)
     public int maxCondition;    // 조건 최대치 (조건의 최대 중첩 횟수) (기본값 = 1)
     public int perDamage;       // 조건당 데미지    (기본값 = 0)

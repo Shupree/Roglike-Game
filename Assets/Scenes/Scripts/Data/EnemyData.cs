@@ -6,9 +6,10 @@ using UnityEngine;
 public class SkillPattern
 {
     public UnitSkillData skill;     // 적 스킬 데이터
+    // 하위 조건들의 모든 기본값은 0이며, 모두 0일 시 기본 스킬(사용할 스킬이 없을 때 사용하는 스킬)로 지정.
     public int turnNumber;      // 특정 턴에만 사용
     public float probability;   // 확률 기반 선택
-    public int healthPoint;     // HP가 n% 이하일 시 사용
+    public int healthPoint;     // HP가 n% 이하일 시 사용 (1 ~ 100)
 }
 
 [CreateAssetMenu(fileName = "Enemy", menuName = "Scriptble Object/EnemyData")]

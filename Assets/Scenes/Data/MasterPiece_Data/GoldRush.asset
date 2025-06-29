@@ -9,17 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5d6caec6b7b9854cbf670c7f57b4c0e, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f14d98882f02a245a90f421bec0ba17, type: 3}
   m_Name: GoldRush
   m_EditorClassIdentifier: 
-  MP_Name: "\uACE8\uB4DC \uB7EC\uC26C"
-  desc: "\uCD5C\uB300 10\uACE8\uB4DC\uB97C \uC18C\uBAA8\uD558\uC5EC \uB2E8\uC77C
-    \uC801\uC5D0\uAC8C \n\uC18C\uBAA8\uD55C \uACE8\uB4DC 1\uB2F9 2\uC758 \uB370\uBBF8\uC9C0\uB97C
-    \uC785\uD799\uB2C8\uB2E4."
+  MP_Name: "\uACE8\uB4DC\uB7EC\uC26C"
+  desc: "\"\uB3C8\uC758 \uD798\uC740 \uC704\uB300\uD558\uB2E4!\" \uCD5C\uB300 10\uC758
+    \uACE8\uB4DC\uB97C \uC18C\uBE44\uD558\uC5EC, \uC18C\uBE44\uD55C \uACE8\uB4DC
+    \uC218\uB9CC\uD07C \uACF5\uACA9\uD69F\uC218\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4.
+    \uB9E4 \uACF5\uACA9\uB9C8\uB2E4 \uB79C\uB364 \uC801\uC5D0\uAC8C 2\uC758 \uD53C\uD574\uB97C
+    \uC785\uD799\uB2C8\uB2E4. "
   icon: {fileID: 21300000, guid: e1ffaf9e83facda46928177f1eebcd5e, type: 3}
-  cost: 5
-  maxCost: 5
-  skillType: 0
+  cost: 7
+  maxCost: 7
+  skillType: 2
   damage: 2
   count: 0
   shield: 0

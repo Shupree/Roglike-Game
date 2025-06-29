@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5d6caec6b7b9854cbf670c7f57b4c0e, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f14d98882f02a245a90f421bec0ba17, type: 3}
   m_Name: ActionPainting
   m_EditorClassIdentifier: 
   MP_Name: "\uC561\uC158 \uD398\uC778\uD305"
-  desc: "\uBAA8\uB4E0 \uC2A4\uD0DD\uC744 \uC18C\uBAA8\uD558\uC5EC \uBAA8\uB4E0 \uC801\uC5D0\uAC8C
-    (\uCD08\uACFC\uB41C \uC2A4\uD0DD \uC218 x 2 + 4)\uB9CC\uD07C\uC758 \uD53C\uD574\uB97C
-    \uC785\uD799\uB2C8\uB2E4."
+  desc: "\uBAA8\uB4E0 \uC2A4\uD0DD\uC744 \uC18C\uBE44\uD558\uC5EC, \uBAA8\uB4E0 \uC801\uC5D0\uAC8C
+    6\uC758 \uD53C\uD574\uB97C \uC785\uD788\uACE0 \uCD94\uAC00\uB85C \uC18C\uBE44\uB41C
+    \uC2A4\uD0DD 1\uB2F9 2\uC758 \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4."
   icon: {fileID: 21300000, guid: 425c3b5f770fa56458bfdc0f28fad3da, type: 3}
   cost: 4
   maxCost: 8
   skillType: 1
-  damage: 4
+  damage: 6
   count: 1
   shield: 0
   heal: 0

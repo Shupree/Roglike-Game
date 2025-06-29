@@ -1,9 +1,9 @@
 nameEn,name,icon,desc,colorType,skillType,paintCondition,damage,count,shield,heal,effectType,effect
-FlameShot,화염탄,Icons/Red/FlameShot,단일 적에게 1의 피해와 1의 화상을 4회 입힙니다.,1,SingleAtk,1,1,4,0,0,Burn,1
-Thunder,번개,Icons/Yellow/Thunder,모든 적에게 3의 피해를 입히고 3의 감전을 부여합니다.,2,SplashAtk,1,3,1,0,0,ElectricShock,3
-Brinicle,브리니클,Icons/Blue/Icicle,단일 적에게 4의 피해를 입히고 1의 동상을 부여합니다.,3,SingleAtk,1,4,1,0,0,Frostbite,1
-AcrylShield,아크릴 실드,Icons/White/AcrylShield,자신에게 6의 보호막을 부여합니다.,4,SingleSup,1,0,1,6,0,None,0
-HealingRain,회복의 비,Icons/White/HealingRain,모든 아군의 체력을 3 회복합니다.,4,SplashSup,1,0,1,0,3,None,0
-Dripping,드리핑,Icons/Blue/Dripping,랜덤 적에게 2의 피해와 2의 중독을 3회 바운스로 공격합니다.,2,BounceAtk,1,2,3,0,0,Poision,2
-StampPainting,스탬프 페인팅,Icons/Red/StampPainting,단일 적에게 6의 피해를 입힙니다.,1,SingleAtk,1,6,1,0,0,None,0
-Making,메이킹,Icons/Yellow/Making,단일 적에게 3의 피해를 입히고 2의 취약을 부여합니다.,3,SingleAtk,1,3,1,0,0,Weak,2
+FlameShot,화염탄,Red/FlameShot,단일 적에게 1의 피해와 1의 화상을 4회 입힙니다.,1,SingleAtk,1,1,4,0,0,Burn,1
+Thunder,번개,Yellow/Thunder,모든 적에게 3의 피해를 입히고 3의 감전을 부여합니다.,2,SplashAtk,1,3,1,0,0,ElectricShock,3
+Brinicle,브리니클,Blue/Icicle,단일 적에게 4의 피해를 입히고 1의 동상을 부여합니다.,3,SingleAtk,1,4,1,0,0,Frostbite,1
+AcrylShield,아크릴 실드,White/AcrylShield,자신에게 6의 보호막을 부여합니다.,4,SingleSup,1,0,1,6,0,None,0
+HealingRain,회복의 비,White/HealingRain,모든 아군의 체력을 3 회복합니다.,4,SplashSup,1,0,1,0,3,None,0
+Dripping,드리핑,Blue/Dripping,랜덤 적에게 2의 피해와 2의 중독을 3회 바운스로 공격합니다.,2,BounceAtk,1,2,3,0,0,Poision,2
+StampPainting,스탬프 페인팅,Red/StampPainting,단일 적에게 6의 피해를 입힙니다.,1,SingleAtk,1,6,1,0,0,None,0
+Making,메이킹,Yellow/Making,단일 적에게 3의 피해를 입히고 2의 취약을 부여합니다.,3,SingleAtk,1,3,1,0,0,Weak,2
