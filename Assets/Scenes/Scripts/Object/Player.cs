@@ -8,6 +8,7 @@ public class Player : MonoBehaviour, ITurn
     [Header("Reference")]
     //private PaintManager paintManager;
     [HideInInspector] public StorageManager storageManager;
+    private TurnManager turnManager;
 
     [Header("HUD")]
     private HUD hud;     // HUD
@@ -49,8 +50,8 @@ public class Player : MonoBehaviour, ITurn
             statusEffectUI.UpdateStatusEffect(statusEffects);
         }
 
-        // paintManager = GameManager.instance.paintManager;
-            storageManager = GameManager.instance.storageManager;   // 스크립트 가져오기
+        turnManager = GameManager.instance.turnManager;
+        storageManager = GameManager.instance.storageManager;   // 스크립트 가져오기
         storageManager.Initialize();    // storageManager 강제 초기화
 
         mainSkill = null;
@@ -104,9 +105,9 @@ public class Player : MonoBehaviour, ITurn
     // 상태이상 값 확인
     public int GetStatusEffect(string effectName)
     {
-        if (statusEffects.Exists(e => e.name == effectName))
+        if (statusEffects.Exists(e => e.nameEn == effectName))
         {      // 버프/디버프 존재 시
-            return statusEffects.Find(e => e.name == effectName).stackCount;
+            return statusEffects.Find(e => e.nameEn == effectName).stackCount;
         }
         else
         {          // 아닐 시 0으로 반환
@@ -166,20 +167,17 @@ public class Player : MonoBehaviour, ITurn
                         damage += targets[c].GetStatusEffect("Burn");   // 화상 데미지
                     }
                     targets[c].TakeDamage(damage, false);      // 공격
-                    Debug.Log($"{targets[c]}은 {damage} 의 데미지를 입었다.");
                 }
 
                 if (mainSkill.heal > 0)
                 {
                     targets[c].TakeHeal(mainSkill.heal);
-                    Debug.Log($"{targets[c]}은 {mainSkill.heal} 만큼 체력을 회복했다.");
                 }
 
                 // 적 상태이상 부여
                 if (mainSkill.effect > 0)
                 {
                     targets[c].AddStatusEffect(mainSkill.effectType, mainSkill.effect);
-                    Debug.Log($"{targets[c]}은 {mainSkill.effectType}을 {mainSkill.effect}만큼 받었다.");
                 }
             }
         }
@@ -218,6 +216,8 @@ public class Player : MonoBehaviour, ITurn
 
         hud.UpdateHUD();        // HUD의 HP 변화
         Debug.Log($"플레이어가 {damage} 데미지를 받았습니다! 남은 체력: {health}");
+
+        turnManager.OperateEvent("OnHit");      // '플레이어 피격 시' 이벤트 시행
     }
 
     // 회복 시 연산
@@ -259,7 +259,7 @@ public class Player : MonoBehaviour, ITurn
     public void AddStatusEffect(string effectName, int stack)
     {
         // 이미 존재하는 상태이상인지 확인
-        var statusEffect = statusEffects.Find(e => e.name == effectName);
+        var statusEffect = statusEffects.Find(e => e.nameEn == effectName);
 
         // 이미 존재 시,
         if (statusEffect != null)
@@ -271,20 +271,20 @@ public class Player : MonoBehaviour, ITurn
                     statusEffect.maxStack,
                     statusEffect.stackCount + stack
                 );
-                Debug.Log($"플레이어의 {effectName} 상태 이상이 {statusEffect.stackCount}로 중첩되었습니다.");
+                Debug.Log($"플레이어의 {statusEffect.name} 상태 이상이 {statusEffect.stackCount}로 중첩되었습니다.");
             }
             else
             {
-                Debug.Log($"플레이어의 {effectName} 상태 이상이 최대 중첩에 도달했습니다.");
+                Debug.Log($"플레이어의 {statusEffect.name} 상태 이상이 최대 중첩에 도달했습니다.");
             }
         }
         // 존재하지 않을 시, 새로운 상태이상 추가
         else
         {
-            statusEffect = GameManager.instance.statusEffects.Find(s => s.name == effectName);
+            statusEffect = GameManager.instance.statusEffects.Find(s => s.nameEn == effectName);
             statusEffect.stackCount = stack;        // 새로 추가되는 효과는 기본 중첩 = stack 수
             statusEffects.Add(statusEffect);        // 새 상태이상 추가
-            Debug.Log($"{effectName}이(가) 새로 추가되었습니다.");
+            Debug.Log($"{statusEffect.name}이(가) 새로 추가되었습니다.");
         }
 
         // '변환'타입의 상태이상 적용
@@ -300,7 +300,7 @@ public class Player : MonoBehaviour, ITurn
     // 버프/디버프 제거
     public void DecStatusEffect(string effectName, int stack)
     {
-        var statusEffect = statusEffects.Find(e => e.name == effectName);
+        var statusEffect = statusEffects.Find(e => e.nameEn == effectName);
         if (statusEffect != null)
         {
             if (statusEffect.stackCount > stack)
@@ -324,7 +324,7 @@ public class Player : MonoBehaviour, ITurn
             if (statusEffect.isConsumable == false && statusEffect.duration != -1)
             {
                 // 턴제 지속형일 시, 상태이상 지속시간 줄이기.
-                DecStatusEffect(statusEffect.name, statusEffect.duration);
+                DecStatusEffect(statusEffect.nameEn, statusEffect.duration);
             }
             else
             {

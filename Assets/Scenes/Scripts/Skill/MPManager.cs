@@ -26,15 +26,12 @@ public class MPManager : MonoBehaviour
     private int addValue;       // MP 스킬 발동 중 중첩 값
 
     [Header("Bool")]
-    public bool canUseMP;       // 걸작스킬이 사용가능한 상태인가?
-
     public bool isTrueDamage;   // 고정데미지인가?
 
     public void Initialize()
     {
         turnManager = GameManager.instance.turnManager;
         paintManager = GameManager.instance.paintManager;
-        canUseMP = false;
 
         // 테스트용 임시 스킬
         MPData = MPDataArr[0];
@@ -59,7 +56,7 @@ public class MPManager : MonoBehaviour
     public bool CheckCondition()
     {
         // 걸작 사용 불가능한지 판별
-        if (canUseMP != true)
+        if (paintManager.canUsePaint != true)
         {
             return false;
         }

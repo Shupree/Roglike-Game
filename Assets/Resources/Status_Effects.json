@@ -1,7 +1,8 @@
 {
     "StatusEffects": [
         {
-            "name": "Concentration",
+            "nameEn": "Concentration",
+            "name": "집중",
             "desc": "다음 공격은 중첩 수만큼 최종 공격력이 증가합니다.",
             "icon": "Concentration",
             "type": "buff",
@@ -15,7 +16,8 @@
             "needStack": 1
         },
         {
-            "name": "Frostbite",
+            "nameEn": "Frostbite",
+            "name": "동상",
             "desc": "7회 누적 시, '빙결' 효과로 변경됩니다.",
             "icon": "Frostbite",
             "type": "debuff",
@@ -29,7 +31,8 @@
             "needStack": 7
         },
         {
-            "name": "Freezen",
+            "nameEn": "Freezen",
+            "name": "빙결",
             "desc": "한 턴간 행동 불가 상태에 빠집니다.",
             "icon": "Freezen",
             "type": "debuff",
@@ -43,7 +46,8 @@
             "needStack": 1
         },
         {
-            "name": "Burn",
+            "nameEn": "Burn",
+            "name": "화상",
             "desc": "적에게 피격 시, 중첩 수만큼 추가로 데미지를 받습니다. 매 턴 4만큼 감소합니다.",
             "icon": "Burn",
             "type": "debuff",
@@ -57,7 +61,8 @@
             "needStack": 1
         },
         {
-            "name": "Poision",
+            "nameEn": "Poision",
+            "name": "중독",
             "desc": "턴 시작 시, 중첩 수만큼 데미지를 받습니다. 매 턴 2만큼 감소합니다.",
             "icon": "Poision",
             "type": "debuff",
@@ -71,7 +76,8 @@
             "needStack": 1
         },
         {
-            "name": "ElectricShock",
+            "nameEn": "ElectricShock",
+            "name": "감전",
             "desc": "5 중첩 시, 7 데미지를 입힙니다.",
             "icon": "ElectricShock",
             "type": "debuff",

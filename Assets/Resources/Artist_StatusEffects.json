@@ -1,0 +1,34 @@
+{
+    "StatusEffects": [
+        {
+            "nameEn": "AchromaticColor",
+            "name": "무채색",
+            "desc": "매 턴마다 중첩 1당 1의 보호막을 얻습니다.",
+            "icon": "Artist_Theme/AchromaticColor",
+            "type": "buff",
+            "maxStack": 5,
+            "stackCount": 0,
+            "isConsumable": false,
+            "duration": -1,
+            "whenIsTrigger" : "startTurn",
+            "effectInfo": "statUp",
+            "efffectDetail": "shield",
+            "needStack": 0
+        },
+        {
+            "nameEn": "PrimaryColor",
+            "name": "원색",
+            "desc": "스킬 사용 시 물감대신 해당 버프의 중첩이 소모되며, 소모된 중첩만큼 스킬의 데미지가 증가합니다.",
+            "icon": "Artist_Theme/PrimaryColor",
+            "type": "buff",
+            "maxStack": 3,
+            "stackCount": 0,
+            "isConsumable": true,
+            "duration": 1,
+            "whenIsTrigger" : "always",
+            "effectInfo": "substitute",
+            "efffectDetail": "paint",
+            "needStack": 1
+        }
+    ]
+}

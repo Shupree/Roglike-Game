@@ -13,8 +13,9 @@ public class ThemeSkillData : ScriptableObject
     // public MP_Color MP_class;
     public string MP_Name;
     [TextArea (3, 5)]
-    public string desc;      // 테마스킬 정보
+    public string desc;         // 테마스킬 정보
     public Sprite icon;
+    public string costName;     // 요구하는 스택의 이름 (패시브 이름)
     public int cost;            // 사용 시 스택 수
     public int maxCost;         // 스택 최대치
 

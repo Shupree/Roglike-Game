@@ -52,22 +52,26 @@ public class TurnManager : MonoBehaviour
     public List<ITurn> targets = new List<ITurn>();
 
     [Header("Figure")]
-    private int totalTurns = 0; // 경과한 턴 수
+    private int totalTurns = 0;     // 경과한 턴 수
+
+    public int usedPaintNum = 0;    // 지난 턴에 사용했던 물감 수
 
     public (int, bool) lootInfoTuple = (0, false);      // 전리품 정보 (골드 수, 스킬 ???, 수집품 ???, 걸작 ???)
 
     // Delegate Event
-    public delegate void BattleStartedEvent();
-    public event BattleStartedEvent OnBattleStarted;    // 전투 시작 시 이벤트를 위한 델리게이트
+    public delegate void BattleEvent(string situation);
+    public static event BattleEvent OnBattleEvent;          // 전투 시 이벤트를 위한 델리게이트
 
-    public delegate void TurnStartedEvent();
-    public event TurnStartedEvent OnTurnStarted;        // 매턴 시작 시 이벤트를 위한 델리게이트
+    /*
+    public delegate void StartTurnEvent();
+    public static event StartTurnEvent OnStartTurn;        // 매턴 시작 시 이벤트를 위한 델리게이트
 
-    public delegate void TurnCompletedEvent();
-    public event TurnCompletedEvent OnTurnCompleted;    // 매턴 종료 시 이벤트를 위한 델리게이트
+    public delegate void AttackEvent();
+    public static event AttackEvent OnAttack;    // 플레이어 공격 시 이벤트를 위한 델리게이트
 
-    public delegate void BattleEndEvent();
-    public event BattleEndEvent OnBattleEnded;          // 전투 종료 이벤트
+    public delegate void HitEvent();
+    public static event HitEvent OnHit;          // 플레이어 피격 시 이벤트를 위한 델리게이트
+    */
 
     public void Initialize()
     {
@@ -94,6 +98,12 @@ public class TurnManager : MonoBehaviour
         Debug.Log(enemy + "적군 정보 등록 완료!");
     }
 
+    // 델리게이트 이벤트 실행 함수
+    public void OperateEvent(string eventName)
+    {
+        OnBattleEvent(eventName);
+    }
+
     // 전투 시작
     public void BattleStart()
     {
@@ -101,14 +111,10 @@ public class TurnManager : MonoBehaviour
 
         lootInfoTuple.Item2 = true;     // 스킬 보상 활성화
 
-        totalTurns = 0;     // 턴 초기화
-
-        // 걸작 기능 Off
-        storageManager._MPManager.canUseMP = false;
+        totalTurns = 0;                 // 턴 초기화
+        paintManager.FillUpPaint();     // 물감 초기화
 
         // 전투 시작 시 애니메이션 추가
-
-        OnBattleStarted?.Invoke();        // '전투 시작 시' 이벤트 시행
 
         StartTurns();   // 다음 턴 시작
     }
@@ -179,13 +185,12 @@ public class TurnManager : MonoBehaviour
         // 플레이어의 턴 진행
         else
         {
-            // 물감 기능 On
+            paintManager.FillPaint();               // 플레이어 물감 보충
+
+            // 물감 & 걸작스킬 & 테마스킬 기능 On
             paintManager.canUsePaint = true;
 
-            // 걸작 기능 On
-            storageManager._MPManager.canUseMP = true;
-
-            OnTurnStarted?.Invoke();        // '새로운 턴 시작 시' 이벤트 시행
+            OperateEvent("OnStartTurn");            // '턴 시작 시' 이벤트 시행
 
             state = State.playerAct;        // 아군의 턴 시작 + 플레이어 행동
             Debug.Log("플레이어가 행동할 차례입니다.");
@@ -202,9 +207,8 @@ public class TurnManager : MonoBehaviour
         {
             state = State.defeat;
             StopAllCoroutines();        // 모든 코루틴 종료
-            
-            paintManager.canUsePaint = false;               // 물감 버튼 Off
-            storageManager._MPManager.canUseMP = false;     // 걸작 버튼 Off
+
+            paintManager.canUsePaint = false;               // 물감 & 걸작스킬 & 테마스킬 기능 Off
             
             Debug.Log("플레이어가 사망했습니다. 게임 오버!");
         }
@@ -215,8 +219,7 @@ public class TurnManager : MonoBehaviour
             state = State.victory;      // 승리
             StopAllCoroutines();        // 모든 코루틴 종료
 
-            paintManager.canUsePaint = false;               // 물감 버튼 Off
-            storageManager._MPManager.canUseMP = false;     // 걸작 버튼 Off
+            paintManager.canUsePaint = false;               // // 물감 & 걸작스킬 & 테마스킬 기능 Off
 
             paintManager.ClearPaint();          // 팔레트 초기화
             paintManager.FillUpPaint();         // 물감 초기화
@@ -231,8 +234,6 @@ public class TurnManager : MonoBehaviour
     private void EndBattle()
     {
         Debug.Log("전투에서 승리했습니다.");
-
-        OnBattleEnded?.Invoke();
 
         // 전리품(loot) 설정
         stageManager.SetLoot(lootInfoTuple);
@@ -268,11 +269,8 @@ public class TurnManager : MonoBehaviour
 
             state = State.allyTurn;
 
-            // 물감 버튼 Off
+            // 물감 & 걸작스킬 & 테마스킬 기능 Off
             paintManager.canUsePaint = false;
-
-            // 걸작 기능 Off
-            storageManager._MPManager.canUseMP = false;
 
             // 공격 단계로
             StartCoroutine(PlayerTurn());
@@ -298,8 +296,7 @@ public class TurnManager : MonoBehaviour
 
         ClickEraseBtn();        // 사용 중이던 스킬 해제
 
-        paintManager.canUsePaint = false;               // 물감 버튼 Off
-        storageManager._MPManager.canUseMP = false;     // 걸작 기능 Off
+        paintManager.canUsePaint = false;               // 물감 & 걸작스킬 & 테마스킬 기능 On
 
         paintManager.SetSkillImg(storageManager._MPManager.GetMPData().icon);
         SetTarget(storageManager._MPManager.GetMPData().skillType);  // 타겟팅 설정
@@ -316,8 +313,7 @@ public class TurnManager : MonoBehaviour
 
         yield return null;
 
-        paintManager.canUsePaint = true;               // 물감 버튼 On
-        storageManager._MPManager.canUseMP = true;     // 걸작 기능 On
+        paintManager.canUsePaint = true;               // 물감 & 걸작스킬 & 테마스킬 기능 On
 
         // 플레이어에게 턴 제공
         state = State.playerAct;
@@ -347,9 +343,11 @@ public class TurnManager : MonoBehaviour
         {
             paintManager.usedPaintArr[i] = 0;       // 반환용 물감 초기화
         }
+        
+        usedPaintNum = paintManager.paletteOrder;
+        storageManager._MPManager.AddStack(usedPaintNum);     // 사용한 물감 수만큼 스택 적립
 
-        int MPstack = paintManager.paletteOrder;
-        storageManager._MPManager.AddStack(MPstack);     // 사용한 물감 수만큼 스택 적립
+        OperateEvent("OnAttack");          // '플레이어 공격 시' 이벤트 시행
 
         paintManager.ClearPaint();      // 페인트 & 팔레트 초기화
 
@@ -382,9 +380,6 @@ public class TurnManager : MonoBehaviour
         ExecuteTurn(enemies);
 
         yield return null;  // 프레임 동기화
-
-        // 턴 종료 후 작업
-        OnTurnCompleted?.Invoke();        // '특정 턴 종료 시' 이벤트 시행
 
         state = State.turnStart;
         StartTurns();       // 다음 턴 시작

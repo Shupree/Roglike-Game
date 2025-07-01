@@ -10,6 +10,7 @@ public class StorageManager : MonoBehaviour
     [Header("Reference")]
     private CsvSkillLoader skillLoader;
     public MPManager _MPManager;
+    public ThemeManager themeManager;
 
     [Header("UI Object")]
     private GameObject UIObject;
@@ -24,7 +25,9 @@ public class StorageManager : MonoBehaviour
     // 강제 초기화
     public void Initialize()
     {
+        // 하위 스크립트 초기화
         _MPManager.Initialize();
+        themeManager.Initialize();
 
         skillLoader = GameManager.instance.skillLoader;     // 스크립트 불러오기
 

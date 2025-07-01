@@ -53,10 +53,6 @@ public class PaintManager : MonoBehaviour
         maxPalette = 3;     // 임의 설정값 : 사용가능한 팔레트 수
 
         //canUsePaint = false;
-
-        // 델리게이트 이벤트 구독
-        turnManager.OnBattleStarted += FillUpPaint;
-        turnManager.OnTurnStarted += FillPaint;
     }
 
     // ---- Paint 관련 함수 ----

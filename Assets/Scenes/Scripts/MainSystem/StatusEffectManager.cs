@@ -7,7 +7,8 @@ using UnityEngine;
 [System.Serializable]
 public class StatusEffect
 {
-    public string name;             // 이름
+    public string nameEn;           // 이름(영문명)
+    public string name;             // 이름(한글명)
     public string desc;             // 설명
     public string icon;             // 아이콘
     public string type;             // 버프 / 디버프 (Buff or Debuff)

@@ -155,9 +155,9 @@ public class Ally : MonoBehaviour, ITurn
     // 상태이상 값 확인
     public int GetStatusEffect(string effectName)
     {
-        if (statusEffects.Exists(e => e.name == effectName))
+        if (statusEffects.Exists(e => e.nameEn == effectName))
         {      // 버프/디버프 존재 시
-            return statusEffects.Find(e => e.name == effectName).stackCount;
+            return statusEffects.Find(e => e.nameEn == effectName).stackCount;
         }
         else
         {          // 아닐 시 0으로 반환
@@ -239,7 +239,7 @@ public class Ally : MonoBehaviour, ITurn
     public void AddStatusEffect(string effectName, int stack)
     {
         // 이미 존재하는 상태이상인지 확인
-        var statusEffect = statusEffects.Find(e => e.name == effectName);
+        var statusEffect = statusEffects.Find(e => e.nameEn == effectName);
 
         // 이미 존재 시,
         if (statusEffect != null)
@@ -251,20 +251,20 @@ public class Ally : MonoBehaviour, ITurn
                     statusEffect.maxStack,
                     statusEffect.stackCount + stack
                 );
-                Debug.Log($"{gameObject.name}의 {effectName} 상태 이상이 {statusEffect.stackCount}로 중첩되었습니다.");
+                Debug.Log($"{gameObject.name}의 {statusEffect.name} 상태 이상이 {statusEffect.stackCount}로 중첩되었습니다.");
             }
             else
             {
-                Debug.Log($"{gameObject.name}의 {effectName} 상태 이상이 최대 중첩에 도달했습니다.");
+                Debug.Log($"{gameObject.name}의 {statusEffect.name} 상태 이상이 최대 중첩에 도달했습니다.");
             }
         }
         // 존재하지 않을 시, 새로운 상태이상 추가
         else
         {
-            statusEffect = GameManager.instance.statusEffects.Find(s => s.name == effectName);
+            statusEffect = GameManager.instance.statusEffects.Find(s => s.nameEn == effectName);
             statusEffect.stackCount = stack;        // 새로 추가되는 효과는 기본 중첩 = stack 수
             statusEffects.Add(statusEffect);        // 새 상태이상 추가
-            Debug.Log($"{gameObject.name}에게 {effectName}이(가) 새로 추가되었습니다.");
+            Debug.Log($"{gameObject.name}에게 {statusEffect.name}이(가) 새로 추가되었습니다.");
         }
         
         statusEffectUI.UpdateStatusEffect(statusEffects);    // 상태이상UI 업데이트
@@ -273,7 +273,7 @@ public class Ally : MonoBehaviour, ITurn
     // 버프/디버프 제거
     public void DecStatusEffect(string effectName, int stack)
     {
-        var statusEffect = statusEffects.Find(e => e.name == effectName);
+        var statusEffect = statusEffects.Find(e => e.nameEn == effectName);
         if (statusEffect != null)
         {
             if (statusEffect.stackCount > stack)
@@ -297,7 +297,7 @@ public class Ally : MonoBehaviour, ITurn
             if (statusEffect.isConsumable == false && statusEffect.duration != -1)
             {
                 // 턴제 지속형일 시, 상태이상 지속시간 줄이기.
-                DecStatusEffect(statusEffect.name, statusEffect.duration);
+                DecStatusEffect(statusEffect.nameEn, statusEffect.duration);
             }
             else
             {

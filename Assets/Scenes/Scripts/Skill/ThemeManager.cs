@@ -9,16 +9,16 @@ public class ThemeManager : MonoBehaviour
     private TurnManager turnManager;
     private PaintManager paintManager;
 
-    [Header("Theme Data")]
-    public ITheme[] IThemeArr;     // 모든 테마 Interface 저장소
-    private ITheme theme;         // 현재 사용 중인 테마
+    [Header("ITheme")]
+    public ITheme[] iThemeArr;    // 모든 테마 Interface 저장소
+    private ITheme iTheme;        // 현재 사용 중인 테마
+    private ThemeData themeData;       // 테마 데이터
 
     [Header("Target")]
     public List<ITurn> targets = new List<ITurn>();            // 공격 타겟
 
     [Header("Passive Effect")]
-    public int stack;           // 테마 사용을 위한 패시브 스택
-    private int maxStackList;      // 최대 스택 수
+    public List<StatusEffect> passiveEffects = new List<StatusEffect>();
 
     [Header("Figure")]
     private int addValue;       // 테마 스킬 발동 중 중첩 값
@@ -34,28 +34,73 @@ public class ThemeManager : MonoBehaviour
         paintManager = GameManager.instance.paintManager;
         canUseThemeSkill = false;
 
-        // 테스트용 임시 테마 적용
-        theme = IThemeArr[0];
+        // 델리게이트 이벤트 적용
+        TurnManager.OnBattleEvent += ApplyBattleEvent;
 
-        // maxStackList = ThemeData.maxStack;
+        // 테스트용 임시 테마 적용
+        iTheme = iThemeArr[0];
+        themeData = iTheme.ApplyTheme(this);
+        LoadPassiveEffect(themeData.fillName);      // 패시브 데이터 로드
+    }
+
+    // JSON 데이터 로드 (테마 패시브)
+    private void LoadPassiveEffect(string fileName)
+    {
+        StatusEffectLoader loader = new StatusEffectLoader();
+        passiveEffects = loader.LoadStatusEffects(fileName);     // 파일명에서 확장자 제외
+    }
+
+    // 패시브 스택을 증감시키는 함수
+    public void CalculatePassiveEffect(string effectName, int num)
+    {
+        StatusEffect passiveEffect = passiveEffects.Find(e => e.nameEn == effectName);
+
+        if (passiveEffect.maxStack <= passiveEffect.stackCount + num)
+        {
+            passiveEffect.stackCount = passiveEffect.maxStack;
+        }
+        else
+        { 
+            passiveEffect.stackCount += num;
+        }
     }
 
     /*
-    // 현재 사용 중인 걸작 스킬 Data 반환
+    // 현재 사용 중인 테마 스킬 Data 반환
     public ThemeData GetMPData()
     {
         return ThemeData;
     }
+    */
 
-    // 걸작스킬 변경
-    void ConvertMasterPiece()
+    // 전투 중 특정 상황 발생 시 효과
+    public void ApplyBattleEvent(string situation)
     {
+        iTheme.ApplyBattleEvent(situation);     // ITheme에 전투 이벤트 적용
 
+        List<StatusEffect> usingEffects = new List<StatusEffect>();
+
+        switch (situation)
+        {
+            case "startTurn":
+                usingEffects.Add(passiveEffects.Find(s => s.whenIsTrigger == "startTurn"));
+                break;
+            case "OnAttack":
+                usingEffects.Add(passiveEffects.Find(s => s.whenIsTrigger == "onAttack"));
+                break;
+            case "OnHit":
+                usingEffects.Add(passiveEffects.Find(s => s.whenIsTrigger == "onHit"));
+                break;
+        }
+        
+        // 패시브 효과 서술
     }
 
-    // 걸작스킬 조건 확인
+    // 테마스킬 조건 확인
     public bool CheckCondition()
     {
+        /*
+
         // 걸작 사용 불가능한지 판별
         if (canUseMP != true)
         {
@@ -149,11 +194,14 @@ public class ThemeManager : MonoBehaviour
                 break;
         }
         return true;
+        */
+        return false;
     }
 
     // 걸작스킬 사용
-    public void ExecuteMPSkill()
+    public void ExecuteThemeSkill()
     {
+        /*
         Debug.Log($"{MPData.MP_Name}걸작 발동! / 중첩값:{addValue} / 타겟:{targets}");
 
         int count = 0;
@@ -250,13 +298,15 @@ public class ThemeManager : MonoBehaviour
             stack += num;
             slider.fillAmount = stack / (float)maxStack;
         }
+        */
     }
 
     // 스택 초기화
     public void ClearStack()
     {
+        /*
         stack = 0;
         slider.fillAmount = stack / (float)maxStack;
+        */
     }
-    */
 }

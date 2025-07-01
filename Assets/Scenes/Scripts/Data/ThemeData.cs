@@ -11,15 +11,11 @@ public class ThemeData : ScriptableObject
     public int themeID;         // 테마 ID
     public string themeName;    // 테마 이름
     public string desc;         // 테마 정보
-    public Sprite sprite;       // 테마 스프라이트
+    public Sprite icon;             // 테마 아이콘
+    public Sprite charactorSprite;  // 캐릭터 스프라이트
 
     [Header("# Passive Effect")]
-    public string effectName;   // 패시브 이름
-    public string effectDesc;   // 패시브 정보
-    public Sprite[] effectIcons;    // 패시브 아이콘 Array
-    public int maxStack;        // 패시브 최대 스택 수
-    public int stack;           // 현재 스택 수
-
+    public string fillName;         // 패시브 효과 파일.json
 
     [Header("# Skill Pattern")]
     public List<ThemeSkillData> skillPatterns;    // 테마 스킬 리스트
