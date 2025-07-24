@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Theme", menuName = "Scriptble Object/ThemeData")]
+[CreateAssetMenu(fileName = "Theme", menuName = "Scriptable Object/ThemeData")]
 public class ThemeData : ScriptableObject
 {
     // 테마 스킬_스크립터블 오브젝트
@@ -17,6 +17,6 @@ public class ThemeData : ScriptableObject
     [Header("# Passive Effect")]
     public string fillName;         // 패시브 효과 파일.json
 
-    [Header("# Skill Pattern")]
-    public List<ThemeSkillData> skillPatterns;    // 테마 스킬 리스트
+    [Header("# Skill List")]
+    public List<ThemeSkillData> skillList;    // 테마 스킬 리스트
 }

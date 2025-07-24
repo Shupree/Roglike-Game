@@ -26,8 +26,8 @@ public class Enemy : MonoBehaviour, ITurn
     [Header("Target")]
     public List<ITurn> targets = new List<ITurn>();    // 공격 타겟
 
-    [Header("Status Effect")]
-    public List<StatusEffect> statusEffects = new List<StatusEffect>();   // 상태이상 저장공간
+    // 상태이상 List
+    public List<StatusEffect> statusEffects { get; private set; } = new List<StatusEffect>();
 
     [Header("Individual Turn")]
     private int currentTurn;    // 유닛별 개별 턴 수
@@ -52,17 +52,6 @@ public class Enemy : MonoBehaviour, ITurn
 
     public void TakeTurn()
     {
-        foreach (var effect in statusEffects)
-        {
-            effect.ApplyEffect(this);   // 특정 상태이상 효과 적용
-
-            effect.duration--;      // 지속 턴 수 감소
-            if (effect.duration <= 0 || effect.stackCount <= 0)     // (지속 시간 = 0 or 중첩 수 = 0)
-            {
-                effect.RemoveEffect(this);      // 특정 상태이상 제거
-            }
-        }
-
         Debug.Log("적이 행동합니다!");
         // 적 행동 로직
 
@@ -104,7 +93,18 @@ public class Enemy : MonoBehaviour, ITurn
                     damage = curSkillData.damage;   // 기본 데미지
                     if (!isTrueDamage)
                     {
-                        damage += targets[c].GetStatusEffect("Burn");   // 화상 데미지
+                        // '공격력 업' 관련 버프 적용
+                        List<StatusEffect> attackEffects = statusEffects.FindAll(s => s.effectInfo == EffectInfo.attackUp);
+                        foreach (StatusEffect effect in attackEffects)
+                        {
+                            damage += int.Parse(effect.efffectDetail) * effect.stackCount;
+
+                            // 소모성 상태이상일 시 스택 수 감소
+                            if (effect.isConsumable && effect.decreaseNum != -1)
+                            {
+                                DecStatusEffect(effect.nameEn, effect.decreaseNum);
+                            }
+                        }
                     }
                     targets[c].TakeDamage(damage, false);      // 공격
                     Debug.Log($"{targets[c]}은 {damage} 의 데미지를 입었다.");
@@ -199,6 +199,9 @@ public class Enemy : MonoBehaviour, ITurn
             hud.UpdateHUD();        // HUD의 HP 변화
             Debug.Log($"{gameObject.name}이(가) {damage} 데미지를 받았습니다! 남은 체력: {health}");
         }
+
+        // 피격 시 상태이상 업데이트
+        StatusEffectProcessor.ProcessStatusEffects(this, statusEffects, StatusEffectProcessor.Situation.onHit);
     }
 
     // 회복 시 연산
@@ -287,23 +290,6 @@ public class Enemy : MonoBehaviour, ITurn
         }
 
         statusEffectUI.UpdateStatusEffect(statusEffects);    // 상태이상UI 업데이트
-    }
-    
-    // 버프/디버프 지속시간 확인
-    public void CheckStatusEffectDuration()
-    {
-        foreach (var statusEffect in statusEffects)
-        {
-            if (statusEffect.isConsumable == false && statusEffect.duration != -1)
-            {
-                // 턴제 지속형일 시, 상태이상 지속시간 줄이기.
-                DecStatusEffect(statusEffect.nameEn, statusEffect.duration);
-            }
-            else
-            {
-                continue;
-            }
-        }
     }
 
     // ------ Enemy Skill AI 로직 ------

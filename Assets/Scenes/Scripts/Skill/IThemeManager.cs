@@ -3,45 +3,36 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public interface ITheme
+public interface IThemePassive
 {
     // ThemeData GetThemeData();
-    ThemeData ApplyTheme(ThemeManager themeManager);
-    void ApplyBattleEvent(string situation);
+    void ApplyITheme(ThemeManager themeManager);
 }
 
 // 두 개의 특성을 다루는 기본 테마 : 아티스트
-public class Artist : ITheme
+public class ArtistPassive : IThemePassive
 {
-    public ThemeData themeData;     // 고유 테마 데이터
     private TurnManager turnManager;
     private ThemeManager themeManager;
 
     private int usedPaintStack;         // 사용한 물감 스택 (3스택 => 1무채색)
     private int stackLimit;             // 턴당 스택 제한 (턴당 3무채색)
 
-    public ThemeData ApplyTheme(ThemeManager managerSc)
+    public void ApplyITheme(ThemeManager managerSc)
     {
         turnManager = GameManager.instance.turnManager;
 
         themeManager = managerSc;           // ThemeManager 스크립트 받기
         usedPaintStack = 0;
 
-        return themeData;
+        SubscribeEvent();       // 이벤트 구독
     }
 
-    // 배틀 이벤트 적용
-    public void ApplyBattleEvent(string situation)
+    // 이벤트 구독 메서드
+    public void SubscribeEvent()
     {
-        switch (situation)
-        {
-            case "OnStartTurn":
-                ClearStackLimit();
-                break;
-            case "OnAttack":
-                ConvertStack();
-                break;
-        }
+        BattleEventRouter.OnTurnStart += ClearStackLimit;
+        BattleEventRouter.OnAttack += ConvertStack;
     }
 
     // 턴 시작 시, 얻을 수 있는 '무채색' 수 초기화 (턴 시작 시)

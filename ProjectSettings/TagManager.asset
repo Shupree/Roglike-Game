@@ -15,8 +15,8 @@ TagManager:
   - Water
   - UI
   - 
-  - 
-  - 
+  - Log_Sprite
+  - Log
   - 
   - 
   - 
@@ -55,4 +55,7 @@ TagManager:
     locked: 0
   - name: System_UI
     uniqueID: 536337669
+    locked: 0
+  - name: Log_UI
+    uniqueID: 2088207821
     locked: 0

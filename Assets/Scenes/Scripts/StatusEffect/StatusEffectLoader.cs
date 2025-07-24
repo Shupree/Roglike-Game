@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -29,6 +30,16 @@ public class StatusEffectLoader
         }
 
         Debug.Log($"로드된 상태이상 효과 개수: {container.StatusEffects.Count}");
+
+        // 오류 확인
+        foreach (var status in container.StatusEffects)
+        {
+            if (!Enum.IsDefined(typeof(EffectInfo), status.effectInfo.ToString()))
+            {
+                Debug.LogWarning($"정의되지 않은 effectInfo 값: {status.effectInfo}");
+            }
+        }
+        
         return container.StatusEffects;
     }
 }

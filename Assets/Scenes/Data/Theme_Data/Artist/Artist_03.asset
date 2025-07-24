@@ -10,15 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b28f50c982873634ab8789a6a29647ab, type: 3}
-  m_Name: Artist_01
+  m_Name: Artist_03
   m_EditorClassIdentifier: 
-  MP_Name: "[\uC791\uD488:\uBCC0\uD654]"
-  desc: "\u2018\uBB34\uCC44\uC0C9\u2019 3\uC911\uCCA9\uC744 \uC18C\uBAA8\uD558\uC5EC
-    \u2018\uC0BC\uC6D0\uC0C9\u2019\uC744 3\uB9CC\uD07C \uC5BB\uB294\uB2E4."
-  icon: {fileID: 21300000, guid: 93ff8a4724fe5bc4aa4b0dfd296bb775, type: 3}
-  cost: 3
-  maxCost: 3
-  skillType: 3
+  skillName: 
+  desc: 
+  icon: {fileID: 21300000, guid: efdae74da5965ec46a5d03abfe1c1141, type: 3}
+  colorTypeList: 
+  skillType: 0
   damage: 0
   count: 0
   shield: 0

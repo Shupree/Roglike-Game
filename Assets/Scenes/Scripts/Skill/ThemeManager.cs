@@ -9,9 +9,12 @@ public class ThemeManager : MonoBehaviour
     private TurnManager turnManager;
     private PaintManager paintManager;
 
+    [Header("ImageSc")]
+    public Image[] skillBtnImg;       // 테마 스킬 버튼 Image
+
     [Header("ITheme")]
-    public ITheme[] iThemeArr;    // 모든 테마 Interface 저장소
-    private ITheme iTheme;        // 현재 사용 중인 테마
+    private IThemePassive iThemePassive;        // 현재 사용 중인 테마 패시브
+    public ThemeData[] themeDatas;       // 테마 데이터 Arr
     private ThemeData themeData;       // 테마 데이터
 
     [Header("Target")]
@@ -20,27 +23,49 @@ public class ThemeManager : MonoBehaviour
     [Header("Passive Effect")]
     public List<StatusEffect> passiveEffects = new List<StatusEffect>();
 
-    [Header("Figure")]
-    private int addValue;       // 테마 스킬 발동 중 중첩 값
-
     [Header("Bool")]
-    public bool canUseThemeSkill;       // 테마스킬이 사용가능한 상태인가?
-
     public bool isTrueDamage;   // 고정데미지인가?
 
     public void Initialize()
     {
         turnManager = GameManager.instance.turnManager;
         paintManager = GameManager.instance.paintManager;
-        canUseThemeSkill = false;
 
-        // 델리게이트 이벤트 적용
-        TurnManager.OnBattleEvent += ApplyBattleEvent;
+        //SubscribeEvent();                   // 이벤트 구독
 
         // 테스트용 임시 테마 적용
-        iTheme = iThemeArr[0];
-        themeData = iTheme.ApplyTheme(this);
+        ApplyTheme("Artist");           // '테마-화가' 적용
+    }
+
+    private void ApplyTheme(string themeName)
+    {
+        switch (themeName)
+        {
+            case "Artist":
+                themeData = themeDatas[0];
+                iThemePassive = new ArtistPassive();
+                break;  
+        }
+
         LoadPassiveEffect(themeData.fillName);      // 패시브 데이터 로드
+
+        iThemePassive.ApplyITheme(this);
+
+        skillBtnImg[0].sprite = themeData.skillList[0].icon;
+        skillBtnImg[1].sprite = themeData.skillList[1].icon;
+    }
+
+    public ThemeData GetThemeData()
+    {
+        if (themeData != null)
+        {
+            return themeData;
+        }
+        else
+        {
+            Debug.LogError("저장 중인 ThemeData가 없습니다!");
+            return null;
+        }
     }
 
     // JSON 데이터 로드 (테마 패시브)
@@ -65,162 +90,43 @@ public class ThemeManager : MonoBehaviour
         }
     }
 
-    /*
-    // 현재 사용 중인 테마 스킬 Data 반환
-    public ThemeData GetMPData()
-    {
-        return ThemeData;
-    }
-    */
-
-    // 전투 중 특정 상황 발생 시 효과
-    public void ApplyBattleEvent(string situation)
-    {
-        iTheme.ApplyBattleEvent(situation);     // ITheme에 전투 이벤트 적용
-
-        List<StatusEffect> usingEffects = new List<StatusEffect>();
-
-        switch (situation)
-        {
-            case "startTurn":
-                usingEffects.Add(passiveEffects.Find(s => s.whenIsTrigger == "startTurn"));
-                break;
-            case "OnAttack":
-                usingEffects.Add(passiveEffects.Find(s => s.whenIsTrigger == "onAttack"));
-                break;
-            case "OnHit":
-                usingEffects.Add(passiveEffects.Find(s => s.whenIsTrigger == "onHit"));
-                break;
-        }
-        
-        // 패시브 효과 서술
-    }
-
-    // 테마스킬 조건 확인
-    public bool CheckCondition()
-    {
-        /*
-
-        // 걸작 사용 불가능한지 판별
-        if (canUseMP != true)
-        {
-            return false;
-        }
-
-        // 스택 수 부족 시 return
-        if (stack < MPData.cost)
-        {
-            return false;
-        }
-
-        switch (MPData.conditionType)
-        {
-            case MasterPieceData.ConditionType.None:
-                ClearStack();
-                addValue = 1;
-                break;
-
-            case MasterPieceData.ConditionType.OverCost:
-                addValue = (stack - MPData.cost) / MPData.perCondition; // 여분 코스트 / 필요 수치
-                ClearStack();                           // 스택 초기화
-                AddStack(stack % MPData.perCondition);  // 여분 반환
-                break;
-
-            case MasterPieceData.ConditionType.Health:
-                addValue = turnManager.allies[0].GetStatus("HP") / MPData.perCondition;     // 중첩 값 연산
-                if (turnManager.allies[0].GetStatus("HP") % MPData.perCondition <= 0)
-                {
-                    addValue--;     // HP가 0이 되는 경우 방지
-                }
-
-                if (addValue > MPData.maxCondition)
-                {
-                    addValue = MPData.maxCondition;     // 상한치를 넘는 경우 방지
-                }
-                else if (addValue <= 0)
-                {
-                    Debug.Log("걸작 사용에 사용할 HP가 부족합니다!");
-                    return false;                             // HP가 부족하다면 사용 불가능
-                }
-                turnManager.allies[0].TakeDamage(MPData.perCondition * addValue, true);      // 필요 수치만큼 플레이어 HP 감소 (allies[0] = player)
-                ClearStack();
-                break;
-
-            case MasterPieceData.ConditionType.Paint:   // 물감
-                int colorType = 0;
-                switch (MPData.conditionDetail)
-                {
-                    case "Red":
-                        colorType = 1;
-                        break;
-                    case "Blue":
-                        colorType = 2;
-                        break;
-                    case "Yellow":
-                        colorType = 3;
-                        break;
-                    case "White":
-                        colorType = 4;
-                        break;
-                }
-
-                addValue = paintManager.GetPaintInfo(colorType) / MPData.perCondition;        // 중첩 값 연산
-                if (addValue > MPData.maxCondition)
-                {
-                    addValue = MPData.maxCondition;
-                }
-                else if (addValue <= 0)
-                {
-                    Debug.Log("걸작 사용에 사용할 물감이 부족합니다!");
-                    return false;                             // 물감 부족 시 사용 불가능
-                }
-                paintManager.ReducePaint(colorType, MPData.perCondition * addValue);      // 물감 수 감소
-                ClearStack();
-                break;
-
-            case MasterPieceData.ConditionType.Gold:
-                addValue = turnManager.player.gold / MPData.perCondition;
-                if (addValue > MPData.maxCondition)
-                {
-                    addValue = MPData.maxCondition;
-                }
-                else if (addValue <= 0)
-                {
-                    Debug.Log("걸작 사용에 사용할 골드가 부족합니다.");     // 골드 부족 시 사용 불가능
-                    return false;
-                }
-                turnManager.player.gold -= MPData.perCondition * addValue;    // 골드 수 감소
-                ClearStack();
-                break;
-        }
-        return true;
-        */
-        return false;
-    }
-
     // 걸작스킬 사용
-    public void ExecuteThemeSkill()
+    public void ExecuteThemeSkill(ThemeSkillData themeSkill)
     {
-        /*
-        Debug.Log($"{MPData.MP_Name}걸작 발동! / 중첩값:{addValue} / 타겟:{targets}");
+        Debug.Log($"{themeSkill}테마 스킬 발동! 타겟:{targets}");
+
+        int addValue = 0;
+        int stack = passiveEffects.Find(e => e.nameEn == themeSkill.needPassiveName).stackCount;
+
+        // 테마스킬 조건부 효과 확인
+        if (themeSkill.perNeed >= themeSkill.maxStack)
+        {
+            addValue = themeSkill.maxStack;
+            stack -= themeSkill.perNeed * themeSkill.maxStack;
+        }
+        else
+        {
+            addValue = stack / themeSkill.perNeed;
+            stack = stack % themeSkill.perNeed;
+        }
 
         int count = 0;
 
         // 공격 type에 따른 분류    (targets는 turnManager로부터 받음)
-        switch (MPData.skillType)
+        switch (themeSkill.skillType)
         {
             // 단타 공격
             case Skill.SkillType.SingleAtk:
-                count = MPData.count + (addValue * MPData.perCount);
+                count = themeSkill.count + (addValue * themeSkill.perCount);
                 break;
             // 전체 공격
             case Skill.SkillType.SplashAtk:
-                count = MPData.count + (addValue * MPData.perCount);
+                count = themeSkill.count + (addValue * themeSkill.perCount);
                 break;
             // 바운스 공격
             case Skill.SkillType.BounceAtk:
                 count = 1;
-                for (int i = 0; i < MPData.count + (addValue * MPData.perCount); i++)    // 타겟 재설정
+                for (int i = 0; i < themeSkill.count + (addValue * themeSkill.perCount); i++)    // 타겟 재설정
                 {
                     int randomNum = Random.Range(0, turnManager.enemies.Count);
                     targets.Add(turnManager.enemies[randomNum]);
@@ -228,30 +134,30 @@ public class ThemeManager : MonoBehaviour
                 break;
             // 자신 보조
             case Skill.SkillType.SingleSup:    // 자기자신 타겟 스킬
-                count = MPData.count + (addValue * MPData.perCount);
+                count = themeSkill.count + (addValue * themeSkill.perCount);
                 isTrueDamage = true;    // 자신 대상은 고정데미지
                 break;
 
             // 전체 아군 보조
             case Skill.SkillType.SplashSup:
-                count = MPData.count + (addValue * MPData.perCount);
+                count = themeSkill.count + (addValue * themeSkill.perCount);
                 isTrueDamage = true;    // 아군 대상은 고정데미지
                 break;
         }
 
         // 걸작스킬의 기본 스탯 연산
-        int damage = MPData.damage + (MPData.perDamage * addValue);
-        int shield = MPData.shield + (MPData.perShield * addValue);
-        int heal = MPData.heal + (MPData.perHeal * addValue);
-        int[] effect = new int[MPData.effect.Length];
-        for (int i = 0; i < MPData.effect.Length; i++)
+        int damage = themeSkill.damage + (themeSkill.perDamage * addValue);
+        int shield = themeSkill.shield + (themeSkill.perShield * addValue);
+        int heal = themeSkill.heal + (themeSkill.perHeal * addValue);
+        int[] effect = new int[themeSkill.effect.Length];
+        for (int i = 0; i < themeSkill.effect.Length; i++)
         {
-            effect[i] = MPData.effect[0] + (MPData.perEffect[0] * addValue);
+            effect[i] = themeSkill.effect[i] + (themeSkill.perEffect[i] * addValue);
         }
 
         // 데미지 연산
-        for (int c = 0; c < targets.Count; c++)
-        {
+            for (int c = 0; c < targets.Count; c++)
+            {
             for (int i = 0; i < count; i++)   // 타수만큼 반복
             {
                 // 데미지
@@ -259,7 +165,7 @@ public class ThemeManager : MonoBehaviour
                 {
                     if (!isTrueDamage)
                     {
-                        damage += targets[c].HasBurnDebuff();   // 화상 데미지
+                        damage += targets[c].GetStatusEffect("Burn");   // 화상 데미지
                     }
                     targets[c].TakeDamage(damage, false);      // 공격
                     Debug.Log($"{targets[c]}은 {damage} 의 데미지를 입었다.");
@@ -272,41 +178,29 @@ public class ThemeManager : MonoBehaviour
                     Debug.Log($"{targets[c]}은 {heal} 만큼 체력을 회복했다.");
                 }
 
-                // 상태이상 부여
-                for (int n = 0; n < MPData.effectType.Length; n++)
+                // 패시브 부여
+                for (int n = 0; n < themeSkill.effectType.Length; n++)
                 {
-                    targets[c].AddStatusEffect(GameManager.instance.statusEffects.Find(s => s.name == MPData.effectType[n]), effect[n]);
-                    Debug.Log($"{targets[c]}은 {MPData.effectType[n]}을 {effect[n]}만큼 받었다.");
+                    if (passiveEffects.Exists(e => e.nameEn == themeSkill.effectType[n]))
+                    { 
+                        CalculatePassiveEffect(themeSkill.effectType[n], effect[n]);
+                        Debug.Log($"플레이어는 {themeSkill.effectType[n]}을/를 {effect[n]}만큼 얻었다.");
+                    }
+                }
+
+                // 상태이상 부여
+                for (int n = 0; n < themeSkill.effectType.Length; n++)
+                {
+                    if (targets[c].GetStatusEffect(themeSkill.effectType[n]) > 0)
+                    {
+                        targets[c].AddStatusEffect(themeSkill.effectType[n], effect[n]);
+                        Debug.Log($"{targets[c]}은 {themeSkill.effectType[n]}을 {effect[n]}만큼 받았다.");
+                    }
                 }
             }
         }
 
         // 유물 : 걸작 사용 시 효과
         //GameManager.instance._ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.UseMP);
-    }
-
-    // 스택 적립
-    public void AddStack(int num)
-    {
-        if (maxStack <= stack + num)
-        {
-            stack = maxStack;
-            slider.fillAmount = stack / (float)maxStack;
-        }
-        else
-        {
-            stack += num;
-            slider.fillAmount = stack / (float)maxStack;
-        }
-        */
-    }
-
-    // 스택 초기화
-    public void ClearStack()
-    {
-        /*
-        stack = 0;
-        slider.fillAmount = stack / (float)maxStack;
-        */
     }
 }

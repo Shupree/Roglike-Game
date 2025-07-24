@@ -17,7 +17,7 @@
         },
         {
             "nameEn": "PrimaryColor",
-            "name": "원색",
+            "name": "삼원색",
             "desc": "스킬 사용 시 물감대신 해당 버프의 중첩이 소모되며, 소모된 중첩만큼 스킬의 데미지가 증가합니다.",
             "icon": "Artist_Theme/PrimaryColor",
             "type": "buff",

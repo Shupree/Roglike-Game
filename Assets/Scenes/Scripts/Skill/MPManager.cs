@@ -23,7 +23,7 @@ public class MPManager : MonoBehaviour
     public int stack;           // 걸작 사용을 위한 스택
     private int maxStack;       // 최대 스택 수
 
-    private int addValue;       // MP 스킬 발동 중 중첩 값
+    private int addValue = 0;       // MP 스킬 발동 중 중첩 값
 
     [Header("Bool")]
     public bool isTrueDamage;   // 고정데미지인가?
@@ -75,28 +75,28 @@ public class MPManager : MonoBehaviour
                 break;
 
             case MasterPieceData.ConditionType.OverCost:
-                addValue = (stack - MPData.cost) / MPData.perCondition; // 여분 코스트 / 필요 수치
+                addValue = (stack - MPData.cost) / MPData.perNeed; // 여분 코스트 / 필요 수치
                 ClearStack();                           // 스택 초기화
-                AddStack(stack % MPData.perCondition);  // 여분 반환
+                AddStack(stack % MPData.perNeed);  // 여분 반환
                 break;
 
             case MasterPieceData.ConditionType.Health:
-                addValue = turnManager.allies[0].GetStatus("HP") / MPData.perCondition;     // 중첩 값 연산
-                if (turnManager.allies[0].GetStatus("HP") % MPData.perCondition <= 0)
+                addValue = turnManager.allies[0].GetStatus("HP") / MPData.perNeed;     // 중첩 값 연산
+                if (turnManager.allies[0].GetStatus("HP") % MPData.perNeed <= 0)
                 {
                     addValue--;     // HP가 0이 되는 경우 방지
                 }
 
-                if (addValue > MPData.maxCondition)
+                if (addValue > MPData.maxStack)
                 {
-                    addValue = MPData.maxCondition;     // 상한치를 넘는 경우 방지
+                    addValue = MPData.maxStack;     // 상한치를 넘는 경우 방지
                 }
                 else if (addValue <= 0)
                 {
                     Debug.Log("걸작 사용에 사용할 HP가 부족합니다!");
                     return false;                             // HP가 부족하다면 사용 불가능
                 }
-                turnManager.allies[0].TakeDamage(MPData.perCondition * addValue, true);      // 필요 수치만큼 플레이어 HP 감소 (allies[0] = player)
+                turnManager.allies[0].TakeDamage(MPData.perNeed * addValue, true);      // 필요 수치만큼 플레이어 HP 감소 (allies[0] = player)
                 ClearStack();
                 break;
 
@@ -118,32 +118,32 @@ public class MPManager : MonoBehaviour
                         break;
                 }
 
-                addValue = paintManager.GetPaintInfo(colorType) / MPData.perCondition;        // 중첩 값 연산
-                if (addValue > MPData.maxCondition)
+                addValue = paintManager.GetPaintInfo(colorType) / MPData.perNeed;        // 중첩 값 연산
+                if (addValue > MPData.maxStack)
                 {
-                    addValue = MPData.maxCondition;
+                    addValue = MPData.maxStack;
                 }
                 else if (addValue <= 0)
                 {
                     Debug.Log("걸작 사용에 사용할 물감이 부족합니다!");
                     return false;                             // 물감 부족 시 사용 불가능
                 }
-                paintManager.ReducePaint(colorType, MPData.perCondition * addValue);      // 물감 수 감소
+                paintManager.ReducePaint(colorType, MPData.perNeed * addValue);      // 물감 수 감소
                 ClearStack();
                 break;
 
             case MasterPieceData.ConditionType.Gold:
-                addValue = turnManager.player.gold / MPData.perCondition;
-                if (addValue > MPData.maxCondition)
+                addValue = turnManager.player.gold / MPData.perNeed;
+                if (addValue > MPData.maxStack)
                 {
-                    addValue = MPData.maxCondition;
+                    addValue = MPData.maxStack;
                 }
                 else if (addValue <= 0)
                 {
                     Debug.Log("걸작 사용에 사용할 골드가 부족합니다.");     // 골드 부족 시 사용 불가능
                     return false;
                 }
-                turnManager.player.gold -= MPData.perCondition * addValue;    // 골드 수 감소
+                turnManager.player.gold -= MPData.perNeed * addValue;    // 골드 수 감소
                 ClearStack();
                 break;
         }
@@ -197,7 +197,7 @@ public class MPManager : MonoBehaviour
         int[] effect = new int[MPData.effect.Length];
         for (int i = 0; i < MPData.effect.Length; i++)
         {
-            effect[i] = MPData.effect[0] + (MPData.perEffect[0] * addValue);
+            effect[i] = MPData.effect[i] + (MPData.perEffect[i] * addValue);
         }
 
         // 데미지 연산
@@ -231,6 +231,8 @@ public class MPManager : MonoBehaviour
                 }
             }
         }
+
+        addValue = 0;
 
         // 유물 : 걸작 사용 시 효과
         //GameManager.instance._ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.UseMP);

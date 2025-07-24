@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69d8326b346041343babc216019dc1ef, type: 3}
-  m_Name: 0S_02
+  m_Script: {fileID: 11500000, guid: f3ceabd51b3501d4d884f8f654df496e, type: 3}
+  m_Name: TalkData
   m_EditorClassIdentifier: 
-  stageType: 0
-  stageStr: 0S
-  setNum: 2
-  monster01: 1
-  monster02: 0
-  monster03: 0
-  monster04: 0
+  npcId: 0
+  talkSets:
+  - situation: default
+    lines:
+    - speaker: "\uB3C4\uD654"
+      line: Test00
+    - speaker: "\uCC44\uC544"
+      line: Test01

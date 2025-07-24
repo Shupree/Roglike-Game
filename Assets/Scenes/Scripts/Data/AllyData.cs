@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Ally", menuName = "Scriptble Object/AllyData")]
+[CreateAssetMenu(fileName = "Ally", menuName = "Scriptable Object/AllyData")]
 public class AllyData : ScriptableObject
 {
     // 동료_스크립터블 오브젝트

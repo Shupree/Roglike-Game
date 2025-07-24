@@ -27,14 +27,15 @@ public class Player : MonoBehaviour, ITurn
     // private CsvSkillLoader skillLoader;
     // public Skill[] skillArr = new Skill[4];     // 기본 스킬 4종 (빨강, 노랑, 파랑, 하양)
     public Skill mainSkill;        // 현재 사용하는 스킬
+    public ThemeSkillData themeSkill;   // 현재 사용하는 테마 스킬
 
     [Header("Target")]
     public List<ITurn> targets = new List<ITurn>();    // 공격 타겟
     // 스플래쉬 공격에 경우 모든 적에게 타겟팅해야함.
     // 버프 스킬의 경우 아군이 타겟팅되어야함.
 
-    [Header("Status Effect")]
-    public List<StatusEffect> statusEffects = new List<StatusEffect>();   // 상태이상.json
+    // 상태이상 List
+    public List<StatusEffect> statusEffects { get; private set; } = new List<StatusEffect>();
 
     // 초기화
     void Awake()
@@ -65,18 +66,10 @@ public class Player : MonoBehaviour, ITurn
         statusEffectUI.UpdateStatusEffect(statusEffects);   // 상태이상 정보 업데이트
     }
 
+    // 사용 X (Enemy.cs, Ally.cs용)
     public void TakeTurn()
     {
-        foreach (var effect in statusEffects)
-        {
-            effect.ApplyEffect(this);   // 특정 상태이상 효과 적용
 
-            effect.duration--;      // 지속 턴 수 감소
-            if (effect.duration <= 0 || effect.stackCount <= 0)     // (지속 시간 = 0 or 중첩 수 = 0)
-            {
-                effect.RemoveEffect(this);      // 특정 상태이상 제거
-            }
-        }
     }
 
     // 특정 스테이터스 값 확인
@@ -161,17 +154,28 @@ public class Player : MonoBehaviour, ITurn
                 }
                 if (mainSkill.damage > 0)    // 기본 데미지가 0일 시 스킵
                 {
-                    damage = mainSkill.damage;   // 기본 데미지
-                    if (!isTrueDamage)
+                    damage = mainSkill.damage;      // 기본 데미지
+                    if (!isTrueDamage)  // 고정 데미지인지?
                     {
-                        damage += targets[c].GetStatusEffect("Burn");   // 화상 데미지
+                        // '공격력 업' 관련 버프 적용
+                        List<StatusEffect> attackEffects = statusEffects.FindAll(s => s.effectInfo == EffectInfo.attackUp);
+                        foreach (StatusEffect effect in attackEffects)
+                        {
+                            damage += int.Parse(effect.efffectDetail) * effect.stackCount;
+
+                            // 소모성 상태이상일 시 스택 수 감소
+                            if (effect.isConsumable && effect.decreaseNum != -1)
+                            {
+                                DecStatusEffect(effect.nameEn, effect.decreaseNum);
+                            }
+                        }
                     }
-                    targets[c].TakeDamage(damage, false);      // 공격
+                    targets[c].TakeDamage(damage, false);       // 공격
                 }
 
                 if (mainSkill.heal > 0)
                 {
-                    targets[c].TakeHeal(mainSkill.heal);
+                    targets[c].TakeHeal(mainSkill.heal);        // 회복
                 }
 
                 // 적 상태이상 부여
@@ -217,27 +221,27 @@ public class Player : MonoBehaviour, ITurn
         hud.UpdateHUD();        // HUD의 HP 변화
         Debug.Log($"플레이어가 {damage} 데미지를 받았습니다! 남은 체력: {health}");
 
-        turnManager.OperateEvent("OnHit");      // '플레이어 피격 시' 이벤트 시행
+        BattleEventRouter.RaiseOnHit();      // '플레이어 피격 시' 이벤트 시행
     }
 
     // 회복 시 연산
-    public void TakeHeal(int heal)
+    public void TakeHeal(int num)
     {
-        if (maxHealth <= health + heal)
+        if (maxHealth <= health + num)
         {
             health = maxHealth;
         }
         else
         {
-            health += heal;
+            health += num;
         }
         hud.UpdateHUD();        // HUD의 HP 변화
     }
 
     // 보호막 획득 시 연산
-    public void TakeShield(int shield)
+    public void TakeShield(int num)
     {
-
+        shield += num;
     }
 
     // 처치 확인
@@ -288,7 +292,7 @@ public class Player : MonoBehaviour, ITurn
         }
 
         // '변환'타입의 상태이상 적용
-        if (statusEffect.effectInfo == "convert" && statusEffect.stackCount <= statusEffect.needStack)
+        if (statusEffect.effectInfo == EffectInfo.convert && statusEffect.stackCount <= statusEffect.needStack)
         {
             AddStatusEffect(statusEffect.efffectDetail, 1);
             DecStatusEffect(effectName, statusEffect.needStack);    // 필요 중첩 수만큼 제거
@@ -297,7 +301,7 @@ public class Player : MonoBehaviour, ITurn
         statusEffectUI.UpdateStatusEffect(statusEffects);    // 상태이상UI 업데이트
     }
 
-    // 버프/디버프 제거
+    // 버프/디버프 감소
     public void DecStatusEffect(string effectName, int stack)
     {
         var statusEffect = statusEffects.Find(e => e.nameEn == effectName);
@@ -309,27 +313,10 @@ public class Player : MonoBehaviour, ITurn
             }
             else
             {
-                statusEffect.RemoveEffect(this);    // 빙결 디버프 제거
+                statusEffect.RemoveEffect(this);    // 디버프 제거
             }
         }
 
         statusEffectUI.UpdateStatusEffect(statusEffects);    // 상태이상UI 업데이트
-    }
-
-    // 버프/디버프 지속시간 확인
-    public void CheckStatusEffectDuration()
-    {
-        foreach (var statusEffect in statusEffects)
-        {
-            if (statusEffect.isConsumable == false && statusEffect.duration != -1)
-            {
-                // 턴제 지속형일 시, 상태이상 지속시간 줄이기.
-                DecStatusEffect(statusEffect.nameEn, statusEffect.duration);
-            }
-            else
-            {
-                continue;
-            }
-        }
     }
 }

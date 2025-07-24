@@ -12,7 +12,7 @@ public class SkillPattern
     public int healthPoint;     // HP가 n% 이하일 시 사용 (1 ~ 100)
 }
 
-[CreateAssetMenu(fileName = "Enemy", menuName = "Scriptble Object/EnemyData")]
+[CreateAssetMenu(fileName = "Enemy", menuName = "Scriptable Object/EnemyData")]
 public class EnemyData : ScriptableObject
 {
     // 몬스터_스크립터블 오브젝트

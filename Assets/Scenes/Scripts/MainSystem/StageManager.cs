@@ -6,6 +6,11 @@ using UnityEngine;
 // 스테이지 매니저
 public class StageManager : MonoBehaviour
 {
+    public enum ArtbookType
+    { 
+        artGallery, mainStreet, backStreet
+    }
+
     // normalB = normal Battle, eEvent = encounter Event
     public enum StageType
     {
@@ -14,9 +19,13 @@ public class StageManager : MonoBehaviour
 
     [Header("Reference")]
     public LootManager lootManager;     // 인스펙터 창에서 참조
+    public EncounterEventManager eEventManager;     // 인스펙터 창에서 참조
 
     [Header("UI")]
     private GameObject[] optionBtnArr = new GameObject[3];  // 다음 스테이지 선택 버튼
+
+    [Header("Artbook Info")]
+    private ArtbookType artbook;
 
     [Header("Stage Info")]
     private int stageNum;    // 현재 스테이지 수
@@ -38,6 +47,8 @@ public class StageManager : MonoBehaviour
     // 초기화
     public void Awake()
     {
+        artbook = ArtbookType.artGallery;   // Test 화집
+
         stageNum = 1;  // 스테이지 넘버 가져오기
 
         for (int i = 0; i < optionBtnArr.Length; i++)
@@ -120,7 +131,7 @@ public class StageManager : MonoBehaviour
                 // 적 정보 획득 및 적용 (임시)
                 enemyIdArr[0] = 1;
                 enemyIdArr[1] = 2;
-                GameManager.instance.spawnManager.EnemySpawn(enemyIdArr);
+                GameManager.instance.spawnManager.SpawnEnemy(enemyIdArr);
 
                 GameManager.instance.turnManager.BattleStart();      // 전투 시작
                 /*
@@ -130,14 +141,16 @@ public class StageManager : MonoBehaviour
                 enemyID[1] = EnemySetData[randomSetNum].monster02;
                 enemyID[2] = EnemySetData[randomSetNum].monster03;
                 enemyID[3] = EnemySetData[randomSetNum].monster04;
-                
-                BattleStart();      // 전투 시작
                 */
                 break;
             // 보물
             case StageType.chest:
                 // 보물상자 스폰
                 GameManager.instance.spawnManager.TreasureChestSpawn(1);    // Common급
+                break;
+            // 조우 이벤트
+            case StageType.eEvent:
+                eEventManager.TriggerRandomEvent(artbook);
                 break;
             // 상점
             case StageType.store:
@@ -146,17 +159,9 @@ public class StageManager : MonoBehaviour
                 break;
         }
 
-        GameManager.instance.stage++;    // 스테이지 + 1
+        // GameManager.instance.stage++;    // 스테이지 + 1
         Debug.Log("스테이지 : " + stageNum);
     }
-
-
-    /*
-    public void SetNextStageUI()
-    {
-        _StageManager.SetNextStageInfo();   // 다음 스테이지 선택지 설정
-    }
-    */
 
     // ------ LootManager 관련 로직 ------
 

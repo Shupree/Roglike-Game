@@ -30,8 +30,8 @@ MonoBehaviour:
   effect: 02000000
   conditionType: 3
   conditionDetail: Blue
-  perCondition: 1
-  maxCondition: 5
+  perNeed: 1
+  maxStack: 5
   perDamage: 0
   perCount: 0
   perShield: 0

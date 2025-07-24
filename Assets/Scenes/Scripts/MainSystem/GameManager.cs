@@ -35,8 +35,8 @@ public class GameManager : MonoBehaviour
     public Ally ally1;
     private int[] enemyIdArr = new int[4]{1,1,0,0};     // 임시 몬스터ID 저장용
 
-    [Header ("Figure")]
-    public int stage = 1;       // 현재 스테이지 넘버
+    // [Header ("Figure")]
+    // public int stage = 1;       // 현재 스테이지 넘버
 
     void Awake()
     {
@@ -71,16 +71,16 @@ public class GameManager : MonoBehaviour
         turnManager.RegisterAlly(ally1);
 
         // 적 등록  (Test)
-        spawnManager.EnemySpawn(enemyIdArr);
+        spawnManager.SpawnEnemy(enemyIdArr);
 
         // JSON 데이터 로드 (상태이상)
         StatusEffectLoader loader = new StatusEffectLoader();
         statusEffects = loader.LoadStatusEffects("Status_Effects");     // 파일명에서 확장자 제외
 
-        // 턴 진행 시작
+        // 턴 진행 시작 (Test)
         turnManager.BattleStart();
 
         // 스테이지 수 초기화
-        stage = 1;
+        // stage = 1;
     }
 }

@@ -34,7 +34,7 @@ public class SpawnManager : MonoBehaviour
         enemyPoolManager = gameObject.GetComponent<EnemyPoolManager>();
     }
 
-    public void EnemySpawn(int[] EnemyID)
+    public void SpawnEnemy(int[] EnemyID)
     {
         for (int i = 0; i < 4; i++)
         {
@@ -67,22 +67,22 @@ public class SpawnManager : MonoBehaviour
         }
     }
     
-    public void AllySpawn(int[] AllyID)
+    public void SpawnAlly(int[] AllyID)
     {
         for (int i = 0; i < 4; i++)
         {
             if (AllyID[i] == 0)
             {
-                // 적이 존재하지 않음.
+                // 아군 데이터가 존재하지 않음.
             }
             else
             {
-                // 해당 적 정보 수집    (주의. 'allyID - 1와 'allyPrefebArr'의 순서는 같아야 함.)
-                allyPrefab = allyPrefabArr[AllyID[i] - 1];   // 몬스터Prefab 확인
+                // 해당 동료 정보 수집    (주의. 'allyID - 1와 'allyPrefebArr'의 순서는 같아야 함.)
+                allyPrefab = allyPrefabArr[AllyID[i] - 1];   // allyPrefab 확인
 
-                GameObject ally = Instantiate(allyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));    // 몬스터 스폰
+                GameObject ally = Instantiate(allyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));    // 동료 스폰
                 ally.transform.parent = position[i].transform;             // Parent 설정
-                ally.name = ally.GetComponent<Ally>().data.unitName;    // 몬스터 이름 명명
+                ally.name = ally.GetComponent<Ally>().data.unitName;    // 동료 이름 명명
                 GameManager.instance.turnManager.RegisterAlly(ally.GetComponent<Ally>());
 
                 // Ally HUD 활성화
@@ -97,6 +97,15 @@ public class SpawnManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    // 지정 프리팹 오브젝트를 스폰
+    public void SpawnPrefab(GameObject prefab)
+    {
+        GameObject npc = Instantiate(prefab, position[3].transform.position, Quaternion.Euler(0, 0, 0));    // 오브젝트 스폰
+        npc.transform.parent = position[3].transform;           // Parent 설정
+        npc.GetComponent<SpriteRenderer>().flipX = true;        // 스프라이트 X축 반전
+        npc.name = "NPC";    // 오브젝트 이름 명명
     }
 
     public void StoreNPCSpawn()

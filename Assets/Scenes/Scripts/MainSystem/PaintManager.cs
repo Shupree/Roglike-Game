@@ -8,11 +8,15 @@ using Unity.VisualScripting;
 
 public class PaintManager : MonoBehaviour
 {
+    public enum ColorType
+    {
+        red, blue, yellow, white
+    }
+
     [Header("Reference")]
     private TurnManager turnManager;
     private Player player;
 
-    // public GameObject[] paintObjArr = new GameObject[4];    // 색상별 PaintUI
     public GameObject[] paletteObjArr = new GameObject[5];      // 팔레트별 PaletteUI
 
     [Header("Figure")]
@@ -68,8 +72,6 @@ public class PaintManager : MonoBehaviour
 
         Debug.Log("물감 클릭");
 
-        GameObject clickObject = EventSystem.current.currentSelectedGameObject;
-
         if (paintSc.GetNum() == 0)
         {
             Debug.Log("해당 페인트가 없어요!");
@@ -80,33 +82,33 @@ public class PaintManager : MonoBehaviour
         }
         else
         {
-            int colorType = 0;
-            switch (clickObject.name)
+            ColorType colorType = ColorType.red;
+            switch (paintSc.gameObject.name)
             {
                 // 빨강 페인트 추가
                 case "RedPaint":
-                    colorType = 1;
+                    colorType = ColorType.red;
                     break;
                 // 파랑 페인트 추가
                 case "BluePaint":
-                    colorType = 2;
+                    colorType = ColorType.blue;
                     break;
                 // 노랑 페인트 추가
                 case "YellowPaint":
-                    colorType = 3;
+                    colorType = ColorType.yellow;
                     break;
                 // 하양 페인트 추가
                 case "WhitePaint":
-                    colorType = 4;
+                    colorType = ColorType.white;
                     break;
                 default:
                     Debug.LogError("페인트를 추가하는 과정에서 문제 발생!");
                     break;
             }
 
-            if (paletteOrder == 0)
+            if (paletteOrder == 0 && player.themeSkill == null)
             {            // 처음 페인트 추가 시 스킬 지정
-                player.mainSkill = player.storageManager.GetSkillData(colorType - 1);   // 스킬 정보 가져오기
+                player.mainSkill = player.storageManager.GetSkillData(colorType);   // 스킬 정보 가져오기
                 Debug.Log(player.mainSkill.name);
                 turnManager.SetTarget(player.mainSkill.skillType);
 
@@ -114,43 +116,11 @@ public class PaintManager : MonoBehaviour
             }
 
             ColorInPalette(colorType);          // 팔레트에 페인트 추가
-            usedPaintArr[colorType - 1]++;      // 사용 중인 페인트 수 증가
+            usedPaintArr[(int)colorType]++;      // 사용 중인 페인트 수 증가
 
             paintSc.paint--;    // 페인트 수 감소
         }
     }
-
-    /*
-    public void UseThemeSkill(int paintType, int paintNum)
-    {
-        if (canUsePaint == false) {
-            return;
-        }
-        if (currentNum < paintNum) {
-            Debug.Log("해당 페인트가 없어요!");
-        }
-        else {
-            switch (paintType) {
-                case 1:
-                    GameManager.instance.AddColor(1, true);
-                    break;
-                case 2:
-                    GameManager.instance.AddColor(2, true);
-                    break;
-                case 3:
-                    GameManager.instance.AddColor(3, true);
-                    break;
-                case 4:
-                    GameManager.instance.AddColor(4, true);
-                    break;
-            }
-
-            usedColorNum += paintNum;
-            currentNum -= paintNum;
-        }
-        
-    }
-    */
 
     // 특정 페인트 수를 가져오기
     public int GetPaintInfo(int colorType)              // colorNum : 1.빨강, 2.파랑, 3.노랑, 4.하양
@@ -215,24 +185,24 @@ public class PaintManager : MonoBehaviour
 
     // ---- Palette 관련 함수 ----
 
-    public void ColorInPalette(int colorType)
+    public void ColorInPalette(ColorType colorType)
     {
         switch (colorType)
         {
             // 빨강
-            case 1:
+            case ColorType.red:
                 paletteImgArr[paletteOrder].color = Color.red;
                 break;
             // 파랑
-            case 2:
+            case ColorType.blue:
                 paletteImgArr[paletteOrder].color = Color.blue;
                 break;
             // 노랑
-            case 3:
+            case ColorType.yellow:
                 paletteImgArr[paletteOrder].color = Color.yellow;
                 break;
             // 하양
-            case 4:
+            case ColorType.white:
                 paletteImgArr[paletteOrder].color = Color.white;
                 break;
             default:

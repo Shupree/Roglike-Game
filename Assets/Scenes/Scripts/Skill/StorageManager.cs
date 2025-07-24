@@ -67,9 +67,9 @@ public class StorageManager : MonoBehaviour
     }
 
     // 플레이어 스킬 정보 가져오기
-    public Skill GetSkillData(int colorType)    // colorType : 0 빨강, 1 파랑, 2 노랑, 3 하양
+    public Skill GetSkillData(PaintManager.ColorType colorType)
     {
-        return skillArr[colorType];
+        return skillArr[(int)colorType];
     }
 
     public void BagBtn_clicked()

@@ -27,9 +27,9 @@ MonoBehaviour:
   effectType: []
   effect: 
   conditionType: 1
-  conditionColorType: 0
-  perCondition: 1
-  maxCondition: 4
+  conditionDetail: 
+  perNeed: 1
+  maxStack: 4
   perDamage: 2
   perCount: 0
   perShield: 0

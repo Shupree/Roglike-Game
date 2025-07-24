@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+public enum EffectInfo
+{
+    substitute, attackUp, shield, heal, convert, addEffect, turnSkip, extraDamage
+}
+
 // Statement의 구조체들 정의
 [System.Serializable]
 public class StatusEffect
@@ -15,17 +20,19 @@ public class StatusEffect
     public int maxStack;            // 최대 중첩 수
     public int stackCount;          // 중첩 수
     public bool isConsumable;       // 사용 시 소모되는 버프/디버프인가?
-    public int duration;            // 지속 턴 수 / 사용 시 소모 수 (-1일 시, 영구 버프)
-    public string whenIsTrigger;    // 발동 시점 (startTurn, endTurn, whenHit, whenAttack, always)
-    public string effectInfo;       // 효과 정보 (statUP, substitute, convert, heal, reflection)
-    public string efffectDetail;    // 효과 상세 (statUP - attack, shield / substitute - red, blue, HP / change - 타 상태이상)
+    public int decreaseNum;         // 턴마다 or 사용 시 소모 수 (-1일 시, 영구 버프)
+    public StatusEffectProcessor.Situation whenIsTrigger;    // 발동 시점 (turnStart, onHit, onAttack, always)
+    public EffectInfo effectInfo;   // 효과 정보
+    public string efffectDetail;    // 효과 상세 (shield, heal - 수치(int) / substitute - red, blue, HP / convert - 타 상태이상)
     public int needStack;           // 발동 스택 수
 
+    /*
     public void ApplyEffect(ITurn target)
     {
         // 상태 효과 적용 로직
         Debug.Log($"{target}에게 {name} 효과를 적용합니다.");
     }
+    */
 
     public void RemoveEffect(ITurn target)
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UnitSkill", menuName = "Scriptble Object/UnitSkillData")]
+[CreateAssetMenu(fileName = "UnitSkill", menuName = "Scriptable Object/UnitSkillData")]
 public class UnitSkillData : ScriptableObject
 {
     // 일단 동료(아군)한테 버프 혹은 회복은 걸어주지 못한다는 전제 하에
