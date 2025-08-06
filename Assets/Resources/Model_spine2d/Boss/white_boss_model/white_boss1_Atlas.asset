@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: white_boss1_Atlas
+  m_EditorClassIdentifier: 
+  textureLoadingMode: 0
+  onDemandTextureLoader: {fileID: 0}
+  atlasFile: {fileID: 4900000, guid: 733adf4edb72cae49964a7bceb8541ae, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 4e00ebc37308fe147ab82c1bdc21cdbb, type: 2}
+  - {fileID: 2100000, guid: 3573c5de66ea8ed44a3d0f4b763420f9, type: 2}
+  - {fileID: 2100000, guid: 3c267ed4eb769e143a4d8ae9e72b1b02, type: 2}
+  - {fileID: 2100000, guid: 18cd7c386aaef604c86ad32738923b9a, type: 2}
