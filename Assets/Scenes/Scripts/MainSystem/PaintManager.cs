@@ -20,7 +20,7 @@ public class PaintManager : MonoBehaviour
     public GameObject[] paletteObjArr = new GameObject[5];      // 팔레트별 PaletteUI
 
     [Header("Figure")]
-    public int[] usedPaintArr = new int[4];     // 사용 중인 색상별 물감 수
+    public List<ColorType> usedPaints = new List<ColorType>();  // 사용 중인 색상별 물감 수
 
     public int maxPalette;      // 사용가능한 최대 팔레트 수
     public int paletteOrder = 0;       // 현재 팔레트 순서
@@ -42,11 +42,7 @@ public class PaintManager : MonoBehaviour
         turnManager = GameManager.instance.turnManager;
         player = GameManager.instance.player;
 
-        for (int i = 0; i < 4; i++)
-        {
-            usedPaintArr[i] = 0;
-            // paintScArr[i] = paintObjArr[i].GetComponent<Paint>();
-        }
+        usedPaints.Clear();
 
         for (int i = 0; i < 5; i++)
         {
@@ -82,41 +78,18 @@ public class PaintManager : MonoBehaviour
         }
         else
         {
-            ColorType colorType = ColorType.red;
-            switch (paintSc.gameObject.name)
-            {
-                // 빨강 페인트 추가
-                case "RedPaint":
-                    colorType = ColorType.red;
-                    break;
-                // 파랑 페인트 추가
-                case "BluePaint":
-                    colorType = ColorType.blue;
-                    break;
-                // 노랑 페인트 추가
-                case "YellowPaint":
-                    colorType = ColorType.yellow;
-                    break;
-                // 하양 페인트 추가
-                case "WhitePaint":
-                    colorType = ColorType.white;
-                    break;
-                default:
-                    Debug.LogError("페인트를 추가하는 과정에서 문제 발생!");
-                    break;
-            }
-
+            // 처음 페인트 추가 시 스킬 지정
             if (paletteOrder == 0 && player.themeSkill == null)
-            {            // 처음 페인트 추가 시 스킬 지정
-                player.mainSkill = player.storageManager.GetSkillData(colorType);   // 스킬 정보 가져오기
-                Debug.Log(player.mainSkill.name);
-                turnManager.SetTarget(player.mainSkill.skillType);
+            {
+                player.currentSkill = player.storageManager.GetSkillData(paintSc.colorType);   // 스킬 정보 가져오기
+                Debug.Log(player.currentSkill.name);
+                turnManager.SetTarget(player.currentSkill.skillType);
 
-                SetSkillImg(Resources.Load<Sprite>("Sprite/Skill_Sprite/"+player.mainSkill.icon));         // 메인 스킬 이미지 변경
+                SetSkillImg(player.currentSkill.icon);         // 메인 스킬 이미지 변경
             }
 
-            ColorInPalette(colorType);          // 팔레트에 페인트 추가
-            usedPaintArr[(int)colorType]++;      // 사용 중인 페인트 수 증가
+            ColorInPalette(paintSc.colorType);          // 팔레트에 페인트 추가
+            usedPaints.Add(paintSc.colorType);          // 사용 중인 페인트 정보 저장
 
             paintSc.paint--;    // 페인트 수 감소
         }
@@ -145,11 +118,34 @@ public class PaintManager : MonoBehaviour
     // 취소 버튼 클릭 시 페인트 반환
     public void ReturnPaint()
     {
-        for (int i = 0; i < paintScArr.Length; i++)
+        // 사용한 물감 되돌리기
+        foreach (var paintType in usedPaints)
         {
-            paintScArr[i].FillNum(usedPaintArr[i]);     // 사용한 물감 다시 보충
-            usedPaintArr[i] = 0;                // 초기화
+            paintScArr[(int)paintType].FillNum(1);
         }
+
+        usedPaints.Clear();     // 사용한 물감 초기화
+    }
+
+    // 특정 개수만큼 사용한 물감 반환 (먼저 사용한 순)
+    public void ReturnPartialPaint(int amount)
+    {
+        if (amount <= 0) return;
+
+        // 반환할 물감 수는 사용한 물감 수를 초과할 수 없음
+        int totalUsed = paletteOrder;
+        int amountToReturn = Mathf.Min(amount, totalUsed);
+
+        // 지정된 수만큼 물감 반환
+        for (int i = 0; i < amountToReturn; i++)
+        {
+            if (usedPaints.Count == 0) break;
+
+            paintScArr[(int)usedPaints[0]].FillNum(1);      // 물감 개수 복구
+            usedPaints.RemoveAt(0);                         // 사용한 물감 배열에서 제거
+        }
+
+        // 반환되어도 걸작 스택 증가됨.
     }
 
     // 페인트 보충
@@ -216,7 +212,7 @@ public class PaintManager : MonoBehaviour
     public void ClearPaint()
     {
         paletteOrder = 0;       // 팔레트 순서 초기화
-        Array.Clear(usedPaintArr, 0, 4);    // 사용 중인 물감 초기화
+        usedPaints.Clear();     // 사용 중인 물감 초기화
 
         // 팔레트 이미지 초기화
         for (int i = 0; i < 5; i++)

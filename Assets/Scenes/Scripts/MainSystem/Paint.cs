@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class Paint : MonoBehaviour
 {
+    public PaintManager.ColorType colorType;
     public Image image;
 
     public int maxPaint;

@@ -32,7 +32,7 @@ public class LootManager : MonoBehaviour
     private List<(LootType, int)> lootBtnList = new List<(LootType, int)>();    // 버튼별 보상 종류 List((보상 종류, 보상 정보))
     private int order;      // 전리품 수
 
-    private List<Skill> loot_skillList = new List<Skill>(); // 보상으로 등장하는 스킬 리스트
+    private List<PaintSkillData> loot_skillList = new List<PaintSkillData>(); // 보상으로 등장하는 스킬 리스트
 
     void Awake()
     {
@@ -51,7 +51,7 @@ public class LootManager : MonoBehaviour
         loot_SkillSkipBtn = lootUI.transform.GetChild(5).gameObject;
 
         // 초기화
-        loot_skillList = new List<Skill>();
+        loot_skillList = new List<PaintSkillData>();
         loot_SkillUI.SetActive(false);
         loot_SkillSkipBtn.SetActive(false);
 
@@ -138,12 +138,12 @@ public class LootManager : MonoBehaviour
                 // 추첨한 숫자 리스트
                 List<int> randomNumList = new List<int>();
 
-                int currentNum = UnityEngine.Random.Range(1, 5);    // 랜덤 색상 1개 추첨
+                int currentNum = UnityEngine.Random.Range(0, 4);    // 랜덤 색상 1개 추첨
                 randomNumList.Add(currentNum);
                 for (int i = 0; i < 2;)
                 {
                     if (randomNumList.Contains(currentNum)) {
-                        currentNum = UnityEngine.Random.Range(1, 5);    // 중복제외 랜덤 색상 2회 추가 추첨
+                        currentNum = UnityEngine.Random.Range(0, 4);    // 중복제외 랜덤 색상 2회 추가 추첨
                     }
                     else {
                         randomNumList.Add(currentNum);
@@ -155,7 +155,7 @@ public class LootManager : MonoBehaviour
                 for (int i = 0; i < 3; i++)
                 {
                     loot_SkillUIArr[i].SetActive(true);
-                    loot_skillList.Add(GameManager.instance.storageManager.PickRandomSkill(randomNumList[i]));      // 랜덤 스킬 추첨 후 등록
+                    loot_skillList.Add(GameManager.instance.storageManager.PickRandomSkill((PaintManager.ColorType)randomNumList[i]));      // 랜덤 스킬 추첨 후 등록
                     loot_SkillUIArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Skill_Sprite/"+loot_skillList[i].icon);   // 아이콘 변경
                 }
 
@@ -193,7 +193,7 @@ public class LootManager : MonoBehaviour
         GameManager.instance.storageManager.ConvertSkill(loot_skillList[btnOrder - 1]);
 
         // 초기화
-        loot_skillList = new List<Skill>();
+        loot_skillList = new List<PaintSkillData>();
 
         // UI 비활성화
         for (int i = 0; i < loot_SkillUIArr.Length; i++)
@@ -214,7 +214,7 @@ public class LootManager : MonoBehaviour
     public void Click_SkipSkillLootBtn()
     {
         // 초기화
-        loot_skillList = new List<Skill>();
+        loot_skillList = new List<PaintSkillData>();
 
         // UI 비활성화
         for (int i = 0; i < loot_SkillUIArr.Length; i++)

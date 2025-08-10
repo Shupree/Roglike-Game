@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1fc9820db9f6b4f98f64b024eb68c1, type: 3}
+  m_Name: W_Shield01
+  m_EditorClassIdentifier: 
+  skillName: W_Shield01
+  colorType: 3
+  desc: "\uD770\uC0C9_\uC0AC\uC6A9\uC790\uC5D0\uAC8C \uBCF4\uD638\uB9C9\uC744 8 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  icon: {fileID: 21300000, guid: 8973a579bdb9d5a45ac46a19631eb185, type: 3}
+  skillType: 3
+  damage: 0
+  count: 0
+  shield: 8
+  heal: 0
+  effectDatas: []
+  effects: 
+  perDamage: 0
+  perCount: 0
+  perShield: 2
+  perHeal: 0
+  perEffect: 

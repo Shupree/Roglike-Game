@@ -15,7 +15,7 @@ public class ThemeData : ScriptableObject
     public Sprite charactorSprite;  // 캐릭터 스프라이트
 
     [Header("# Passive Effect")]
-    public string fillName;         // 패시브 효과 파일.json
+    public StatusEffectData passiveData;        // 패시브 데이터
 
     [Header("# Skill List")]
     public List<ThemeSkillData> skillList;    // 테마 스킬 리스트

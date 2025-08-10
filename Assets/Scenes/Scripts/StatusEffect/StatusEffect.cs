@@ -1,43 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
-public enum EffectInfo
-{
-    substitute, attackUp, shield, heal, convert, addEffect, turnSkip, extraDamage
-}
-
-// Statement의 구조체들 정의
+// StatusEffect의 구조체들 정의
 [System.Serializable]
 public class StatusEffect
 {
-    public string nameEn;           // 이름(영문명)
-    public string name;             // 이름(한글명)
-    public string desc;             // 설명
-    public string icon;             // 아이콘
-    public string type;             // 버프 / 디버프 (Buff or Debuff)
-    public int maxStack;            // 최대 중첩 수
-    public int stackCount;          // 중첩 수
-    public bool isConsumable;       // 사용 시 소모되는 버프/디버프인가?
-    public int decreaseNum;         // 턴마다 or 사용 시 소모 수 (-1일 시, 영구 버프)
-    public StatusEffectProcessor.Situation whenIsTrigger;    // 발동 시점 (turnStart, onHit, onAttack, always)
-    public EffectInfo effectInfo;   // 효과 정보
-    public string efffectDetail;    // 효과 상세 (shield, heal - 수치(int) / substitute - red, blue, HP / convert - 타 상태이상)
-    public int needStack;           // 발동 스택 수
+    public StatusEffectData data;   // 상태이상 원본 데이터 (ScriptableObject)
+    public int stackCount;          // 현재 중첩 수
+    public int duration;            // 남은 지속시간
 
-    /*
-    public void ApplyEffect(ITurn target)
-    {
-        // 상태 효과 적용 로직
-        Debug.Log($"{target}에게 {name} 효과를 적용합니다.");
-    }
-    */
+    public StatusEffectLogic logic { get; private set; } // 이 효과의 실제 행동 로직
 
-    public void RemoveEffect(ITurn target)
+    // 생성자
+    public StatusEffect(StatusEffectData sourceData)
     {
-        // 상태 효과 제거 로직
-        Debug.Log($"{target}에서 {name} 효과를 제거합니다.");
+        data = sourceData;
+        stackCount = 0;
+        duration = sourceData.duration;
+
+        // 데이터에 정의된 타입에 따라 적절한 로직 클래스를 생성
+        switch (sourceData.logicType)
+        {
+            case StatusEffectData.EffectLogicType.bleed:
+                logic = new Bleed_Logic();
+                break;
+            case StatusEffectData.EffectLogicType.block:
+                logic = new Block_Logic();
+                break;
+            case StatusEffectData.EffectLogicType.weak:
+                logic = new Weak_Logic();
+                break;
+            // ... 다른 상태이상 로직들 ...
+            default:
+                logic = null;
+                break;
+        }
     }
 }
 

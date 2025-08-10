@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1fc9820db9f6b4f98f64b024eb68c1, type: 3}
+  m_Name: R_Bleed01
+  m_EditorClassIdentifier: 
+  skillName: R_Bleed01
+  colorType: 0
+  desc: "\uBE68\uAC15_\uB300\uC0C1\uC5D0\uAC8C 4(+p)\uC758 \uB370\uBBF8\uC9C0\uB97C
+    \uC8FC\uACE0 \uCD9C\uD608\uC744 1(+p)\uB9CC\uD07C \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  icon: {fileID: 21300000, guid: 98cb7d2b694376a4a97bb4183c946313, type: 3}
+  skillType: 0
+  damage: 4
+  count: 1
+  shield: 0
+  heal: 0
+  effectDatas:
+  - {fileID: 11400000, guid: c45cdd4209069c54688413b42340e0f1, type: 2}
+  effects: 01000000
+  perDamage: 1
+  perCount: 0
+  perShield: 0
+  perHeal: 0
+  perEffect: 01000000

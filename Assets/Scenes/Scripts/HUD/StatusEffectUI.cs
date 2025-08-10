@@ -38,7 +38,7 @@ public class StatusEffectUI : MonoBehaviour
         {
             UIArr[i].enabled = true;
             textArr[i].enabled = true;
-            UIArr[i].sprite = Resources.Load<Sprite>("Sprite/StatusEffect_Sprite/" + curStatusEffects[i].icon);     // 상태이상 이미지 갱신
+            UIArr[i].sprite = curStatusEffects[i].data.icon;     // 상태이상 이미지 갱신
             textArr[i].text = curStatusEffects[i].stackCount.ToString();            // 상태이상 수치 갱신
         }
 

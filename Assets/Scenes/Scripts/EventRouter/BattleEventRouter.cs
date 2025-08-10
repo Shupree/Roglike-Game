@@ -11,8 +11,8 @@ public class BattleEventRouter : MonoBehaviour
     }
 
     // 명시적 개별 이벤트
-    public static event Action OnTurnStart;
-    public static event Action OnPlayerTurnStart;
+    public static event Action OnTurnStarted;
+    public static event Action OnPlayerTurnStarted;
     public static event Action OnAttack;
     public static event Action OnHit;
 
@@ -21,16 +21,16 @@ public class BattleEventRouter : MonoBehaviour
     public static event BattleEvent OnBattleEvent;          // 전투 시 이벤트를 위한 델리게이트
 
     // 이벤트 호출 : 전투 턴 시작 시
-    public static void RaiseTurnStart()
+    public static void RaiseTurnStarted()
     {
-        OnTurnStart?.Invoke();
+        OnTurnStarted?.Invoke();
         OnBattleEvent?.Invoke(BattleEventType.turnStart);
     }
 
     // 이벤트 호출 : 플레이어 턴 시작 시
-    public static void RaisePlayerTurnStart()
+    public static void RaisePlayerTurnStarted()
     {
-        OnPlayerTurnStart?.Invoke();
+        OnPlayerTurnStarted?.Invoke();
         OnBattleEvent?.Invoke(BattleEventType.playerTurnStart);
     }
 
@@ -57,8 +57,8 @@ public class BattleEventRouter : MonoBehaviour
     // 구독 초기화 (씬 전환이나 재시작용)
     public static void Clear()
     {
-        OnTurnStart = null;
-        OnPlayerTurnStart = null;
+        OnTurnStarted = null;
+        OnPlayerTurnStarted = null;
         OnAttack = null;
         OnHit = null;
         OnBattleEvent = null;

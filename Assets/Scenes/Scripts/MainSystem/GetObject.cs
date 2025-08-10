@@ -31,15 +31,15 @@ public class GetObject : MonoBehaviour
                 switch(hit.collider.tag){
                     case "Enemy":
                         Debug.Log(hit.collider.gameObject.name);
-                        if (player.mainSkill != null &&
-                            player.mainSkill.skillType == Skill.SkillType.SingleAtk &&
+                        if (player.currentSkill != null &&
+                            player.currentSkill.skillType == PaintSkillData.SkillType.SingleAtk &&
                             turnManager.GetState() == TurnManager.State.playerAct)      // 단일 스킬일 경우
                         {
                             turnManager.targets.Clear();
                             turnManager.targets.Add(hit.collider.gameObject.GetComponent<Enemy>());      // 타겟팅
                         }
                         else if (storageManager._MPManager.GetMPData() != null &&
-                                storageManager._MPManager.GetMPData().skillType == Skill.SkillType.SingleAtk &&
+                                storageManager._MPManager.GetMPData().skillType == PaintSkillData.SkillType.SingleAtk &&
                                 turnManager.GetState() == TurnManager.State.useMP)      // 걸작 스킬이 단일 스킬일 경우
                         { 
                             turnManager.targets.Clear();

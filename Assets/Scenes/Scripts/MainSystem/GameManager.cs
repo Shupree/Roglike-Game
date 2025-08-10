@@ -10,20 +10,17 @@ public class GameManager : MonoBehaviour
     // instance를 통해 static을 통해 메모리에 정보를 저장 후 타 스크립트에서 사용 가능.
     public static GameManager instance;
 
-    [Header ("DataManager")]
-    public List<StatusEffect> statusEffects;   // 상태이상 정보
-
     [Header ("Reference")]
     public PaintManager paintManager;
     public StageManager stageManager;
     public StorageManager storageManager;
 
-    public CsvSkillLoader skillLoader;
-
     [HideInInspector] 
     public TurnManager turnManager;
     [HideInInspector] 
     public SpawnManager spawnManager;
+    [HideInInspector] 
+    public StatusEffectManager statusEffectManager;     // 상태이상 매니저
     [HideInInspector] 
     public HUDPoolManager hudPoolManager;       // HUDPoolManager
     [HideInInspector] 
@@ -44,6 +41,7 @@ public class GameManager : MonoBehaviour
 
         turnManager = gameObject.GetComponent<TurnManager>();
         spawnManager = gameObject.GetComponent<SpawnManager>();
+        statusEffectManager = gameObject.GetComponent<StatusEffectManager>();
         hudPoolManager = gameObject.GetComponent<HUDPoolManager>();
         enemyPoolManager = gameObject.GetComponent<EnemyPoolManager>();
         getObject = gameObject.GetComponent<GetObject>();
@@ -72,10 +70,6 @@ public class GameManager : MonoBehaviour
 
         // 적 등록  (Test)
         spawnManager.SpawnEnemy(enemyIdArr);
-
-        // JSON 데이터 로드 (상태이상)
-        StatusEffectLoader loader = new StatusEffectLoader();
-        statusEffects = loader.LoadStatusEffects("Status_Effects");     // 파일명에서 확장자 제외
 
         // 턴 진행 시작 (Test)
         turnManager.BattleStart();

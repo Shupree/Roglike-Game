@@ -25,9 +25,6 @@ public class MPManager : MonoBehaviour
 
     private int addValue = 0;       // MP 스킬 발동 중 중첩 값
 
-    [Header("Bool")]
-    public bool isTrueDamage;   // 고정데미지인가?
-
     public void Initialize()
     {
         turnManager = GameManager.instance.turnManager;
@@ -155,21 +152,23 @@ public class MPManager : MonoBehaviour
     {
         Debug.Log($"{MPData.MP_Name}걸작 발동! / 중첩값:{addValue} / 타겟:{targets}");
 
+        DamageInfo damageInfo = new DamageInfo { amount = 0, isIgnoreShield = false };
+
         int count = 0;
 
         // 공격 type에 따른 분류    (targets는 turnManager로부터 받음)
         switch (MPData.skillType)
         {
             // 단타 공격
-            case Skill.SkillType.SingleAtk:
+            case PaintSkillData.SkillType.SingleAtk:
                 count = MPData.count + (addValue * MPData.perCount);
                 break;
             // 전체 공격
-            case Skill.SkillType.SplashAtk:
+            case PaintSkillData.SkillType.SplashAtk:
                 count = MPData.count + (addValue * MPData.perCount);
                 break;
             // 바운스 공격
-            case Skill.SkillType.BounceAtk:
+            case PaintSkillData.SkillType.BounceAtk:
                 count = 1;
                 for (int i = 0; i < MPData.count + (addValue * MPData.perCount); i++)    // 타겟 재설정
                 {
@@ -178,20 +177,20 @@ public class MPManager : MonoBehaviour
                 }
                 break;
             // 자신 보조
-            case Skill.SkillType.SingleSup:    // 자기자신 타겟 스킬
+            case PaintSkillData.SkillType.SingleSup:    // 자기자신 타겟 스킬
                 count = MPData.count + (addValue * MPData.perCount);
-                isTrueDamage = true;    // 자신 대상은 고정데미지
+                damageInfo.isIgnoreShield = true;    // 자신 대상은 고정데미지
                 break;
 
             // 전체 아군 보조
-            case Skill.SkillType.SplashSup:
+            case PaintSkillData.SkillType.SplashSup:
                 count = MPData.count + (addValue * MPData.perCount);
-                isTrueDamage = true;    // 아군 대상은 고정데미지
+                damageInfo.isIgnoreShield = true;    // 아군 대상은 고정데미지
                 break;
         }
 
         // 걸작스킬의 기본 스탯 연산
-        int damage = MPData.damage + (MPData.perDamage * addValue);
+        damageInfo.amount += MPData.damage + (MPData.perDamage * addValue);
         int shield = MPData.shield + (MPData.perShield * addValue);
         int heal = MPData.heal + (MPData.perHeal * addValue);
         int[] effect = new int[MPData.effect.Length];
@@ -206,14 +205,15 @@ public class MPManager : MonoBehaviour
             for (int i = 0; i < count; i++)   // 타수만큼 반복
             {
                 // 데미지
-                if (damage > 0)    // 기본 데미지가 0일 시 스킵
+                if (damageInfo.amount > 0)    // 기본 데미지가 0일 시 스킵
                 {
-                    if (!isTrueDamage)
-                    {
-                        damage += targets[c].GetStatusEffect("Burn");   // 화상 데미지
-                    }
-                    targets[c].TakeDamage(damage, false);      // 공격
-                    Debug.Log($"{targets[c]}은 {damage} 의 데미지를 입었다.");
+                    // OnAttack 로직 호출 (데미지 계산 전)
+                    // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
+                    List<StatusEffect> effectsToProcess = new List<StatusEffect>(GameManager.instance.player.statusEffects);
+                    effectsToProcess.ForEach(effect => effect.logic.OnAttack(GameManager.instance.player, targets[c], effect, ref damageInfo));
+
+                    targets[c].TakeDamage(damageInfo.amount, damageInfo.isIgnoreShield);      // 공격
+                    Debug.Log($"{targets[c]}은 {damageInfo.amount} 의 데미지를 입었다.");
                 }
 
                 // 회복량
@@ -224,10 +224,10 @@ public class MPManager : MonoBehaviour
                 }
 
                 // 상태이상 부여
-                for (int n = 0; n < MPData.effectType.Length; n++)
+                for (int n = 0; n < MPData.effectData.Length; n++)
                 {
-                    targets[c].AddStatusEffect(MPData.effectType[n], effect[n]);
-                    Debug.Log($"{targets[c]}은 {MPData.effectType[n]}을 {effect[n]}만큼 받었다.");
+                    targets[c].AddStatusEffect(MPData.effectData[n], effect[n]);
+                    Debug.Log($"{targets[c]}은 {MPData.effectData[n].effectName}을 {effect[n]}만큼 받았다.");
                 }
             }
         }

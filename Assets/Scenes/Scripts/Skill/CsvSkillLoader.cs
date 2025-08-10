@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+/*
 [System.Serializable]
 public class Skill
 {
@@ -101,3 +102,4 @@ public class CsvSkillLoader : MonoBehaviour
         Debug.Log("스킬 데이터 로드 성공.");
     }
 }
+*/

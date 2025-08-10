@@ -52,11 +52,11 @@ public class Ally : MonoBehaviour, ITurn
 
     public void TakeTurn()
     {
-        Debug.Log("아군이 행동합니다!");
+        Debug.Log($"아군 {name}이(가) 행동합니다!");
         // 아군 행동 로직
 
-        int damage = 0;             // 최종 데미지
-        bool isTrueDamage = false;  // 고정 데미지 유무
+        // 데미지 정보 생성 (상태이상 로직용)
+        DamageInfo damageInfo = new DamageInfo { amount = 0, isIgnoreShield = false };
 
         // 공격 type에 따른 분류
         switch (curSkillData.skillType)
@@ -75,13 +75,13 @@ public class Ally : MonoBehaviour, ITurn
             // 자신 보조
             case UnitSkillData.SkillType.SingleSup:    // 자기자신 타겟 스킬
                 targets.Add(this);
-                isTrueDamage = true;    // 자신 대상은 고정데미지
+                damageInfo.isIgnoreShield = true;    // 자신 대상은 고정데미지
                 break;
 
             // 전체 아군 보조
             case UnitSkillData.SkillType.SplashSup:
                 targets = new List<ITurn> (GameManager.instance.turnManager.allies);
-                isTrueDamage = true;    // 아군 대상은 고정데미지
+                damageInfo.isIgnoreShield = true;    // 아군 대상은 고정데미지
                 break;
         }
 
@@ -89,43 +89,40 @@ public class Ally : MonoBehaviour, ITurn
         {
             for (int i = 0; i < curSkillData.count; i++)   // 타수만큼 반복
             {
+                ITurn currentTarget = targets[c];
+                if (currentTarget == null) continue;
+
                 if (curSkillData.damage > 0)    // 기본 데미지가 0일 시 스킵
                 {
-                    damage = curSkillData.damage;   // 기본 데미지
-                    if (!isTrueDamage)
-                    {
-                        // '공격력 업' 관련 버프 적용
-                        List<StatusEffect> attackEffects = statusEffects.FindAll(s => s.effectInfo == EffectInfo.attackUp);
-                        foreach (StatusEffect effect in attackEffects)
-                        {
-                            damage += int.Parse(effect.efffectDetail) * effect.stackCount;
+                    damageInfo.amount = curSkillData.damage;   // 기본 데미지
 
-                            // 소모성 상태이상일 시 스택 수 감소
-                            if (effect.isConsumable && effect.decreaseNum != -1)
-                            {
-                                DecStatusEffect(effect.nameEn, effect.decreaseNum);
-                            }
-                        }
-                    }
-                    targets[c].TakeDamage(damage, false);      // 공격
-                    Debug.Log($"{targets[c]}은 {damage} 의 데미지를 입었다.");
+                    // OnAttack 로직 호출 (데미지 계산 전)
+                    // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
+                    List<StatusEffect> effectsToProcess = new List<StatusEffect>(statusEffects);
+                    effectsToProcess.ForEach(effect => effect.logic.OnAttack(this, currentTarget, effect, ref damageInfo));
+
+                    currentTarget.TakeDamage(damageInfo.amount, damageInfo.isIgnoreShield);      // 공격
+                    Debug.Log($"{currentTarget}은(는) {damageInfo.amount} 의 데미지를 입었다.");
                 }
 
                 if (curSkillData.heal > 0)
                 {
-                    targets[c].TakeHeal(curSkillData.heal);
-                    Debug.Log($"{targets[c]}은 {curSkillData.heal} 만큼 체력을 회복했다.");
+                    currentTarget.TakeHeal(curSkillData.heal);
+                    Debug.Log($"{currentTarget}은(는) {curSkillData.heal} 만큼 체력을 회복했다.");
                 }
 
                 // 적 상태이상 부여
                 if (curSkillData.effect > 0)
                 {
-                    targets[c].AddStatusEffect(curSkillData.effectType, curSkillData.effect);
-                    Debug.Log($"{targets[c]}은 {curSkillData.effectType}을 {curSkillData.effect}만큼 받었다.");
+                    StatusEffectData effectDataToApply = GameManager.instance.statusEffectManager.GetStatusEffectData(curSkillData.effectType);
+                    if (effectDataToApply != null)
+                    {
+                        currentTarget.AddStatusEffect(effectDataToApply, curSkillData.effect);
+                        Debug.Log($"{currentTarget}은(는) {curSkillData.effectType}을(를) {curSkillData.effect}만큼 받았다.");
+                    }
                 }
             }
         }
-        // 데미지 연산 : 기본 데미지 + 화상 데미지 + 집중 효과
 
         targets.Clear();
     }
@@ -153,11 +150,11 @@ public class Ally : MonoBehaviour, ITurn
     }
 
     // 상태이상 값 확인
-    public int GetStatusEffect(string effectName)
+    public int GetStatusEffect(StatusEffectData effectData)
     {
-        if (statusEffects.Exists(e => e.nameEn == effectName))
+        if (statusEffects.Exists(e => e.data == effectData))
         {      // 버프/디버프 존재 시
-            return statusEffects.Find(e => e.nameEn == effectName).stackCount;
+            return statusEffects.Find(e => e.data == effectData).stackCount;
         }
         else
         {          // 아닐 시 0으로 반환
@@ -166,23 +163,30 @@ public class Ally : MonoBehaviour, ITurn
     }
 
     // 피격 시 데미지 연산
-    public void TakeDamage(int damage, bool isTrueDamage)
+    public void TakeDamage(int damage, bool isIgnoreShield)
     {
-        if (isTrueDamage)
+        DamageInfo damageInfo = new DamageInfo { amount = damage, isIgnoreShield = isIgnoreShield };
+
+        // OnBeingHit 로직 호출 (데미지 계산 전)
+        // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
+        List<StatusEffect> effectsToProcess = new List<StatusEffect>(statusEffects);
+        effectsToProcess.ForEach(effect => effect.logic.OnBeingHit(this, effect, ref damageInfo));
+
+        if (damageInfo.isIgnoreShield)
         {
-            health -= damage;
+            health -= damageInfo.amount;
         }
         else
         {
-            if (shield > damage)
+            if (shield > damageInfo.amount)
             {
-                shield -= damage;
+                shield -= damageInfo.amount;
             }
             else
             {
-                damage -= shield;
+                damageInfo.amount -= shield;
                 shield = 0;
-                health -= damage;
+                health -= damageInfo.amount;
             }
         }
 
@@ -197,11 +201,8 @@ public class Ally : MonoBehaviour, ITurn
         else
         {
             hud.UpdateHUD();        // HUD의 HP 변화
-            Debug.Log($"{gameObject.name}이(가) {damage} 데미지를 받았습니다! 남은 체력: {health}");
+            Debug.Log($"{gameObject.name}이(가) {damageInfo.amount} 데미지를 받았습니다! 남은 체력: {health}");
         }
-
-        // 피격 시 상태이상 업데이트
-        StatusEffectProcessor.ProcessStatusEffects(this, statusEffects, StatusEffectProcessor.Situation.onHit);
     }
 
     // 회복 시 연산
@@ -239,44 +240,38 @@ public class Ally : MonoBehaviour, ITurn
     // ------ 버프 / 디버프 로직 ------
 
     // 특정 상태이상 추가 ( string 상태이상 종류, int 중첩 수 )
-    public void AddStatusEffect(string effectName, int stack)
+    public void AddStatusEffect(StatusEffectData effectData, int stack)
     {
         // 이미 존재하는 상태이상인지 확인
-        var statusEffect = statusEffects.Find(e => e.nameEn == effectName);
+        var statusEffect = statusEffects.Find(e => e.data == effectData);
 
         // 이미 존재 시,
         if (statusEffect != null)
         {
-            // 중첩 가능 여부 확인
-            if (statusEffect.maxStack > statusEffect.stackCount)
-            {
-                statusEffect.stackCount = Mathf.Min(
-                    statusEffect.maxStack,
-                    statusEffect.stackCount + stack
+            // 상태이상 중첩 수 ++
+            statusEffect.stackCount = Mathf.Min(
+                statusEffect.data.maxStack,
+                statusEffect.stackCount + stack
                 );
-                Debug.Log($"{gameObject.name}의 {statusEffect.name} 상태 이상이 {statusEffect.stackCount}로 중첩되었습니다.");
-            }
-            else
-            {
-                Debug.Log($"{gameObject.name}의 {statusEffect.name} 상태 이상이 최대 중첩에 도달했습니다.");
-            }
+            Debug.Log($"{gameObject.name}의 {statusEffect.data.effectName} 상태 이상이 {statusEffect.stackCount}로 중첩되었습니다.");
         }
         // 존재하지 않을 시, 새로운 상태이상 추가
         else
         {
-            statusEffect = GameManager.instance.statusEffects.Find(s => s.nameEn == effectName);
-            statusEffect.stackCount = stack;        // 새로 추가되는 효과는 기본 중첩 = stack 수
-            statusEffects.Add(statusEffect);        // 새 상태이상 추가
-            Debug.Log($"{gameObject.name}에게 {statusEffect.name}이(가) 새로 추가되었습니다.");
+            StatusEffect newEffectInstance = new StatusEffect(effectData);
+            newEffectInstance.stackCount = stack;
+            statusEffects.Add(newEffectInstance);
+
+            Debug.Log($"{gameObject.name}에게 {statusEffect.data.effectName}이(가) 새로 추가되었습니다.");
         }
         
         statusEffectUI.UpdateStatusEffect(statusEffects);    // 상태이상UI 업데이트
     }
 
-    // 버프/디버프 제거
-    public void DecStatusEffect(string effectName, int stack)
+    // 버프/디버프 감소
+    public void DecStatusEffect(StatusEffectData effectData, int stack)
     {
-        var statusEffect = statusEffects.Find(e => e.nameEn == effectName);
+        var statusEffect = statusEffects.Find(e => e.data == effectData);
         if (statusEffect != null)
         {
             if (statusEffect.stackCount > stack)
@@ -285,7 +280,7 @@ public class Ally : MonoBehaviour, ITurn
             }
             else
             {
-                statusEffect.RemoveEffect(this);    // 빙결 디버프 제거
+                statusEffects.Remove(statusEffect);    // 상태이상 제거
             }
         }
         

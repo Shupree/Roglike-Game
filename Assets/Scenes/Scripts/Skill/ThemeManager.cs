@@ -9,22 +9,21 @@ public class ThemeManager : MonoBehaviour
     private TurnManager turnManager;
     private PaintManager paintManager;
 
-    [Header("ImageSc")]
+    [Header("UI")]
     public Image[] skillBtnImg;       // 테마 스킬 버튼 Image
 
     [Header("ITheme")]
-    private IThemePassive iThemePassive;        // 현재 사용 중인 테마 패시브
     public ThemeData[] themeDatas;       // 테마 데이터 Arr
     private ThemeData themeData;       // 테마 데이터
-
-    [Header("Target")]
-    public List<ITurn> targets = new List<ITurn>();            // 공격 타겟
 
     [Header("Passive Effect")]
     public List<StatusEffect> passiveEffects = new List<StatusEffect>();
 
     [Header("Bool")]
     public bool isTrueDamage;   // 고정데미지인가?
+
+    [Header("Target")]
+    public List<ITurn> targets = new List<ITurn>();            // 공격 타겟
 
     public void Initialize()
     {
@@ -39,17 +38,25 @@ public class ThemeManager : MonoBehaviour
 
     private void ApplyTheme(string themeName)
     {
+        // 1. 기존 테마 패시브가 있다면 플레이어에게서 제거
+        if (themeData != null && themeData.passiveData != null)
+        {
+            GameManager.instance.player.DecStatusEffect(themeData.passiveData, 999); // 999는 모든 스택 제거를 의미
+        }
+
+        // 2. 새로운 테마 데이터 설정
         switch (themeName)
         {
             case "Artist":
                 themeData = themeDatas[0];
-                iThemePassive = new ArtistPassive();
                 break;  
         }
 
-        LoadPassiveEffect(themeData.fillName);      // 패시브 데이터 로드
-
-        iThemePassive.ApplyITheme(this);
+        // 3. 새로운 테마 패시브를 플레이어에게 직접 부여
+        if (themeData != null && themeData.passiveData != null)
+        {
+            GameManager.instance.player.AddStatusEffect(themeData.passiveData, 0);  // 초기 스택 0으로 부여
+        }
 
         skillBtnImg[0].sprite = themeData.skillList[0].icon;
         skillBtnImg[1].sprite = themeData.skillList[1].icon;
@@ -68,35 +75,38 @@ public class ThemeManager : MonoBehaviour
         }
     }
 
-    // JSON 데이터 로드 (테마 패시브)
-    private void LoadPassiveEffect(string fileName)
-    {
-        StatusEffectLoader loader = new StatusEffectLoader();
-        passiveEffects = loader.LoadStatusEffects(fileName);     // 파일명에서 확장자 제외
-    }
-
-    // 패시브 스택을 증감시키는 함수
-    public void CalculatePassiveEffect(string effectName, int num)
-    {
-        StatusEffect passiveEffect = passiveEffects.Find(e => e.nameEn == effectName);
-
-        if (passiveEffect.maxStack <= passiveEffect.stackCount + num)
-        {
-            passiveEffect.stackCount = passiveEffect.maxStack;
-        }
-        else
-        { 
-            passiveEffect.stackCount += num;
-        }
-    }
-
     // 걸작스킬 사용
-    public void ExecuteThemeSkill(ThemeSkillData themeSkill)
+    public void ExecuteThemeSkill(ThemeSkillData skillData)
     {
         Debug.Log($"{themeSkill}테마 스킬 발동! 타겟:{targets}");
 
         int addValue = 0;
-        int stack = passiveEffects.Find(e => e.nameEn == themeSkill.needPassiveName).stackCount;
+        foreach (var condition in skillData.conditions)
+        {
+            switch (condition.type)
+            {
+                // 플레이어 체력 소모
+                case EnhancementCondition.ConditionType.health:
+                    player 
+                    break;
+
+                // 특정 물감 소모
+                case EnhancementCondition.ConditionType.paintR:
+                    break;
+                case EnhancementCondition.ConditionType.paintB:
+                    break;
+                case EnhancementCondition.ConditionType.paintY:
+                    break;
+                case EnhancementCondition.ConditionType.paintW:
+                    break;
+
+                // 특정 상태이상 혹은 패시브 소모
+                case EnhancementCondition.ConditionType.statusEffect:
+                    break;
+            }
+        }
+        if (skillData.conditions != )
+                int stack = passiveEffects.Find(e => e.nameEn == themeSkill.needPassiveName).stackCount;
 
         // 테마스킬 조건부 효과 확인
         if (themeSkill.perNeed >= themeSkill.maxStack)
@@ -116,15 +126,15 @@ public class ThemeManager : MonoBehaviour
         switch (themeSkill.skillType)
         {
             // 단타 공격
-            case Skill.SkillType.SingleAtk:
+            case PaintSkillData.SkillType.SingleAtk:
                 count = themeSkill.count + (addValue * themeSkill.perCount);
                 break;
             // 전체 공격
-            case Skill.SkillType.SplashAtk:
+            case PaintSkillData.SkillType.SplashAtk:
                 count = themeSkill.count + (addValue * themeSkill.perCount);
                 break;
             // 바운스 공격
-            case Skill.SkillType.BounceAtk:
+            case PaintSkillData.SkillType.BounceAtk:
                 count = 1;
                 for (int i = 0; i < themeSkill.count + (addValue * themeSkill.perCount); i++)    // 타겟 재설정
                 {
@@ -133,19 +143,19 @@ public class ThemeManager : MonoBehaviour
                 }
                 break;
             // 자신 보조
-            case Skill.SkillType.SingleSup:    // 자기자신 타겟 스킬
+            case PaintSkillData.SkillType.SingleSup:    // 자기자신 타겟 스킬
                 count = themeSkill.count + (addValue * themeSkill.perCount);
                 isTrueDamage = true;    // 자신 대상은 고정데미지
                 break;
 
             // 전체 아군 보조
-            case Skill.SkillType.SplashSup:
+            case PaintSkillData.SkillType.SplashSup:
                 count = themeSkill.count + (addValue * themeSkill.perCount);
                 isTrueDamage = true;    // 아군 대상은 고정데미지
                 break;
         }
 
-        // 걸작스킬의 기본 스탯 연산
+        // 테마스킬의 기본 스탯 연산
         int damage = themeSkill.damage + (themeSkill.perDamage * addValue);
         int shield = themeSkill.shield + (themeSkill.perShield * addValue);
         int heal = themeSkill.heal + (themeSkill.perHeal * addValue);
@@ -154,10 +164,13 @@ public class ThemeManager : MonoBehaviour
         {
             effect[i] = themeSkill.effect[i] + (themeSkill.perEffect[i] * addValue);
         }
+        
+        // 데미지 연산
+        GameManager.instance.player.DealDamage(damageInfo, count, shield, heal, currentSkill.effectDatas, effects);
 
         // 데미지 연산
-            for (int c = 0; c < targets.Count; c++)
-            {
+        for (int c = 0; c < targets.Count; c++)
+        {
             for (int i = 0; i < count; i++)   // 타수만큼 반복
             {
                 // 데미지
@@ -182,7 +195,7 @@ public class ThemeManager : MonoBehaviour
                 for (int n = 0; n < themeSkill.effectType.Length; n++)
                 {
                     if (passiveEffects.Exists(e => e.nameEn == themeSkill.effectType[n]))
-                    { 
+                    {
                         CalculatePassiveEffect(themeSkill.effectType[n], effect[n]);
                         Debug.Log($"플레이어는 {themeSkill.effectType[n]}을/를 {effect[n]}만큼 얻었다.");
                     }

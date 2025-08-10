@@ -35,7 +35,7 @@ public class EventReward    // 이벤트 보상 요소
 {
     public int gold;
     public int heal;
-    public Skill rewardSkill;
+    public PaintSkillData rewardSkill;
     public AllyData recruitAlly;
     // 기타 특이 보상들
 }
