@@ -22,7 +22,6 @@ public class UnitSkillData : ScriptableObject
     public int count;       // 기본 타수 (Multiple의 경우)
     public int shield;      // 기본 보호막 양
     public int heal;        // 기본 회복량
-    public string effectType;      // 버프/디버프 종류
-    // None, Burn, Freeze, ElectricShock
-    public int effect;      // 버프/디버프 수치*/
+    public List<StatusEffectData> effectDatas;      // 버프/디버프 종류
+    public List<int> effects;      // 버프/디버프 수치*/
 }

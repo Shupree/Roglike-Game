@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 [CreateAssetMenu(fileName = "Skill", menuName = "Scriptble Object/SkillData")]
 public class SkillData : ScriptableObject
 {
@@ -33,3 +34,4 @@ public class SkillData : ScriptableObject
     public int incHeal;       // 회복 계수
     public int incEffect;     // 버프/디버프 계수
 }
+*/

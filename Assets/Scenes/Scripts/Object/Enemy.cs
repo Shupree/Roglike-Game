@@ -56,7 +56,8 @@ public class Enemy : MonoBehaviour, ITurn
         // 적 행동 로직
 
         // 데미지 정보 생성 (상태이상 로직용)
-        DamageInfo damageInfo = new DamageInfo { amount = 0, isIgnoreShield = false };
+        DamageInfo damageInfo = new DamageInfo { amount = curSkillData.damage, isIgnoreShield = false };
+        StatusEffectInfo statusEffectInfo = new StatusEffectInfo { effectDatas = curSkillData.effectDatas, effects = curSkillData.effects };
 
         // 공격 type에 따른 분류
         switch (curSkillData.skillType)
@@ -69,7 +70,7 @@ public class Enemy : MonoBehaviour, ITurn
 
             // 전체 공격
             case UnitSkillData.SkillType.SplashAtk:
-                targets = new List<ITurn> (GameManager.instance.turnManager.allies);
+                targets = new List<ITurn>(GameManager.instance.turnManager.allies);
                 break;
             // 자신 보조
             case UnitSkillData.SkillType.SingleSup:    // 자기자신 타겟 스킬
@@ -79,47 +80,25 @@ public class Enemy : MonoBehaviour, ITurn
 
             // 전체 아군 보조
             case UnitSkillData.SkillType.SplashSup:
-                targets = new List<ITurn> (GameManager.instance.turnManager.enemies);
+                targets = new List<ITurn>(GameManager.instance.turnManager.enemies);
                 damageInfo.isIgnoreShield = true;    // 아군 대상은 고정데미지
                 break;
         }
 
-        for (int c = 0; c < targets.Count; c++)
+        // 스킬 스탯 집합
+        ActionInfo actionInfo = new ActionInfo {
+            damageInfo = damageInfo,
+            heal = curSkillData.heal,
+            shield = curSkillData.shield,
+            statusEffectInfo = statusEffectInfo
+        };
+
+        for (int i = 0; i < curSkillData.count; i++)   // 타수만큼 반복
         {
-            for (int i = 0; i < curSkillData.count; i++)   // 타수만큼 반복
+            // 공격 / 상태이상 부여
+            foreach (var target in targets)     // 모든 타겟 공격
             {
-                ITurn currentTarget = targets[c];
-                if (currentTarget == null) continue;
-
-                if (curSkillData.damage > 0)    // 기본 데미지가 0일 시 스킵
-                {
-                    damageInfo.amount = curSkillData.damage;   // 기본 데미지
-
-                    // OnAttack 로직 호출 (데미지 계산 전)
-                    // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
-                    List<StatusEffect> effectsToProcess = new List<StatusEffect>(statusEffects);
-                    effectsToProcess.ForEach(effect => effect.logic.OnAttack(this, currentTarget, effect, ref damageInfo));
-
-                    currentTarget.TakeDamage(damageInfo.amount, damageInfo.isIgnoreShield);      // 공격
-                    Debug.Log($"{currentTarget}은(는) {damageInfo.amount} 의 데미지를 입었다.");
-                }
-
-                if (curSkillData.heal > 0)
-                {
-                    currentTarget.TakeHeal(curSkillData.heal);
-                    Debug.Log($"{currentTarget}은 {curSkillData.heal} 만큼 체력을 회복했다.");
-                }
-
-                // 적 상태이상 부여
-                if (curSkillData.effect > 0)
-                {
-                    StatusEffectData effectDataToApply = GameManager.instance.statusEffectManager.GetStatusEffectData(curSkillData.effectType);
-                    if (effectDataToApply != null)
-                    {
-                        currentTarget.AddStatusEffect(effectDataToApply, curSkillData.effect);
-                        Debug.Log($"{currentTarget}은(는) {curSkillData.effectType}을(를) {curSkillData.effect}만큼 받았다.");
-                    }
-                }
+                BattleLogic.ActionLogic(this, target, actionInfo);
             }
         }
 
@@ -149,7 +128,7 @@ public class Enemy : MonoBehaviour, ITurn
     }
 
     // 상태이상 값 확인
-    public int GetStatusEffect(StatusEffectData effectData)
+    public int GetStatusEffectStack(StatusEffectData effectData)
     {
         if (statusEffects.Exists(e => e.data == effectData))
         {      // 버프/디버프 존재 시
@@ -162,16 +141,17 @@ public class Enemy : MonoBehaviour, ITurn
     }
 
     // 피격 시 데미지 연산
-    public void TakeDamage(int damage, bool isIgnoreShield)
+    public void TakeDamage(DamageInfo damageInfo, bool onBeingHit)
     {
         Debug.Log("<b><color=orange>[2] Enemy.TakeDamage</color></b> - OnBeingHit 로직 실행 시작 (기존 효과)");
-        DamageInfo damageInfo = new DamageInfo { amount = damage, isIgnoreShield = isIgnoreShield };
 
-        // OnBeingHit 로직 호출 (데미지 계산 전)
-        // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
-        List<StatusEffect> effectsToProcess = new List<StatusEffect>(statusEffects);
-        effectsToProcess.ForEach(effect => effect.logic.OnBeingHit(this, effect, ref damageInfo));
-        Debug.Log("<b><color=orange>[3] Enemy.TakeDamage</color></b> - 데미지 연산 및 적용 시작");
+        if (onBeingHit)
+        { 
+            // OnBeingHit 로직 호출 (데미지 계산 전)
+            // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
+            List<StatusEffect> effectsToProcess = new List<StatusEffect>(statusEffects);
+            effectsToProcess.ForEach(effect => effect.logic.OnBeingHit(this, effect, ref damageInfo));
+        }
 
         if (damageInfo.isIgnoreShield)
         {
@@ -203,7 +183,7 @@ public class Enemy : MonoBehaviour, ITurn
         else
         {
             hud.UpdateHUD();        // HUD의 HP 변화
-            Debug.Log($"{gameObject.name}이(가) {damage} 데미지를 받았습니다! 남은 체력: {health}");
+            Debug.Log($"{gameObject.name}이(가) {damageInfo.amount} 데미지를 받았습니다! 남은 체력: {health}");
         }
     }
 

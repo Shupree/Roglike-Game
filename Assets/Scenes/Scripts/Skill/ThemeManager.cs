@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ThemeManager : MonoBehaviour
 {
     [Header("Reference")]
+    private Player player;
     private TurnManager turnManager;
     private PaintManager paintManager;
 
@@ -20,17 +21,16 @@ public class ThemeManager : MonoBehaviour
     public List<StatusEffect> passiveEffects = new List<StatusEffect>();
 
     [Header("Bool")]
-    public bool isTrueDamage;   // 고정데미지인가?
+    public bool isIgnoreShield;   // 고정데미지인가?
 
     [Header("Target")]
     public List<ITurn> targets = new List<ITurn>();            // 공격 타겟
 
     public void Initialize()
     {
+        player = GameManager.instance.player;
         turnManager = GameManager.instance.turnManager;
         paintManager = GameManager.instance.paintManager;
-
-        //SubscribeEvent();                   // 이벤트 구독
 
         // 테스트용 임시 테마 적용
         ApplyTheme("Artist");           // '테마-화가' 적용
@@ -41,7 +41,7 @@ public class ThemeManager : MonoBehaviour
         // 1. 기존 테마 패시브가 있다면 플레이어에게서 제거
         if (themeData != null && themeData.passiveData != null)
         {
-            GameManager.instance.player.DecStatusEffect(themeData.passiveData, 999); // 999는 모든 스택 제거를 의미
+            player.DecStatusEffect(themeData.passiveData, 999); // 999는 모든 스택 제거를 의미
         }
 
         // 2. 새로운 테마 데이터 설정
@@ -49,13 +49,16 @@ public class ThemeManager : MonoBehaviour
         {
             case "Artist":
                 themeData = themeDatas[0];
-                break;  
+                break;
+            case "Gardener":
+                themeData = themeDatas[1]; // 예시: 정원사 테마 데이터
+                break;
         }
 
-        // 3. 새로운 테마 패시브를 플레이어에게 직접 부여
-        if (themeData != null && themeData.passiveData != null)
+        // 3. 새로운 테마 패시브가 있다면 플레이어에게 직접 부여
+        if (themeData.passiveData != null)
         {
-            GameManager.instance.player.AddStatusEffect(themeData.passiveData, 0);  // 초기 스택 0으로 부여
+            player.AddStatusEffect(themeData.passiveData, 1);  // 패시브는 보통 1스택으로 시작
         }
 
         skillBtnImg[0].sprite = themeData.skillList[0].icon;
@@ -75,145 +78,198 @@ public class ThemeManager : MonoBehaviour
         }
     }
 
-    // 걸작스킬 사용
-    public void ExecuteThemeSkill(ThemeSkillData skillData)
+    /// <summary>
+    /// 테마 스킬을 실행하는 범용 메서드
+    /// </summary>
+    public void CalculateSkillAbility(ThemeSkillData skillData)
     {
-        Debug.Log($"{themeSkill}테마 스킬 발동! 타겟:{targets}");
+        Debug.Log($"{skillData.skillName}테마 스킬 발동! 타겟:{targets}");
 
-        int addValue = 0;
-        foreach (var condition in skillData.conditions)
+        List<ActionInfo> actionInfos = new List<ActionInfo>();     // 유닛별 조건 충족 수치
+        List<ITurn> conditionTargets = new List<ITurn>();       // 조건별 적용 대상
+        int addValue = 0;       // 개별 적용값
+
+        // 조건 확인 코드
+        switch (skillData.conditionType)
         {
-            switch (condition.type)
-            {
-                // 플레이어 체력 소모
-                case EnhancementCondition.ConditionType.health:
-                    player 
-                    break;
+            // 조건 없음
+            case ConditionType.none:
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    actionInfos.Add(CalculateActionInfo(skillData, 0));     // 수치 저장
+                }
+                break;
+            // 조건 : 플레이어의 HP 감소
+            case ConditionType.playerHealth:
+                // 가능한 높은 중첩값 산정
+                addValue = Mathf.Min(
+                    player.GetStatus("HP") / skillData.condition_HP.valuePerApply,
+                    skillData.condition_HP.maxApplyCount
+                    );
+                // HP가 0이 되는 경우 방지 
+                if (player.GetStatus("HP") % skillData.condition_HP.valuePerApply <= 0)
+                {
+                    addValue--;
+                }
 
-                // 특정 물감 소모
-                case EnhancementCondition.ConditionType.paintR:
-                    break;
-                case EnhancementCondition.ConditionType.paintB:
-                    break;
-                case EnhancementCondition.ConditionType.paintY:
-                    break;
-                case EnhancementCondition.ConditionType.paintW:
-                    break;
+                if (addValue > 0)
+                {
+                    DamageInfo selfDamageInfo = new DamageInfo { amount = addValue * skillData.condition_HP.valuePerApply, isIgnoreShield = true };
+                    player.TakeDamage(selfDamageInfo, false);
+                }
 
-                // 특정 상태이상 혹은 패시브 소모
-                case EnhancementCondition.ConditionType.statusEffect:
-                    break;
-            }
-        }
-        if (skillData.conditions != )
-                int stack = passiveEffects.Find(e => e.nameEn == themeSkill.needPassiveName).stackCount;
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    actionInfos.Add(CalculateActionInfo(skillData, addValue));       // 수치 저장
+                }
+                break;
 
-        // 테마스킬 조건부 효과 확인
-        if (themeSkill.perNeed >= themeSkill.maxStack)
-        {
-            addValue = themeSkill.maxStack;
-            stack -= themeSkill.perNeed * themeSkill.maxStack;
-        }
-        else
-        {
-            addValue = stack / themeSkill.perNeed;
-            stack = stack % themeSkill.perNeed;
+            // 조건 : (플레이어 / 적)이 특정 상태이상을 n만큼 보유
+            case ConditionType.StatusEffect:
+                // 대상이 플레이어인지 적인지 판별
+                if (skillData.condition_Effect.isTargetEnemy)
+                {
+                    conditionTargets = targets;
+                    foreach (var target in conditionTargets)
+                    {
+                        addValue = Mathf.Min(
+                            target.GetStatusEffectStack(skillData.condition_Effect.statusEffectData) / skillData.condition_Effect.valuePerApply,
+                            skillData.condition_Effect.maxApplyCount);
+                        actionInfos.Add(CalculateActionInfo(skillData, addValue));
+                        if (skillData.condition_Effect.consumeStack && addValue > 0)
+                        {
+                            target.DecStatusEffect(skillData.condition_Effect.statusEffectData, addValue * skillData.condition_Effect.valuePerApply);
+                        }
+                    }
+                }
+                else
+                {
+                    addValue = Mathf.Min(
+                        player.GetStatusEffectStack(skillData.condition_Effect.statusEffectData) / skillData.condition_Effect.valuePerApply,
+                        skillData.condition_Effect.maxApplyCount);
+                    if (skillData.condition_Effect.consumeStack && addValue > 0)
+                    {
+                        player.DecStatusEffect(skillData.condition_Effect.statusEffectData, addValue * skillData.condition_Effect.valuePerApply);
+                    }
+                    for (int i = 0; i < targets.Count; i++)
+                    {
+                        actionInfos.Add(CalculateActionInfo(skillData, addValue));
+                    }
+                }
+                break;
+
+            // 조건 : (플레이어 / 적)이 특정 종류의 상태이상을 n만큼 보유
+            case ConditionType.StatusEffectType:
+                // 대상이 플레이어인지 적인지 판별
+                if (skillData.condition_EffectType.isTargetEnemy)
+                {
+                    conditionTargets = targets;
+                    foreach (var target in conditionTargets)
+                    {
+                        addValue = StatusEffectManager.GetEffectTypeStack(target, skillData.condition_EffectType.effectType);
+                        addValue = Mathf.Min(
+                            addValue / skillData.condition_EffectType.valuePerApply,
+                            skillData.condition_EffectType.maxApplyCount);
+                        actionInfos.Add(CalculateActionInfo(skillData, addValue));
+                    }
+                }
+                else
+                {
+                    addValue = StatusEffectManager.GetEffectTypeStack(player, skillData.condition_EffectType.effectType);
+                    addValue = Mathf.Min(
+                        addValue / skillData.condition_EffectType.valuePerApply,
+                        skillData.condition_EffectType.maxApplyCount);
+                    for (int i = 0; i < targets.Count; i++)
+                    {
+                        actionInfos.Add(CalculateActionInfo(skillData, addValue));
+                    }
+                }
+                break;
         }
 
         int count = 0;
+        isIgnoreShield = false;
 
         // 공격 type에 따른 분류    (targets는 turnManager로부터 받음)
-        switch (themeSkill.skillType)
+        switch (skillData.skillType)
         {
             // 단타 공격
             case PaintSkillData.SkillType.SingleAtk:
-                count = themeSkill.count + (addValue * themeSkill.perCount);
+                count = skillData.count + (addValue * skillData.perCount);
                 break;
             // 전체 공격
             case PaintSkillData.SkillType.SplashAtk:
-                count = themeSkill.count + (addValue * themeSkill.perCount);
+                count = skillData.count + (addValue * skillData.perCount);
                 break;
-            // 바운스 공격
+            // 바운스 공격 (바운스의 공격은 StatusEffect와 EffectType의 isTargetEnemy == True인 경우 정상적으로 발동 X)
             case PaintSkillData.SkillType.BounceAtk:
                 count = 1;
-                for (int i = 0; i < themeSkill.count + (addValue * themeSkill.perCount); i++)    // 타겟 재설정
+                ActionInfo bounceActionInfo;
+                if (actionInfos.Count > 0)
+                {
+                    bounceActionInfo = actionInfos[0];
+                }
+                else
+                {
+                    bounceActionInfo = CalculateActionInfo(skillData, addValue);
+                }
+
+                targets.Clear();
+                actionInfos.Clear();
+
+                int bounceCount = skillData.count + (addValue * skillData.perCount);
+                for (int i = 0; i < bounceCount; i++)    // 타겟 재설정
                 {
                     int randomNum = Random.Range(0, turnManager.enemies.Count);
                     targets.Add(turnManager.enemies[randomNum]);
+                    actionInfos.Add(bounceActionInfo);
                 }
                 break;
             // 자신 보조
             case PaintSkillData.SkillType.SingleSup:    // 자기자신 타겟 스킬
-                count = themeSkill.count + (addValue * themeSkill.perCount);
-                isTrueDamage = true;    // 자신 대상은 고정데미지
+                count = skillData.count + (addValue * skillData.perCount);
+                isIgnoreShield = true;    // 자신 대상은 고정데미지
                 break;
 
             // 전체 아군 보조
             case PaintSkillData.SkillType.SplashSup:
-                count = themeSkill.count + (addValue * themeSkill.perCount);
-                isTrueDamage = true;    // 아군 대상은 고정데미지
+                count = skillData.count + (addValue * skillData.perCount);
+                isIgnoreShield = true;    // 아군 대상은 고정데미지
                 break;
         }
 
-        // 테마스킬의 기본 스탯 연산
-        int damage = themeSkill.damage + (themeSkill.perDamage * addValue);
-        int shield = themeSkill.shield + (themeSkill.perShield * addValue);
-        int heal = themeSkill.heal + (themeSkill.perHeal * addValue);
-        int[] effect = new int[themeSkill.effect.Length];
-        for (int i = 0; i < themeSkill.effect.Length; i++)
+        // 공격 / 상태이상 부여
+        for (int i = 0; i < count; i++)   // 타수만큼 반복
         {
-            effect[i] = themeSkill.effect[i] + (themeSkill.perEffect[i] * addValue);
-        }
-        
-        // 데미지 연산
-        GameManager.instance.player.DealDamage(damageInfo, count, shield, heal, currentSkill.effectDatas, effects);
-
-        // 데미지 연산
-        for (int c = 0; c < targets.Count; c++)
-        {
-            for (int i = 0; i < count; i++)   // 타수만큼 반복
+            for (int a = 0; a < targets.Count; a++)     // 모든 타겟 공격
             {
-                // 데미지
-                if (damage > 0)    // 기본 데미지가 0일 시 스킵
-                {
-                    if (!isTrueDamage)
-                    {
-                        damage += targets[c].GetStatusEffect("Burn");   // 화상 데미지
-                    }
-                    targets[c].TakeDamage(damage, false);      // 공격
-                    Debug.Log($"{targets[c]}은 {damage} 의 데미지를 입었다.");
-                }
-
-                // 회복량
-                if (heal > 0)
-                {
-                    targets[c].TakeHeal(heal);
-                    Debug.Log($"{targets[c]}은 {heal} 만큼 체력을 회복했다.");
-                }
-
-                // 패시브 부여
-                for (int n = 0; n < themeSkill.effectType.Length; n++)
-                {
-                    if (passiveEffects.Exists(e => e.nameEn == themeSkill.effectType[n]))
-                    {
-                        CalculatePassiveEffect(themeSkill.effectType[n], effect[n]);
-                        Debug.Log($"플레이어는 {themeSkill.effectType[n]}을/를 {effect[n]}만큼 얻었다.");
-                    }
-                }
-
-                // 상태이상 부여
-                for (int n = 0; n < themeSkill.effectType.Length; n++)
-                {
-                    if (targets[c].GetStatusEffect(themeSkill.effectType[n]) > 0)
-                    {
-                        targets[c].AddStatusEffect(themeSkill.effectType[n], effect[n]);
-                        Debug.Log($"{targets[c]}은 {themeSkill.effectType[n]}을 {effect[n]}만큼 받았다.");
-                    }
-                }
+                // 전투 로직
+                BattleLogic.ActionLogic(player, targets[a], actionInfos[a]);
             }
         }
-
         // 유물 : 걸작 사용 시 효과
         //GameManager.instance._ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.UseMP);
+    }
+
+    private ActionInfo CalculateActionInfo(ThemeSkillData skillData, int addValue)
+    {
+        DamageInfo damageInfo = new DamageInfo { amount = skillData.damage + (skillData.perDamage * addValue), isIgnoreShield = false };
+        int shield = skillData.shield + (skillData.perShield * addValue);
+        int heal = skillData.heal + (skillData.perHeal * addValue);
+        List<int> effects = new List<int>();
+        for (int e = 0; e < skillData.effects.Count; e++)
+        {
+            effects.Add(skillData.effects[e] + (skillData.perEffect[e] * addValue));
+        }
+        StatusEffectInfo statusEffectInfo = new StatusEffectInfo { effectDatas = skillData.effectDatas, effects = effects };
+        
+        ActionInfo actionInfo = new ActionInfo { 
+            damageInfo = damageInfo,
+            statusEffectInfo = statusEffectInfo,
+            heal = heal,
+            shield = shield
+        };
+
+        return actionInfo;
     }
 }

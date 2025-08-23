@@ -2,17 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 데미지 정보를 담을 구조체 (확장성을 위해)
-public struct DamageInfo
-{
-    public int amount;
-    public bool isIgnoreShield;
-    // public DamageType type; // 화염, 냉기 등 추가 가능
-}
-
 // 모든 상태이상 로직 클래스가 따라야 할 규격
 public abstract class StatusEffectLogic
 {
+    // 다른 대상에게 상태이상을 부여했을 때 호출됩니다.
+    public virtual void OnGiveStatusEffect(ITurn giver, ITurn receiver, StatusEffectData givenEffectData, StatusEffect effectInstance) { }
+
     // 효과가 처음 적용될 때 호출
     public virtual void OnApply(ITurn owner) { }
 
@@ -76,8 +71,8 @@ public class Bleed_Logic : StatusEffectLogic
     public override void OnTurnEnd(ITurn owner, StatusEffect effectInstance)
     {
         // (중첩 수) 만큼 피해
-        var damage = new DamageInfo { amount = effectInstance.stackCount, isIgnoreShield = false };
-        owner.TakeDamage(damage.amount, damage.isIgnoreShield);
+        DamageInfo damage = new DamageInfo { amount = effectInstance.stackCount, isIgnoreShield = false };
+        owner.TakeDamage(damage, false);
         Debug.Log($"{owner}가 출혈 효과로 {damage.amount}의 피해를 입었습니다.");
     }
 

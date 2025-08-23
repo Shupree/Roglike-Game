@@ -83,7 +83,7 @@ public class PaintManager : MonoBehaviour
             {
                 player.currentSkill = player.storageManager.GetSkillData(paintSc.colorType);   // 스킬 정보 가져오기
                 Debug.Log(player.currentSkill.name);
-                turnManager.SetTarget(player.currentSkill.skillType);
+                player.SetTarget(player.currentSkill.skillType, player.currentSkill.count);
 
                 SetSkillImg(player.currentSkill.icon);         // 메인 스킬 이미지 변경
             }

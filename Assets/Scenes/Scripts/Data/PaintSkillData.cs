@@ -25,8 +25,8 @@ public class PaintSkillData : ScriptableObject
     public int count;   // 타수
     public int shield;  // 기본 보호막 양
     public int heal;    // 기본 회복량
-    public StatusEffectData[] effectDatas;    // 효과 분류
-    public int[] effects;        // 효과 수치    (순수 효과 수치)
+    public List<StatusEffectData> effectDatas;    // 효과 분류
+    public List<int> effects;        // 효과 수치    (순수 효과 수치)
 
     /*
     [Header("# Condition Info")]
@@ -41,5 +41,5 @@ public class PaintSkillData : ScriptableObject
     public int perCount;        // 조건당 타수      (기본값 = 0)
     public int perShield;       // 조건당 보호막 양     (기본값 = 0)
     public int perHeal;         // 조건당 회복량        (기본값 = 0)
-    public int[] perEffect;     // 조건당 효과 수치     (기본값 = 0)
+    public List<int> perEffect;     // 조건당 효과 수치     (기본값 = 0)
 }

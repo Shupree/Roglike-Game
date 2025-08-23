@@ -55,6 +55,21 @@ public class StatusEffectManager : MonoBehaviour
         }
     }
 
+    // 대상이 지닌 특정 종류의 모든 상태이상의 중첩 수의 합 반환
+    public static int GetEffectTypeStack(ITurn unit, StatusEffectData.EffectType effectType)
+    {
+        // 대상의 상태이상 정보 복사
+        List<StatusEffect> statusEffects = unit.statusEffects.FindAll(e => e.data.effectType == effectType);
+        int result = 0;
+
+        // 상태이상 수치 저장
+        foreach (var statusEffect in statusEffects)
+        { 
+            result += statusEffect.stackCount;
+        }
+        return result;
+    }
+
     /* 모든 유닛의 지속시간 확인
     void DecAllDuration()
     {

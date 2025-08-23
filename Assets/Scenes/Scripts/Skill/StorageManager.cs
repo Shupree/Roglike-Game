@@ -45,11 +45,6 @@ public class StorageManager : MonoBehaviour
         {
             artifactSlotArr[i] = UIObject.transform.GetChild(1).GetChild(i).gameObject;
         }
-        MPSlotArr = UIObject.transform.GetChild(2).GetChild(0).gameObject;
-        for (int i = 0; i < 2; i++) 
-        {
-            themeSkillSlotArr[i] = UIObject.transform.GetChild(2).GetChild(1).GetChild(i).gameObject;
-        }
         */
 
         // 테스트용 임시 스킬

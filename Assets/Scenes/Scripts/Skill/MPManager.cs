@@ -79,21 +79,25 @@ public class MPManager : MonoBehaviour
 
             case MasterPieceData.ConditionType.Health:
                 addValue = turnManager.allies[0].GetStatus("HP") / MPData.perNeed;     // 중첩 값 연산
+                // HP가 0이 되는 경우 방지 
                 if (turnManager.allies[0].GetStatus("HP") % MPData.perNeed <= 0)
                 {
-                    addValue--;     // HP가 0이 되는 경우 방지
+                    addValue--;
                 }
-
+                // 상한치를 넘는 경우 방지
                 if (addValue > MPData.maxStack)
                 {
-                    addValue = MPData.maxStack;     // 상한치를 넘는 경우 방지
+                    addValue = MPData.maxStack;
                 }
+                // HP가 부족하다면 사용 불가능
                 else if (addValue <= 0)
                 {
                     Debug.Log("걸작 사용에 사용할 HP가 부족합니다!");
-                    return false;                             // HP가 부족하다면 사용 불가능
+                    return false;
                 }
-                turnManager.allies[0].TakeDamage(MPData.perNeed * addValue, true);      // 필요 수치만큼 플레이어 HP 감소 (allies[0] = player)
+
+                DamageInfo damageInfo = new DamageInfo { amount = MPData.perNeed * addValue, isIgnoreShield = true};
+                turnManager.allies[0].TakeDamage(damageInfo, false);      // 필요 수치만큼 플레이어 HP 감소 (allies[0] = player)
                 ClearStack();
                 break;
 
@@ -193,10 +197,10 @@ public class MPManager : MonoBehaviour
         damageInfo.amount += MPData.damage + (MPData.perDamage * addValue);
         int shield = MPData.shield + (MPData.perShield * addValue);
         int heal = MPData.heal + (MPData.perHeal * addValue);
-        int[] effect = new int[MPData.effect.Length];
-        for (int i = 0; i < MPData.effect.Length; i++)
+        List<int> effect = new List<int>();
+        for (int i = 0; i < MPData.effect.Count; i++)
         {
-            effect[i] = MPData.effect[i] + (MPData.perEffect[i] * addValue);
+            effect.Add(MPData.effect[i] + (MPData.perEffect[i] * addValue));
         }
 
         // 데미지 연산
@@ -212,7 +216,7 @@ public class MPManager : MonoBehaviour
                     List<StatusEffect> effectsToProcess = new List<StatusEffect>(GameManager.instance.player.statusEffects);
                     effectsToProcess.ForEach(effect => effect.logic.OnAttack(GameManager.instance.player, targets[c], effect, ref damageInfo));
 
-                    targets[c].TakeDamage(damageInfo.amount, damageInfo.isIgnoreShield);      // 공격
+                    targets[c].TakeDamage(damageInfo, true);      // 공격
                     Debug.Log($"{targets[c]}은 {damageInfo.amount} 의 데미지를 입었다.");
                 }
 
@@ -224,7 +228,7 @@ public class MPManager : MonoBehaviour
                 }
 
                 // 상태이상 부여
-                for (int n = 0; n < MPData.effectData.Length; n++)
+                for (int n = 0; n < MPData.effectData.Count; n++)
                 {
                     targets[c].AddStatusEffect(MPData.effectData[n], effect[n]);
                     Debug.Log($"{targets[c]}은 {MPData.effectData[n].effectName}을 {effect[n]}만큼 받았다.");

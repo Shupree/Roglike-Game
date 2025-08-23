@@ -35,15 +35,15 @@ public class GetObject : MonoBehaviour
                             player.currentSkill.skillType == PaintSkillData.SkillType.SingleAtk &&
                             turnManager.GetState() == TurnManager.State.playerAct)      // 단일 스킬일 경우
                         {
-                            turnManager.targets.Clear();
-                            turnManager.targets.Add(hit.collider.gameObject.GetComponent<Enemy>());      // 타겟팅
+                            player.targets.Clear();
+                            player.targets.Add(hit.collider.gameObject.GetComponent<Enemy>());      // 타겟팅
                         }
                         else if (storageManager._MPManager.GetMPData() != null &&
                                 storageManager._MPManager.GetMPData().skillType == PaintSkillData.SkillType.SingleAtk &&
                                 turnManager.GetState() == TurnManager.State.useMP)      // 걸작 스킬이 단일 스킬일 경우
                         { 
-                            turnManager.targets.Clear();
-                            turnManager.targets.Add(hit.collider.gameObject.GetComponent<Enemy>());      // 타겟팅
+                            player.targets.Clear();
+                            player.targets.Add(hit.collider.gameObject.GetComponent<Enemy>());      // 타겟팅
                         }
                         break;
                     case "Chest":

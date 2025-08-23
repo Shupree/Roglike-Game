@@ -98,7 +98,7 @@ public class Player : MonoBehaviour, ITurn
     }
 
     // 상태이상 값 확인
-    public int GetStatusEffect(StatusEffectData effectData)
+    public int GetStatusEffectStack(StatusEffectData effectData)
     {
         if (statusEffects.Exists(e => e.data == effectData))
         {      // 버프/디버프 존재 시
@@ -110,10 +110,40 @@ public class Player : MonoBehaviour, ITurn
         }
     }
 
+    // 타겟팅 설정
+    public void SetTarget(PaintSkillData.SkillType skillType, int count)
+    {
+        switch (skillType)
+        {
+            case PaintSkillData.SkillType.SingleAtk:
+                targets.Add(turnManager.enemies[0]);
+                break;
+            case PaintSkillData.SkillType.SplashAtk:
+                targets = new List<ITurn>(turnManager.enemies);
+                break;
+            case PaintSkillData.SkillType.BounceAtk:
+                // 랜덤 적 타겟팅
+                targets.Clear();
+                for (int i = 0; i < count; i++)
+                {
+                    int randomNum = Random.Range(0, turnManager.enemies.Count);
+                    targets.Add(turnManager.enemies[randomNum]);
+                }
+                break;
+            case PaintSkillData.SkillType.SingleSup:
+                targets.Add(turnManager.player);
+                break;
+            case PaintSkillData.SkillType.SplashSup:
+                targets = new List<ITurn>(turnManager.allies);
+                break;
+        }
+    }
+
     // 스킬 발동 로직
     public void ExecutePaintSkill(int subPaint)
     {
         DamageInfo damageInfo = new DamageInfo { amount = 0, isIgnoreShield = false };  // 데미지 정보 저장
+        StatusEffectInfo statusEffectInfo = new StatusEffectInfo { effectDatas = currentSkill.effectDatas, effects = new List<int>()};
         int count = 0;              // 스킬 타수
 
         // 공격 type에 따른 분류    (targets는 turnManager로부터 받음)
@@ -145,52 +175,26 @@ public class Player : MonoBehaviour, ITurn
         }
 
         // 일반스킬의 기본 스탯 연산
-        damageInfo.amount = currentSkill.damage + (currentSkill.perDamage * subPaint);
-        int shield = currentSkill.shield + (currentSkill.perShield * subPaint);
-        int heal = currentSkill.heal + (currentSkill.perHeal * subPaint);
-        int[] effects = new int[currentSkill.perEffect.Length];
-        for (int i = 0; i < currentSkill.perEffect.Length; i++)
+        damageInfo.amount = currentSkill.damage + (currentSkill.perDamage * subPaint);  // 데미지 연산
+        for (int i = 0; i < currentSkill.perEffect.Count; i++)                          // 상태이상 연산
         {
-            effects[i] = currentSkill.perEffect[i] + (currentSkill.perEffect[i] * subPaint);
+            statusEffectInfo.effects.Add(currentSkill.effects[i] + (currentSkill.perEffect[i] * subPaint));
         }
 
-        // 데미지 연산
-        DealDamage(damageInfo, count, shield, heal, currentSkill.effectDatas, effects);
-    }
+        // 스킬 스탯 집합
+        ActionInfo actionInfo = new ActionInfo {
+            damageInfo = damageInfo,
+            heal = currentSkill.heal + (currentSkill.perHeal * subPaint),
+            shield = currentSkill.shield + (currentSkill.perShield * subPaint),
+            statusEffectInfo = statusEffectInfo
+        };
 
-    // 공격 : 데미지 연산
-    public void DealDamage(DamageInfo damageInfo, int count, int shield, int heal, StatusEffectData[] effectDatas, int[] effects)
-    {
-        for (int c = 0; c < targets.Count; c++)
+        // 공격 / 상태이상 부여
+        for (int i = 0; i < count; i++)   // 타수만큼 반복
         {
-            for (int i = 0; i < count; i++)   // 타수만큼 반복
+            foreach (var target in targets)     // 모든 타겟 공격
             {
-                ITurn currentTarget = targets[c];
-                if (currentTarget == null) continue;    // 적 제거 시 스킬 이펙트만 보여줄 것!
-
-                if (damageInfo.amount > 0)    // 기본 데미지가 0일 시 스킵
-                {
-                    // OnAttack 로직 호출 (데미지 계산 전)
-                    // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
-                    List<StatusEffect> effectsToProcess = new List<StatusEffect>(statusEffects);
-                    effectsToProcess.ForEach(effect => effect.logic.OnAttack(this, currentTarget, effect, ref damageInfo));
-
-                    currentTarget.TakeDamage(damageInfo.amount, damageInfo.isIgnoreShield);       // 공격
-                }
-
-                if (heal > 0)
-                {
-                    currentTarget.TakeHeal(heal);        // 회복
-                }
-
-                // 적 상태이상 부여
-                if (effects.Length > 0)
-                {
-                    for (int e = 0; e < effects.Length; e++)
-                    {
-                        currentTarget.AddStatusEffect(effectDatas[e], effects[e]);
-                    }
-                }
+                BattleLogic.ActionLogic(this, target, actionInfo);
             }
         }
 
@@ -199,39 +203,40 @@ public class Player : MonoBehaviour, ITurn
     }
 
     // 피격 시 데미지 연산
-    public void TakeDamage(int damage, bool isIgnoreShield)
+    public void TakeDamage(DamageInfo damageInfo, bool onBeingHit)
     {
-        DamageInfo damageInfo = new DamageInfo { amount = damage, isIgnoreShield = isIgnoreShield };
-
-        // OnBeingHit 로직 호출 (데미지 계산 전)
-        // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
-        List<StatusEffect> effectsToProcess = new List<StatusEffect>(statusEffects);
-        effectsToProcess.ForEach(effect => effect.logic.OnBeingHit(this, effect, ref damageInfo));
+        if (onBeingHit)
+        {
+            // OnBeingHit 로직 호출 (데미지 계산 전)
+            // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
+            List<StatusEffect> effectsToProcess = new List<StatusEffect>(statusEffects);
+            effectsToProcess.ForEach(effect => effect.logic.OnBeingHit(this, effect, ref damageInfo));
+        }
 
         // 실제 데미지 적용
-        if (damageInfo.isIgnoreShield)
-        {
-            health -= damageInfo.amount;
-            if (health < 0)
+            if (damageInfo.isIgnoreShield)
             {
-                health = 0;
-                GameManager.instance.turnManager.CheckBattleEndConditions();
-            }
-        }
-        else
-        {
-            if (shield > damageInfo.amount)
-            {
-                shield -= damageInfo.amount;
+                health -= damageInfo.amount;
+                if (health < 0)
+                {
+                    health = 0;
+                    GameManager.instance.turnManager.CheckBattleEndConditions();
+                }
             }
             else
             {
-                damageInfo.amount -= shield;
-                shield = 0;
-                health -= damageInfo.amount;
-                if (health < 0) health = 0;
+                if (shield > damageInfo.amount)
+                {
+                    shield -= damageInfo.amount;
+                }
+                else
+                {
+                    damageInfo.amount -= shield;
+                    shield = 0;
+                    health -= damageInfo.amount;
+                    if (health < 0) health = 0;
+                }
             }
-        }
 
         hud.UpdateHUD();        // HUD의 HP 변화
         Debug.Log($"플레이어가 {damageInfo.amount} 데미지를 받았습니다! 남은 체력: {health}");
@@ -298,14 +303,6 @@ public class Player : MonoBehaviour, ITurn
 
             Debug.Log($"{statusEffect.data.effectName}이(가) 새로 추가되었습니다.");
         }
-
-        /* '변환'타입의 상태이상 적용
-        if (statusEffect.effectInfo == EffectInfo.convert && statusEffect.stackCount <= statusEffect.needStack)
-        {
-            AddStatusEffect(statusEffect.efffectDetail, 1);
-            DecStatusEffect(effectName, statusEffect.needStack);    // 필요 중첩 수만큼 제거
-        }
-        */
 
         statusEffectUI.UpdateStatusEffect(statusEffects);    // 상태이상UI 업데이트
     }

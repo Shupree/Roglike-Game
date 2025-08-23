@@ -12,8 +12,9 @@ public interface ITurn
     bool IsDead();      // 사망여부 확인
 
     int GetStatus(string status);   // 스테이터스 값 가져오기 (HP, MaxHP, Shield)
-    int GetStatusEffect(StatusEffectData effectData); // 상태이상 값 가져오기 (Burn, Poison, Freezen ...)
-    void TakeDamage(int damage, bool isIgnoreShield);     // 데미지를 받는 메서드
+    int GetStatusEffectStack(StatusEffectData effectData); // 상태이상 데이터 가져오기 (Burn, Poison, Freezen ...)
+
+    void TakeDamage(DamageInfo damageInfo, bool onBeingHit);     // 데미지를 받는 메서드
     void TakeHeal(int heal);                            // 회복 연산 메서드
     void TakeShield(int shield);                        // 실드 연산 메서드
     void AddStatusEffect(StatusEffectData effectData, int stack);     // 상태이상을 추가하는 메서드
@@ -44,9 +45,6 @@ public class TurnManager : MonoBehaviour
     private StorageManager storageManager;      // 스토리지 매니저
 
     private int canvas;     // 캔버스 수 (사용가능한 스킬 수)
-
-    [Header("Target")]
-    public List<ITurn> targets = new List<ITurn>();
 
     [Header("Figure")]
     private int totalTurns = 0;     // 경과한 턴 수
@@ -146,7 +144,7 @@ public class TurnManager : MonoBehaviour
 
         // 플레이어 빙결 효과  (플레이어 턴 스킵)
         StatusEffectData frozenEffect = GameManager.instance.statusEffectManager.GetStatusEffectData("Frozen"); // 예시: 스토리지에서 데이터 가져오기
-        if (player.GetStatusEffect(frozenEffect) > 0)
+        if (player.GetStatusEffectStack(frozenEffect) > 0)
         {
             Debug.Log("플레이어 빙결!!");
             player.DecStatusEffect(frozenEffect, 1);
@@ -215,7 +213,7 @@ public class TurnManager : MonoBehaviour
     // 지우기 버튼
     public void ClickEraseBtn()
     {
-        targets.Clear();
+        player.targets.Clear();
 
         for (int i = 0; i < 4; i++)
         {
@@ -245,7 +243,7 @@ public class TurnManager : MonoBehaviour
             paintManager.canUsePaint = false;
 
             // 공격 단계로
-            StartCoroutine(PlayerTurn());
+            StartCoroutine(PlayerAttack());
         }
         else if (state == State.useMP)
         {
@@ -271,7 +269,7 @@ public class TurnManager : MonoBehaviour
         paintManager.canUsePaint = false;               // 물감 & 걸작스킬 & 테마스킬 기능 On
 
         paintManager.SetSkillImg(storageManager._MPManager.GetMPData().icon);
-        SetTarget(storageManager._MPManager.GetMPData().skillType);     // 타겟팅 설정
+        player.SetTarget(storageManager._MPManager.GetMPData().skillType, storageManager._MPManager.GetMPData().count);     // 타겟팅 설정
     }
 
     // 테마스킬 버튼
@@ -289,7 +287,7 @@ public class TurnManager : MonoBehaviour
         player.themeSkill = themeSkill;                 // 사용 중인 스킬 변경
 
         paintManager.SetSkillImg(themeSkill.icon);      // 스킬 아이콘 변경
-        SetTarget(themeSkill.skillType);                // 타겟팅 설정
+        player.SetTarget(themeSkill.skillType, themeSkill.count);                // 타겟팅 설정
 
         // 테마스킬이 요구하는 페인트 추가
         foreach (PaintManager.ColorType colorType in themeSkill.colorTypeList)
@@ -302,10 +300,10 @@ public class TurnManager : MonoBehaviour
     private IEnumerator ExecuteMasterPiece()
     {
         // 걸작 스킬 사용
-        storageManager._MPManager.targets = targets;
+        storageManager._MPManager.targets = player.targets;
         storageManager._MPManager.ExecuteMPSkill();
 
-        targets.Clear();
+        player.targets.Clear();
 
         yield return null;
 
@@ -316,43 +314,19 @@ public class TurnManager : MonoBehaviour
     }
 
     // 플레이어의 공격 진행
-    private IEnumerator PlayerTurn()
+    private IEnumerator PlayerAttack()
     {
         // 테마 스킬 사용 시
         if (player.themeSkill != null)
         {
-            if (player.themeSkill.skillType == PaintSkillData.SkillType.BounceAtk)
-            {
-                // 랜덤 적 타겟팅
-                targets.Clear();
-                for (int i = 0; i < player.currentSkill.count; i++)
-                {
-                    int randomNum = Random.Range(0, enemies.Count);
-                    targets.Add(enemies[randomNum]);
-                }
-            }
-            storageManager.themeManager.targets = targets;      // 타겟 넘기기
+            storageManager.themeManager.targets = player.targets;      // 타겟 넘기기
+            storageManager.themeManager.CalculateSkillAbility(player.themeSkill);    // 테마 스킬 발동
 
-            storageManager.themeManager.ExecuteThemeSkill(player.themeSkill);    // 테마 스킬 발동
-
-            player.themeSkill = null;
+            player.themeSkill = null;   // 초기화
         }
         // 일반 스킬 사용 시
         else
         {
-            // 플레이어가 바운스 공격 시 타겟팅 설정
-            if (player.currentSkill.skillType == PaintSkillData.SkillType.BounceAtk)
-            {
-                // 랜덤 적 타겟팅
-                targets.Clear();
-                for (int i = 0; i < player.currentSkill.count; i++)
-                {
-                    int randomNum = Random.Range(0, enemies.Count);
-                    targets.Add(enemies[randomNum]);
-                }
-            }
-            player.targets = targets;     // 플레이어에게 타겟 넘기기
-
             player.ExecutePaintSkill(paintManager.paletteOrder);      // 플레이어 스킬 발동
         }
 
@@ -370,7 +344,7 @@ public class TurnManager : MonoBehaviour
 
         paintManager.ClearPaint();      // 페인트 & 팔레트 초기화
 
-        targets.Clear();                // 타겟팅 초기화
+        player.targets.Clear();                // 타겟팅 초기화
 
         StartCoroutine(AllyTurn());
     }
@@ -428,7 +402,7 @@ public class TurnManager : MonoBehaviour
 
             // 빙결 시 턴 스킵
             StatusEffectData frozenEffect = GameManager.instance.statusEffectManager.GetStatusEffectData("Frozen");
-            if (participant.GetStatusEffect(frozenEffect) > 0)
+            if (participant.GetStatusEffectStack(frozenEffect) > 0)
             {
                 Debug.Log("빙결 상태로 인해 턴을 스킵합니다.");
                 participant.DecStatusEffect(frozenEffect, 1);
@@ -465,29 +439,6 @@ public class TurnManager : MonoBehaviour
         else
         {
             Debug.LogError("알 수 없는 유닛입니다!");
-        }
-    }
-
-    // 기본적인 타겟팅 설정
-    public void SetTarget(PaintSkillData.SkillType skillType)
-    {
-        switch (skillType)
-        {
-            case PaintSkillData.SkillType.SingleAtk:
-                targets.Add(enemies[0]);
-                break;
-            case PaintSkillData.SkillType.SplashAtk:
-                targets = new List<ITurn>(enemies);
-                break;
-            case PaintSkillData.SkillType.BounceAtk:
-                targets = new List<ITurn>(enemies);
-                break;
-            case PaintSkillData.SkillType.SingleSup:
-                targets.Add(player);
-                break;
-            case PaintSkillData.SkillType.SplashSup:
-                targets = new List<ITurn>(allies);
-                break;
         }
     }
 
