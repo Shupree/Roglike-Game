@@ -12,7 +12,7 @@ public abstract class CollectionAction : CollectionComponent
 }
 
 // DealDamageToRandomEnemyAction.cs
-public class DealDamageToRandomEnemyAction : CollectionAction, IValueProvider
+/*public class DealDamageToRandomEnemyAction : CollectionAction, IValueProvider
 {
     public int damage;
     public override void Execute(EffectContext context)
@@ -25,6 +25,6 @@ public class DealDamageToRandomEnemyAction : CollectionAction, IValueProvider
     public override string GetDescription() => $"무작위 적에게 {damage}의 피해";
     public void AddValues(Dictionary<string, string> values) => values["damage"] = damage.ToString();
 }
-
+*/
 // ... ApplyStatusToAllEnemiesAction, DealDamageToTargetAction 등도 유사하게 구현 ...
 

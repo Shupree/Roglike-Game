@@ -6,25 +6,25 @@ using UnityEngine;
 public abstract class StatusEffectLogic
 {
     // 다른 대상에게 상태이상을 부여했을 때 호출됩니다.
-    public virtual void OnGiveStatusEffect(ITurn giver, ITurn receiver, StatusEffectData givenEffectData, StatusEffect effectInstance) { }
+    public virtual void OnGiveStatusEffect(IUnit giver, IUnit receiver, StatusEffectData givenEffectData, StatusEffect effectInstance) { }
 
     // 효과가 처음 적용될 때 호출
-    public virtual void OnApply(ITurn owner) { }
+    public virtual void OnApply(IUnit owner) { }
 
     // 효과가 제거될 때 호출
-    public virtual void OnRemove(ITurn owner) { }
+    public virtual void OnRemove(IUnit owner) { }
 
     // 소유자의 턴이 시작될 때 호출
-    public virtual void OnTurnStart(ITurn owner, StatusEffect effectInstance) { }
+    public virtual void OnTurnStart(IUnit owner, StatusEffect effectInstance) { }
     
     // 소유자의 턴이 끝날 때 호출
-    public virtual void OnTurnEnd(ITurn owner, StatusEffect effectInstance) { }
+    public virtual void OnTurnEnd(IUnit owner, StatusEffect effectInstance) { }
 
     // 소유자가 공격받을 때 호출 (데미지 계산 전)
-    public virtual void OnBeingHit(ITurn owner, StatusEffect effectInstance, ref DamageInfo damage) { }
+    public virtual void OnBeingHit(IUnit owner, StatusEffect effectInstance, ref DamageInfo damage) { }
 
     // 소유자가 공격할 때 호출
-    public virtual void OnAttack(ITurn owner, ITurn target, StatusEffect effectInstance, ref DamageInfo damage) { }
+    public virtual void OnAttack(IUnit owner, IUnit target, StatusEffect effectInstance, ref DamageInfo damage) { }
 }
 
 // ----- 버프계열 로직 -----
@@ -33,7 +33,7 @@ public abstract class StatusEffectLogic
 public class Block_Logic : StatusEffectLogic
 {
     // 피격 시
-    public override void OnBeingHit(ITurn owner, StatusEffect effectInstance, ref DamageInfo damage)
+    public override void OnBeingHit(IUnit owner, StatusEffect effectInstance, ref DamageInfo damage)
     {
         if (damage.amount > 0)
         {
@@ -48,7 +48,7 @@ public class Block_Logic : StatusEffectLogic
 public class Concentration_Logic : StatusEffectLogic
 {
     // 공격 시
-    public override void OnAttack(ITurn owner, ITurn target, StatusEffect effectInstance, ref DamageInfo damage)
+    public override void OnAttack(IUnit owner, IUnit target, StatusEffect effectInstance, ref DamageInfo damage)
     {
         if (damage.amount >= 0)
         {
@@ -68,7 +68,7 @@ public class Concentration_Logic : StatusEffectLogic
 public class Bleed_Logic : StatusEffectLogic
 {
     // 턴 종료 시
-    public override void OnTurnEnd(ITurn owner, StatusEffect effectInstance)
+    public override void OnTurnEnd(IUnit owner, StatusEffect effectInstance)
     {
         // (중첩 수) 만큼 피해
         DamageInfo damage = new DamageInfo { amount = effectInstance.stackCount, isIgnoreShield = false };
@@ -77,7 +77,7 @@ public class Bleed_Logic : StatusEffectLogic
     }
 
     // 피격 시
-    public override void OnBeingHit(ITurn owner, StatusEffect effectInstance, ref DamageInfo damage)
+    public override void OnBeingHit(IUnit owner, StatusEffect effectInstance, ref DamageInfo damage)
     {
         if (damage.amount > 0) // 데미지가 0 이상일 때만 발동
         {
@@ -98,7 +98,7 @@ public class Bleed_Logic : StatusEffectLogic
 public class Weak_Logic : StatusEffectLogic
 {
     // 공격 시
-    public override void OnAttack(ITurn owner, ITurn target, StatusEffect effectInstance, ref DamageInfo damage)
+    public override void OnAttack(IUnit owner, IUnit target, StatusEffect effectInstance, ref DamageInfo damage)
     {
         if (damage.amount > 0)
         {
@@ -110,7 +110,7 @@ public class Weak_Logic : StatusEffectLogic
     }
 
     // 턴 종료 시
-    public override void OnTurnEnd(ITurn owner, StatusEffect effectInstance)
+    public override void OnTurnEnd(IUnit owner, StatusEffect effectInstance)
     {
         // 중첩 수 1 감소
         owner.DecStatusEffect(effectInstance.data, 1);

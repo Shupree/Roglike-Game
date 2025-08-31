@@ -7,10 +7,10 @@ using UnityEngine;
 /// </summary>
 public class EffectContext
 {
-    public GameObject Owner { get; } // 효과를 소유한 캐릭터 (주로 플레이어)
+    public IUnit Owner { get; }    // 효과를 소유한 유닛 (주로 플레이어)
     public Dictionary<string, object> Data { get; } = new Dictionary<string, object>(); // 이벤트 관련 추가 데이터
 
-    public EffectContext(GameObject owner)
+    public EffectContext(IUnit owner)
     {
         Owner = owner;
     }

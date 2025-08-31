@@ -11,7 +11,7 @@ public class Gardening_Logic : StatusEffectLogic
     // giver: 효과를 부여하는 주체 (플레이어)
     // receiver: 효과를 받는 대상 (적)
     // givenEffectData: 부여되는 효과의 데이터
-    public override void OnGiveStatusEffect(ITurn giver, ITurn receiver, StatusEffectData givenEffectData, StatusEffect effectInstance)
+    public override void OnGiveStatusEffect(IUnit giver, IUnit receiver, StatusEffectData givenEffectData, StatusEffect effectInstance)
     {
         // 플레이어가 적에게 CC기를 부여하는 경우에만 발동
         if (giver is Player && receiver is Enemy && givenEffectData.effectType == StatusEffectData.EffectType.CC)
@@ -33,7 +33,7 @@ public class Gardening_Logic : StatusEffectLogic
 // 패시브 : 기생 씨앗
 public class ParasiticSeed_Logic : StatusEffectLogic
 {
-    public override void OnTurnStart(ITurn owner, StatusEffect effectInstance)
+    public override void OnTurnStart(IUnit owner, StatusEffect effectInstance)
     {
         if (effectInstance.stackCount > 0)
         {
@@ -46,7 +46,7 @@ public class ParasiticSeed_Logic : StatusEffectLogic
 // 패시브 : 피안화 만개
 public class Lycoris_Logic : StatusEffectLogic
 {
-    private void TriggerEffect(ITurn owner, StatusEffect effectInstance)
+    private void TriggerEffect(IUnit owner, StatusEffect effectInstance)
     {
         if (effectInstance.stackCount > 0)
         {
@@ -63,13 +63,13 @@ public class Lycoris_Logic : StatusEffectLogic
     }
 
     // 이 효과를 가진 유닛이 공격할 때
-    public override void OnAttack(ITurn owner, ITurn target, StatusEffect effectInstance, ref DamageInfo damage)
+    public override void OnAttack(IUnit owner, IUnit target, StatusEffect effectInstance, ref DamageInfo damage)
     {
         TriggerEffect(owner, effectInstance);
     }
 
     // 이 효과를 가진 유닛이 공격받을 때
-    public override void OnBeingHit(ITurn owner, StatusEffect effectInstance, ref DamageInfo damage)
+    public override void OnBeingHit(IUnit owner, StatusEffect effectInstance, ref DamageInfo damage)
     {
         TriggerEffect(owner, effectInstance);
     }

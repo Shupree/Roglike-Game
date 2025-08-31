@@ -9,13 +9,13 @@ public class StatusEffectManager : MonoBehaviour
     // 이벤트 구독
     void OnEnable()
     {
-        BattleEventRouter.OnTurnStarted += DecDurationOfUnits;
+        BattleEventManager.OnTurnStart += DecDurationOfUnits;
     }
 
     // 이벤트 해지
     void OnDisable()
     {
-        BattleEventRouter.OnTurnStarted -= DecDurationOfUnits;
+        BattleEventManager.OnTurnStart -= DecDurationOfUnits;
     }
 
     // 특정 상태이상 정보 반환
@@ -28,19 +28,19 @@ public class StatusEffectManager : MonoBehaviour
     private void DecDurationOfUnits()
     {
         // 모든 유닛 정보 취합
-        List<ITurn> allUnits = new List<ITurn>();
+        List<IUnit> allUnits = new List<IUnit>();
         allUnits.AddRange(GameManager.instance.turnManager.allies);
         allUnits.AddRange(GameManager.instance.turnManager.enemies);
 
         // 유닛별 상태이상 지속시간 확인
-        foreach (ITurn unit in allUnits)
+        foreach (IUnit unit in allUnits)
         {
             DecDuration(unit, unit.statusEffects);
         }
     }
 
     // 상태이상 지속시간 감소
-    public static void DecDuration(ITurn unit, List<StatusEffect> statusEffects)
+    public static void DecDuration(IUnit unit, List<StatusEffect> statusEffects)
     {
         foreach (StatusEffect effect in statusEffects)
         {
@@ -56,7 +56,7 @@ public class StatusEffectManager : MonoBehaviour
     }
 
     // 대상이 지닌 특정 종류의 모든 상태이상의 중첩 수의 합 반환
-    public static int GetEffectTypeStack(ITurn unit, StatusEffectData.EffectType effectType)
+    public static int GetEffectTypeStack(IUnit unit, StatusEffectData.EffectType effectType)
     {
         // 대상의 상태이상 정보 복사
         List<StatusEffect> statusEffects = unit.statusEffects.FindAll(e => e.data.effectType == effectType);

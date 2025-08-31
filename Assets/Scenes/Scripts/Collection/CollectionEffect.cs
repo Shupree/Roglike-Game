@@ -31,12 +31,12 @@ public abstract class CollectionEffect : ScriptableObject
     /// <summary>
     /// 전투가 시작될 때마다 호출됩니다. (이벤트 구독 및 상태 초기화)
     /// </summary>
-    public virtual void OnCombatStart(GameObject target) { }
+    public virtual void OnBattleStart(IUnit target) { }
 
     /// <summary>
     /// 전투가 끝날 때마다 호출됩니다. (이벤트 구독 해제)
     /// </summary>
-    public virtual void OnCombatEnd(GameObject target) { }
+    public virtual void OnBattleEnd(IUnit target) { }
 
     /// <summary>
     /// UI에 표시될 동적 설명을 반환합니다.

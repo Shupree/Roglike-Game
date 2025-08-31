@@ -6,11 +6,10 @@ using UnityEngine;
 /// </summary>
 public enum CollectionRarity
 {
-    Common,    // 일반
-    Uncommon,  // 고급
-    Rare,      // 희귀
-    Epic,      // 영웅
-    Legendary  // 전설
+    Common,     // 일반
+    Rare,       // 희귀
+    Unique,     // 유니크
+    Hidden      // 히든
 }
 
 /// <summary>
@@ -35,11 +34,19 @@ public class CollectionData : ScriptableObject
     /// </summary>
     public string GetFormattedDescription()
     {
-        // 설명에 있는 {value} 같은 플레이스홀더를 실제 값으로 교체합니다.
-        // 이 예제에서는 첫 번째 효과의 설명을 가져옵니다.
-        if (effects != null && effects.Count > 0)
-            return effects[0].GetDescription();
-        return description;
+        // 여러 효과의 설명을 조합하거나, description의 플레이스홀더를 채우는 로직으로 개선할 수 있습니다.
+        // 예시: 모든 효과의 설명을 줄바꿈으로 합쳐서 반환
+        if (effects == null || effects.Count == 0)
+        {
+            return description;
+        }
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        foreach (var effect in effects)
+        {
+            sb.AppendLine(effect.GetDescription());
+        }
+        return sb.ToString();
     }
 
     /// <summary>
@@ -66,10 +73,10 @@ public class CollectionData : ScriptableObject
     /// <summary>
     /// 전투 시작 시 모든 효과를 트리거합니다.
     /// </summary>
-    public void TriggerOnCombatStart(GameObject target) => effects?.ForEach(e => e.OnCombatStart(target));
+    public void TriggerOnBattleStart(IUnit target) => effects?.ForEach(e => e.OnBattleStart(target));
 
     /// <summary>
     /// 전투 종료 시 모든 효과를 트리거합니다.
     /// </summary>
-    public void TriggerOnCombatEnd(GameObject target) => effects?.ForEach(e => e.OnCombatEnd(target));
+    public void TriggerOnBattleEnd(IUnit target) => effects?.ForEach(e => e.OnBattleEnd(target));
 }

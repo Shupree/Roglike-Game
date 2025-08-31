@@ -10,14 +10,14 @@ public class AchromaticColor_Logic : StatusEffectLogic
     private int turnStackLimit = 3;             // 턴당 스택 제한 (턴당 3무채색)
 
     // 턴 시작 시, 턴당 스택 제한을 초기화합니다.
-    public override void OnTurnStart(ITurn owner, StatusEffect effectInstance)
+    public override void OnTurnStart(IUnit owner, StatusEffect effectInstance)
     {
         turnStackLimit = 3;
         usedPaintStack = 0;      // 턴이 시작될 때 누적된 물감 수도 초기화하는 것이 좋습니다.
     }
 
     // 플레이어가 공격할 때마다 자동으로 호출됩니다.
-    public override void OnAttack(ITurn owner, ITurn target, StatusEffect effectInstance, ref DamageInfo damage)
+    public override void OnAttack(IUnit owner, IUnit target, StatusEffect effectInstance, ref DamageInfo damage)
     {
         // 턴당 최대 획득 가능 스택을 초과했거나, 패시브 최대 스택에 도달했다면 더 이상 누적하지 않습니다.
         if (turnStackLimit <= 0 || effectInstance.stackCount >= effectInstance.data.maxStack)
@@ -39,7 +39,7 @@ public class AchromaticColor_Logic : StatusEffectLogic
 
 public class PrimaryColor_Logic : StatusEffectLogic
 {
-    public override void OnAttack(ITurn owner, ITurn target, StatusEffect effectInstance, ref DamageInfo damage)
+    public override void OnAttack(IUnit owner, IUnit target, StatusEffect effectInstance, ref DamageInfo damage)
     {
         // 이 효과는 플레이어에게만 적용되어야 합니다.
         if (!(owner is Player))

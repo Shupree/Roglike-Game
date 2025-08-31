@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0852a0795e973f840abbb491d75f052f, type: 3}
-  m_Name: 01Collection
+  m_Name: DummyCollection
   m_EditorClassIdentifier: 
   collectionName: "\uB354\uBBF8 \uC218\uC9D1\uD488"
-  description: "\uD14C\uC2A4\uD2B8\uC6A9 \uB354\uBBF8 \uC218\uC9D1\uD488"
-  icon: {fileID: 1669587765549309381, guid: 85470783dfe21194994d9bef32d314bd, type: 3}
+  description: "\uD50C\uB808\uC774\uC5B4 \uD134 \uC885\uB8CC \uC2DC, \uBCF4\uD638\uB9C9\uC774
+    \uC5C6\uB2E4\uBA74 \uBCF4\uD638\uB9C9 3\uD68D\uB4DD."
+  icon: {fileID: 21300000, guid: 8973a579bdb9d5a45ac46a19631eb185, type: 3}
   rarity: 0
   effects:
-  - {fileID: 11400000, guid: b9ae05a9f28733f4d87b5d45092e57ed, type: 2}
+  - {fileID: 11400000, guid: 1db5164c315815241a93a7ee8fa9fd4b, type: 2}

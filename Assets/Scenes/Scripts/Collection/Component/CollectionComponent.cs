@@ -18,12 +18,12 @@ public interface IValueProvider
 public abstract class CollectionComponent
 {
     [System.NonSerialized]
-    protected GameObject owner;
+    protected IUnit owner;
 
     /// <summary>
     /// 전투 시작 시 호출되어 상태를 초기화하거나 이벤트를 구독합니다.
     /// </summary>
-    public virtual void OnCombatStart(GameObject owner)
+    public virtual void OnBattleStart(IUnit owner)
     {
         this.owner = owner;
     }
@@ -31,7 +31,7 @@ public abstract class CollectionComponent
     /// <summary>
     /// 전투 종료 시 호출되어 구독한 이벤트를 해제합니다.
     /// </summary>
-    public virtual void OnCombatEnd()
+    public virtual void OnBattleEnd()
     {
         this.owner = null;
     }

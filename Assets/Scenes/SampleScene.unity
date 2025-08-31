@@ -649,6 +649,7 @@ GameObject:
   - component: {fileID: 59903924}
   - component: {fileID: 59903925}
   - component: {fileID: 59903926}
+  - component: {fileID: 59903927}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -683,7 +684,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9265b5ce268bd7c4c9aab0ed18bdd1ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   usedPaintNum: 0
 --- !u!114 &59903920
 MonoBehaviour:
@@ -755,9 +755,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7efbc8d589764774e92aaa1551f94fad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hudPrefab: {fileID: 6672299194414626351, guid: 0ff0a9d4e24aff846857407e2f3a056d, type: 3}
-  poolSize: 5
+  objectPrefab: {fileID: 0}
+  initialPoolSize: 5
   maxPoolSize: 9
+  hudPrefab: {fileID: 6672299194414626351, guid: 0ff0a9d4e24aff846857407e2f3a056d, type: 3}
 --- !u!114 &59903925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -788,6 +789,18 @@ MonoBehaviour:
   statusEffectDatas:
   - {fileID: 11400000, guid: c45cdd4209069c54688413b42340e0f1, type: 2}
   - {fileID: 11400000, guid: b672a891f0356c847a88d5e18b72b875, type: 2}
+--- !u!114 &59903927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59903914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b766e082ddffe8418c43544e2f452e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &71067825
 GameObject:
   m_ObjectHideFlags: 0
@@ -1061,7 +1074,7 @@ MonoBehaviour:
   themeDatas:
   - {fileID: 11400000, guid: 20fb8b4e0ef9ddd4cae23911fed3f973, type: 2}
   passiveEffects: []
-  isTrueDamage: 0
+  isIgnoreShield: 0
 --- !u!1 &83146431
 GameObject:
   m_ObjectHideFlags: 0
@@ -1281,9 +1294,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 59903919}
-        m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
-        m_MethodName: ClickEraseBtn
+      - m_Target: {fileID: 59903927}
+        m_TargetAssemblyTypeName: PlayerActionHandler, Assembly-CSharp
+        m_MethodName: OnClickEraseBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1553,6 +1566,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _MPManager: {fileID: 1208187670}
   themeManager: {fileID: 82714237}
+  collectionManager: {fileID: 1186961439}
   skillSlotArr:
   - {fileID: 1676460560}
   - {fileID: 1850945502}
@@ -2307,9 +2321,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 59903919}
-        m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
-        m_MethodName: ClickThemeSkillBtn
+      - m_Target: {fileID: 59903927}
+        m_TargetAssemblyTypeName: PlayerActionHandler, Assembly-CSharp
+        m_MethodName: OnClickThemeSkillBtn
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3117,9 +3131,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 59903919}
-        m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
-        m_MethodName: ClickThemeSkillBtn
+      - m_Target: {fileID: 59903927}
+        m_TargetAssemblyTypeName: PlayerActionHandler, Assembly-CSharp
+        m_MethodName: OnClickThemeSkillBtn
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4213,9 +4227,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 59903919}
-        m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
-        m_MethodName: ClickMasterPieceBtn
+      - m_Target: {fileID: 59903927}
+        m_TargetAssemblyTypeName: PlayerActionHandler, Assembly-CSharp
+        m_MethodName: OnClickMasterPieceBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6741,6 +6755,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78249a206d5cc0346a00ff041de3701d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storeUI: {fileID: 1121968505}
+  soldOutSprite: {fileID: 891942287, guid: d71a3dc7aa20fad4f9a99fc76a9254ba, type: 3}
+  skillSlots: []
+  collectionSlots: []
+  masterpieceSlot: {fileID: 0}
 --- !u!1 &821215747
 GameObject:
   m_ObjectHideFlags: 0
@@ -6845,6 +6864,7 @@ MonoBehaviour:
   canvas: 0
   currentSkill: {fileID: 0}
   themeSkill: {fileID: 0}
+  actionType: 0
 --- !u!1 &822776728
 GameObject:
   m_ObjectHideFlags: 0
@@ -14382,8 +14402,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1186961438}
+  - component: {fileID: 1186961439}
   m_Layer: 5
-  m_Name: ArtifactManager
+  m_Name: CollectionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14408,6 +14429,22 @@ RectTransform:
   m_AnchoredPosition: {x: 120, y: -64}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1186961439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186961437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dbd20c44b9f7d44b9c3a754d01cf4ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collectionDatas:
+  - {fileID: 11400000, guid: 90fd91581e0bbe643904444040d583be, type: 2}
+  ownedCollections: []
+  player: {fileID: 821215751}
 --- !u!1 &1188181098
 GameObject:
   m_ObjectHideFlags: 0
@@ -16587,9 +16624,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 59903919}
-        m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
-        m_MethodName: ClickAttackBtn
+      - m_Target: {fileID: 59903927}
+        m_TargetAssemblyTypeName: PlayerActionHandler, Assembly-CSharp
+        m_MethodName: OnClickAttackBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17457,7 +17494,7 @@ MonoBehaviour:
   - {fileID: 1648386810}
   - {fileID: 1983305430}
   - {fileID: 701338222}
-  usedPaintArr: 00000000000000000000000000000000
+  usedPaints: 
   maxPalette: 0
   paletteOrder: 0
   skillIconUI: {fileID: 71378648}

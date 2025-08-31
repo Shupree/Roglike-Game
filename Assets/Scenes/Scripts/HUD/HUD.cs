@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class HUD : MonoBehaviour
 {
     [Header ("target")]
-    public ITurn unit;  // HUD 대상
+    public IUnit unit;  // HUD 대상
     
     [Header ("Reference")]
     Slider HP_Slider;
@@ -27,7 +27,7 @@ public class HUD : MonoBehaviour
         //shield_Text = shield_UI.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
     }
 
-    public void SetHUD(ITurn target)
+    public void SetHUD(IUnit target)
     {
         unit = target;      // HUD 주인 설정
     }
@@ -35,8 +35,8 @@ public class HUD : MonoBehaviour
     // HUD 데이터 갱신
     public void UpdateHUD()
     {
-        curHealth = unit.GetStatus("HP");
-        maxHealth = unit.GetStatus("MaxHP");
+        curHealth = unit.GetStatus(StatusInfo.health);
+        maxHealth = unit.GetStatus(StatusInfo.maxHealth);
         HP_Slider.value = curHealth / (float)maxHealth;
 
         /*shield = unit.shield;

@@ -24,9 +24,10 @@ public class EnemyPoolManager : MonoBehaviour
         );
     }
 
-    public GameObject GetEnemy()
+    public GameObject GetEnemy(GameObject prefab)
     {
-        return enemyPool.Get();   // HUD를 풀에서 가져오기
+        enemyPrefab = prefab;       // 소환할 적 프리팹받기
+        return enemyPool.Get();     // HUD를 풀에서 가져오기
     }
 
     public void ReturnEnemy(GameObject enemy)

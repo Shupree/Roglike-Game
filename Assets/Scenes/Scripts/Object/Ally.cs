@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Ally : MonoBehaviour, ITurn
+public class Ally : MonoBehaviour, IUnit
 {
     [Header("Ally Data")]
     public AllyData data;
@@ -21,7 +21,7 @@ public class Ally : MonoBehaviour, ITurn
     private bool isDead = false;
 
     [Header("Target")]
-    public List<ITurn> targets = new List<ITurn>();    // 공격 타겟
+    public List<IUnit> targets = new List<IUnit>();    // 공격 타겟
 
     // 상태이상 List
     public List<StatusEffect> statusEffects { get; private set; } = new List<StatusEffect>();
@@ -72,7 +72,7 @@ public class Ally : MonoBehaviour, ITurn
 
             // 전체 공격
             case UnitSkillData.SkillType.SplashAtk:
-                targets = new List<ITurn> (GameManager.instance.turnManager.enemies);
+                targets = new List<IUnit> (GameManager.instance.turnManager.enemies);
                 break;
             // 자신 보조
             case UnitSkillData.SkillType.SingleSup:    // 자기자신 타겟 스킬
@@ -82,7 +82,7 @@ public class Ally : MonoBehaviour, ITurn
 
             // 전체 아군 보조
             case UnitSkillData.SkillType.SplashSup:
-                targets = new List<ITurn> (GameManager.instance.turnManager.allies);
+                targets = new List<IUnit> (GameManager.instance.turnManager.allies);
                 damageInfo.isIgnoreShield = true;    // 아군 대상은 고정데미지
                 break;
         }
@@ -108,22 +108,23 @@ public class Ally : MonoBehaviour, ITurn
     }
 
     // 특정 스테이터스 값 확인
-    public int GetStatus(string status)
+    public int GetStatus(StatusInfo status)
     {
         int value = 0;
 
         switch (status)
         {
             // HP 값 반환
-            case "HP":
+            case StatusInfo.health:
                 value = health;
                 break;
             // MaxHP 값 반환
-            case "MaxHP":
+            case StatusInfo.maxHealth:
                 value = maxHealth;
                 break;
-                //case "Shield":
-                //    return shield;
+            case StatusInfo.shield:
+                value = shield;
+                break;
         }
 
         return value;   // 값 반환

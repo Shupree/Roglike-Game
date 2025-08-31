@@ -10,6 +10,7 @@ public class StorageManager : MonoBehaviour
     [Header("Reference")]
     public MPManager _MPManager;
     public ThemeManager themeManager;
+    public CollectionManager collectionManager;
 
     [Header("UI Object")]
     private GameObject UIObject;
@@ -30,6 +31,7 @@ public class StorageManager : MonoBehaviour
         // 하위 스크립트 초기화
         _MPManager.Initialize();
         themeManager.Initialize();
+        collectionManager.Initialize();
 
         UIObject = transform.GetChild(1).gameObject;    // StorageUI 오브젝트 받아오기
         UIObject.SetActive(false);                      // UI 비활성화
@@ -57,7 +59,7 @@ public class StorageManager : MonoBehaviour
         skillSlotArr[1].GetComponent<Image>().sprite = skillArr[1].icon;
         skillSlotArr[2].GetComponent<Image>().sprite = skillArr[2].icon;
         skillSlotArr[3].GetComponent<Image>().sprite = skillArr[3].icon;
-        
+
         Debug.Log("모든 스킬 동기화 완료!");
     }
 
@@ -67,7 +69,7 @@ public class StorageManager : MonoBehaviour
         return skillArr[(int)colorType];
     }
 
-    public void BagBtn_clicked()
+    public void OnClickBagBtn()
     {
         UIObject.SetActive(!UIObject.activeSelf);
     }
@@ -79,20 +81,19 @@ public class StorageManager : MonoBehaviour
         skillArr[(int)skill.colorType - 1] = skill;
 
         // 색상에 따른 스킬 아이콘 교체
-        skillSlotArr[(int)skill.colorType - 1].GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Skill_Sprite/"+skill.icon);
+        skillSlotArr[(int)skill.colorType - 1].GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprite/Skill_Sprite/" + skill.icon);
     }
 
-    /*
-    public void ConvertArtifactImage(int order, ArtifactData data)     // order : 슬롯 순서(1 - 5)
+    // 걸작스킬 변경
+    public void ConvertMasterPiece(MasterPieceData data)
     {
-        artifactSlotArr[order - 1].GetComponent<Image>().sprite = data.AritfactIcon;
+
     }
-    */
-    
+
     public PaintSkillData PickRandomSkill(PaintManager.ColorType colorType)  // 색상받고 랜덤 스킬 뽑기 (1: 빨강, 2: 파랑, 3: 노랑, 4: 하양)
     {
         List<PaintSkillData> skillList = skillDataList
-            .Where( skill =>
+            .Where(skill =>
                 skill.colorType == colorType &&      // 첫 번째 조건 : 지정한 색상과 같을 것
                 !skillArr.Any(playerSkill => playerSkill.name == skill.name)            // 두 번째 조건 : 중복된 스킬은 제외할 것
             )
@@ -111,5 +112,11 @@ public class StorageManager : MonoBehaviour
 
             return null;
         }
+    }
+
+    public MasterPieceData PickRandomMasterPiece()  // 무작위 걸작 뽑기
+    {
+        MasterPieceData masterPieceData = null;
+        return masterPieceData;
     }
 }

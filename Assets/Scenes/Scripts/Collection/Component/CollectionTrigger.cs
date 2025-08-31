@@ -21,16 +21,16 @@ public class OnResourceUsedTrigger : CollectionTrigger, IValueProvider
     public int amountToTrigger;
     private int currentAmount;
 
-    public override void OnCombatStart(GameObject owner)
+    public override void OnBattleStart(IUnit owner)
     {
-        base.OnCombatStart(owner);
+        base.OnBattleStart(owner);
         currentAmount = 0;
-        GameEventManager.OnResourceUsed += HandleEvent;
+        BattleEventManager.OnResourceUsed += HandleEvent;
     }
-    public override void OnCombatEnd()
+    public override void OnBattleEnd()
     {
-        GameEventManager.OnResourceUsed -= HandleEvent;
-        base.OnCombatEnd();
+        BattleEventManager.OnResourceUsed -= HandleEvent;
+        base.OnBattleEnd();
     }
     private void HandleEvent(ResourceType type, int amount)
     {

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UI;
 
+/*
 public class HUDPoolManager : MonoBehaviour
 {
     public GameObject hudPrefab;    // HUD의 원본 프리팹
@@ -36,3 +37,23 @@ public class HUDPoolManager : MonoBehaviour
         hudPool.Release(hud);   // HUD를 풀로 반환하기
     }
 }
+*/
+
+public class HUDPoolManager : PoolManager<HUD>
+{
+    public GameObject hudPrefab;    // HUD의 원본 프리팹
+
+    private void Awake()
+    {
+        initialPoolSize = 5;
+        maxPoolSize = 9;
+    }
+
+    protected override GameObject CreatePooledObject()
+    {
+        GameObject instance = Instantiate(hudPrefab, transform);
+        return instance;
+    }
+}
+
+

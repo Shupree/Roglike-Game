@@ -10,19 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24c3172661a8dce47b5f26564ca6ee92, type: 3}
-  m_Name: New Modular Collection Effect
+  m_Name: Dummy01
   m_EditorClassIdentifier: 
   trigger:
-    rid: 4238201097568387085
+    rid: 4238201314249277440
   conditions:
-  - rid: -2
+  - rid: 4238201317798969347
   actions:
-  - rid: -2
+  - rid: 4238201317798969348
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 4238201097568387085
+    - rid: 4238201314249277440
       type: {class: OnTurnEndTrigger, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 4238201317798969347
+      type: {class: PlayerHasNoBlockCondition, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 4238201317798969348
+      type: {class: GainBlockAction, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 3

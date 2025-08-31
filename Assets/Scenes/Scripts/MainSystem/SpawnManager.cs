@@ -47,14 +47,21 @@ public class SpawnManager : MonoBehaviour
                 // 해당 적 정보 수집    (주의. 'enemyID - 1와 'enemyPrefebArr'의 순서는 같아야 함.)
                 enemyPrefab = enemyPrefabArr[EnemyID[i] - 1];   // 몬스터Prefab 확인
 
+                /*
                 GameObject enemy = Instantiate(enemyPrefab, position[i].transform.position, Quaternion.Euler(0, 0, 0));    // 몬스터 스폰
                 enemy.transform.parent = position[i].transform;             // Parent 설정
+                enemy.name = enemy.GetComponent<Enemy>().data.unitName;    // 몬스터 이름 명명
+                GameManager.instance.turnManager.RegisterEnemy(enemy.GetComponent<Enemy>());
+                */
+                GameObject enemy = enemyPoolManager.GetEnemy(enemyPrefab);
+                enemy.transform.parent = position[i].transform;             // Parent 설정
+                enemy.transform.position = position[i].transform.position;
                 enemy.name = enemy.GetComponent<Enemy>().data.unitName;    // 몬스터 이름 명명
                 GameManager.instance.turnManager.RegisterEnemy(enemy.GetComponent<Enemy>());
 
                 // Enemy HUD 활성화
                 Debug.Log(hudPoolManager);
-                GameObject hud = hudPoolManager.GetHUD();
+                GameObject hud = hudPoolManager.Get();
                 if (hud != null)
                 {
                     hud.GetComponent<RectTransform>().SetParent(GameObject.Find("Canvas").GetComponent<RectTransform>(), false);  // Screen Space Canvas 기준으로 배치
@@ -86,7 +93,7 @@ public class SpawnManager : MonoBehaviour
                 GameManager.instance.turnManager.RegisterAlly(ally.GetComponent<Ally>());
 
                 // Ally HUD 활성화
-                GameObject hud = hudPoolManager.GetHUD();
+                GameObject hud = hudPoolManager.Get();
                 if (hud != null)
                 {
                     hud.GetComponent<RectTransform>().SetParent(GameObject.Find("Canvas").GetComponent<RectTransform>(), false);  // Screen Space Canvas 기준으로 배치

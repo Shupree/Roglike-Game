@@ -27,7 +27,7 @@ public struct StatusEffectInfo
 
 public static class BattleLogic
 {
-    public static void ActionLogic(ITurn owner, ITurn target, ActionInfo actionInfo)
+    public static void ActionLogic(IUnit owner, IUnit target, ActionInfo actionInfo)
     {
         if (target == null) { return; } // 적 소실 시 종료
 

@@ -1,174 +1,209 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
+using UnityEditor.SceneManagement;
+using System.Security.Cryptography;
 
+// 상점 시스템 총괄 매니저
 public class StoreManager : MonoBehaviour
 {
-    /*
-    [Header ("Reference")]
-    private Player _Player;
-    private SkillManager _SkillManager;
-    private ArtifactManager _ArtifactManager;
-    private MPManager _MasterpieceManager;
+    [Header("Managers")]
+    private Player player;
+    private CollectionManager collectionManager;
+    private StorageManager storageManager;
+    private StageManager stageManager;
 
-    [Header ("Object Reference")]
-    public GameObject storeNPC;     // NPC Object
+    [Header("UI Elements")]
+    [Tooltip("상점 UI의 최상위 게임 오브젝트")]
+    [SerializeField] private GameObject storeUI;
+    [Tooltip("판매 완료 시 표시될 스프라이트")]
+    [SerializeField] private Sprite soldOutSprite;
 
-    private GameObject storeUI;     // UI
+    [Header("Skill Products")]
+    [Tooltip("스킬 슬롯 UI 게임 오브젝트 목록 (4개)")]
+    [SerializeField] private List<GameObject> skillSlots = new List<GameObject>(4);
+    private List<PaintSkillData> skillProducts = new List<PaintSkillData>();
+    private List<int> skillPrices = new List<int>();
 
-    [Header ("Sprite")]
-    public Sprite soldOutImg;   // 판매 완료 이미지
+    [Header("Collection Products")]
+    [Tooltip("수집품 슬롯 UI 게임 오브젝트 목록 (3개)")]
+    [SerializeField] private List<GameObject> collectionSlots = new List<GameObject>(3);
+    private List<CollectionData> collectionProducts = new List<CollectionData>();
+    private List<int> collectionPrices = new List<int>();
 
-    private GameObject[] skillSlotArr = new GameObject[4];  // UI Arr
-    private GameObject[] artifactSlotArr = new GameObject[3];
-    private GameObject masterpieceSlot;
+    [Header("Masterpiece Product")]
+    [Tooltip("걸작 슬롯 UI 게임 오브젝트")]
+    [SerializeField] private GameObject masterpieceSlot;
+    private MasterPieceData masterpieceProduct;
+    private int masterpiecePrice = 150;
 
-    private int[] skillPriceArr = new int[4];       // 상품별 가격
-    private int[] artifactPriceArr = new int[3];    // 상품별 가격
-    private int masterpiecePrice;
+    // 판매 상태 추적
+    private bool[] isSkillSold;
+    private bool[] isCollectionSold;
+    private bool isMasterpieceSold;
 
-    private SkillData[] skillDataArr = new SkillData[4];    // 진열 상품의 Data
-    private List<ArtifactData> artifactDataList = new List<ArtifactData>();
-    private MasterPieceData masterpieceData;
-
-    void Awake()
+    void Start()
     {
-        // 변수 할당
-        storeUI = transform.GetChild(0).gameObject;
+        // GameManager를 통해 참조 가져오기
+        if (player == null) player = GameManager.instance.player;
+        if (collectionManager == null) collectionManager = GameManager.instance.storageManager.collectionManager;
+        if (storageManager == null) storageManager = GameManager.instance.storageManager;
+        if (stageManager == null) stageManager = GameManager.instance.stageManager;
 
-        for (int i = 0; i < skillSlotArr.Length; i++)
-        {
-            skillSlotArr[i] = storeUI.transform.Find("DisplayPlace").GetChild(0).GetChild(i).gameObject;
-        }
-        for (int i = 0; i < artifactSlotArr.Length; i++)
-        {
-            artifactSlotArr[i] = storeUI.transform.Find("DisplayPlace").GetChild(1).GetChild(i).gameObject;
-        }
-        masterpieceSlot = storeUI.transform.Find("DisplayPlace").GetChild(2).GetChild(0).gameObject;
-        
-        // 참조
-        _Player = GameManager.instance._player;
-        _SkillManager = GameManager.instance._SkillManager;
-        _ArtifactManager = GameManager.instance._ArtifactManager;
-        _MasterpieceManager = GameManager.instance._MasterPieceManager;
-
-        // 기본 가격 설정
-        for (int i = 0; i < skillPriceArr.Length; i++)
-        {
-            skillPriceArr[i] = 60;
-        }
-        for (int i = 0; i < artifactPriceArr.Length; i++)
-        {
-            artifactPriceArr[i] = 80;      // Common급 장신구 가격
-        }
-        masterpiecePrice = 150;
-
-
-        // 초기화
         storeUI.SetActive(false);
     }
 
+    /// <summary>
+    /// 상점을 열고 상품을 진열합니다. StageManager에서 호출합니다.
+    /// </summary>
+    public void OpenStore()
+    {
+        SetUpProducts();
+        storeUI.SetActive(true);
+    }
+
+    /// <summary>
+    /// 상점을 닫고 다음 스테이지로 진행합니다.
+    /// </summary>
     public void CloseStore()
     {
         storeUI.SetActive(false);
-        Destroy(storeNPC);      // 임시로 NPC 제거 (스테이지 넘어가는 연출 + NPC 제거하면 좋을 듯)
-
-        GameManager.instance.SetNextStageUI();  // 다음 스테이지로
+        stageManager.SetNextStageInfo();        // 다음 스테이지 진행
     }
 
-    public void SetUpProduct()
+    private void SetUpProducts()
     {
-        storeUI.SetActive(true);
+        // 판매 상태 초기화
+        isSkillSold = new bool[skillSlots.Count];
+        isCollectionSold = new bool[collectionSlots.Count];
+        isMasterpieceSold = false;
 
-        // 색상별 스킬 추첨
-        for (int i = 0; i < skillSlotArr.Length; i++)
+        skillProducts.Clear();
+        collectionProducts.Clear();
+
+        // 1. 물감 스킬 설정
+        for (int i = 0; i < skillSlots.Count; i++)
         {
-            skillDataArr[i] = _SkillManager.PickRandomSkill(i + 1);
+            // TODO: PaintManager에 색상별로 스킬을 뽑는 기능이 필요하다면 추가해야 합니다.
+            // 예: _paintManager.GetRandomPaintSkillByColor(i);
+            // 현재는 완전히 무작위로 스킬을 가져옵니다.
+            var skill = storageManager.PickRandomSkill((PaintManager.ColorType)i);
+            skillProducts.Add(skill);
+            UpdateSlotUI(skillSlots[i], skill.icon, skillPrices[i]);
         }
 
-        // 장신구 추첨  (3개)
-        for (int i = 0; i < artifactSlotArr.Length; i++)
+        // 2. 수집품 설정
+        // 등급 0 (Common) 수집품을 무작위로 지정 수만큼 가져옵니다.
+        collectionProducts = collectionManager.PickRandomCollection(CollectionRarity.Common, collectionSlots.Count);
+        for (int i = 0; i < collectionSlots.Count; i++)
         {
-            artifactDataList.Add(_ArtifactManager.PickRandomArtifact(0));
+            collectionPrices.Add(GetCollectionPrice(collectionProducts[i].rarity));
+            UpdateSlotUI(collectionSlots[i], collectionProducts[i].icon, collectionPrices[i]);
         }
 
-        // 걸작 추첨
-        masterpieceData = _MasterpieceManager.PickRandomMasterPiece();
-
-        // 상품 이미지 변경 & 가격 설정_스킬
-        for (int i = 0; i < skillSlotArr.Length; i++)
-        {
-            skillSlotArr[i].GetComponent<Image>().sprite = skillDataArr[i].skillIcon;
-            skillSlotArr[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = skillPriceArr[i].ToString();
-        }
-
-        // 상품 이미지 변경 & 가격 설정_장신구
-        for (int i = 0; i < artifactSlotArr.Length; i++)
-        {
-            artifactSlotArr[i].GetComponent<Image>().sprite = artifactDataList[i].AritfactIcon;
-            switch (artifactDataList[i].artifactRate) {
-                case ArtifactData.ArtifactRate.Common:
-                    break;
-                case ArtifactData.ArtifactRate.Rare:
-                    artifactPriceArr[i] = 100;
-                    break;
-                case ArtifactData.ArtifactRate.Unique:
-                    artifactPriceArr[i] = 130;
-                    break;
-                case ArtifactData.ArtifactRate.Cursed:
-                    artifactPriceArr[i] = 110;
-                    break;
-            }
-            artifactSlotArr[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = artifactPriceArr[i].ToString();
-        }
-
-        // 상품 이미지 변경_걸작
-        masterpieceSlot.GetComponent<Image>().sprite = masterpieceData.MP_Sprite;
-        masterpieceSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = masterpiecePrice.ToString();
+        // 3. 걸작 설정
+        masterpieceProduct = storageManager.PickRandomMasterPiece();
+        UpdateSlotUI(masterpieceSlot, masterpieceProduct.icon, masterpiecePrice);
     }
 
-    // 상품 버튼 클릭 시 : 구매
-    public void BuyProduct(int btnOrder)   // BtnOrder : 11~14.스킬 / 21~23.장신구 / 31.걸작 
+    private int GetCollectionPrice(CollectionRarity rate)
     {
-        // 버튼에 따른 스킬 지급
-        if (btnOrder < 20) {    // 스킬 구매
-            if (_Player.gold >= skillPriceArr[btnOrder - 11]) {      // 구매 가능 여부 확인
-                _Player.gold -= skillPriceArr[btnOrder - 11];
-                _SkillManager.use_SkillData[btnOrder - 11] = skillDataArr[btnOrder - 11];     // 스킬 교체
-
-                skillSlotArr[btnOrder - 11].GetComponent<Image>().sprite = soldOutImg;       // 판매 완료 UI 출력
-                skillSlotArr[btnOrder - 11].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
-            }
-            else {
-                Debug.Log("구매 실패 : 골드가 부족합니다!");
-                // 구매 실패
-            }
-        }
-        else if (btnOrder < 30) {   // 장신구 구매
-            if (_Player.gold >= artifactPriceArr[btnOrder - 21]) {      // 구매 가능 여부 확인
-                _Player.gold -= artifactPriceArr[btnOrder - 21];
-                _ArtifactManager.AddArtifact(artifactDataList[btnOrder - 21].ArtifactId);
-
-                artifactSlotArr[btnOrder - 21].GetComponent<Image>().sprite = soldOutImg;    // 판매 완료 UI 출력
-                artifactSlotArr[btnOrder - 21].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
-            }
-            else {
-                // 구매 실패
-            }
-        }
-        else if (btnOrder < 40) {   // 걸작 구매
-            if (_Player.gold >= masterpiecePrice) {      // 구매 가능 여부 확인
-                _Player.gold -= masterpiecePrice;
-                _MasterpieceManager.ChangeMasterPiece(masterpieceData.MP_Id);   // MP 교체 함수 만들 걳
-
-                masterpieceSlot.GetComponent<Image>().sprite = soldOutImg;      // 판매 완료 UI 출력
-                masterpieceSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Thanks!";
-            }
+        switch (rate)
+        {
+            case CollectionRarity.Common: return 80;
+            case CollectionRarity.Rare: return 100;
+            case CollectionRarity.Unique: return 130;
+            case CollectionRarity.Hidden: return 999;
+            default: return 80;
         }
     }
-    */
+
+    private void UpdateSlotUI(GameObject slot, Sprite icon, int price)
+    {
+        if (slot == null) return;
+        slot.GetComponent<Image>().sprite = icon;
+        slot.transform.GetChild(0).GetComponent<TMP_Text>().text = price.ToString();
+        slot.GetComponent<Button>().interactable = true;
+    }
+
+    private void MarkAsSold(GameObject slot)
+    {
+        if (slot == null) return;
+        slot.GetComponent<Image>().sprite = soldOutSprite;
+        slot.transform.GetChild(0).GetComponent<TMP_Text>().text = "Thanks!";
+        slot.GetComponent<Button>().interactable = false;
+    }
+
+    // UI Button의 OnClick() 이벤트에 연결할 함수들입니다.
+    // 인스펙터에서 각 버튼에 맞는 인덱스를 전달해야 합니다.
+    public void BuyPaintSkill(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= skillProducts.Count || isSkillSold[slotIndex]) return;
+
+        if (player.gold >= skillPrices[slotIndex])
+        {
+            player.gold -= skillPrices[slotIndex];
+            storageManager.ConvertSkill(skillProducts[slotIndex]);       // 스킬 교체
+
+            MarkAsSold(skillSlots[slotIndex]);
+            isSkillSold[slotIndex] = true;
+        }
+        else
+        {
+            Debug.Log("골드가 부족하여 스킬을 구매할 수 없습니다.");
+            // TODO: 골드 부족 알림 UI 표시
+        }
+    }
+
+    public void BuyCollection(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= collectionProducts.Count || isCollectionSold[slotIndex]) return;
+
+        if (player.gold >= collectionPrices[slotIndex])
+        {
+            player.gold -= collectionPrices[slotIndex];
+            collectionManager.AddCollection(collectionProducts[slotIndex]);
+
+            MarkAsSold(collectionSlots[slotIndex]);
+            isCollectionSold[slotIndex] = true;
+        }
+        else
+        {
+            Debug.Log("골드가 부족하여 수집품을 구매할 수 없습니다.");
+            // TODO: 골드 부족 알림 UI 표시
+        }
+    }
+
+    public void BuyMasterpiece()
+    {
+        if (isMasterpieceSold) return;
+
+        if (player.gold >= masterpiecePrice)
+        {
+            player.gold -= masterpiecePrice;
+            storageManager.ConvertMasterPiece(masterpieceProduct);
+
+            MarkAsSold(masterpieceSlot);
+            isMasterpieceSold = true;
+        }
+        else
+        {
+            Debug.Log("골드가 부족하여 걸작을 구매할 수 없습니다.");
+            // TODO: 골드 부족 알림 UI 표시
+        }
+    }
+
+    // 상점 초기화
+    public void FormatShop()
+    {
+        skillProducts.Clear();
+        skillPrices.Clear();
+
+        collectionProducts.Clear();
+        collectionPrices.Clear();
+
+        masterpieceProduct = null;
+        masterpiecePrice = 150;
+    }
 }

@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Player : MonoBehaviour, ITurn
+public enum ActionType
+{
+    none, paintSkill, themeSkill, masterPiece
+}
+
+public class Player : MonoBehaviour, IUnit
 {
     [Header("Reference")]
     //private PaintManager paintManager;
@@ -30,9 +35,10 @@ public class Player : MonoBehaviour, ITurn
     // public Skill[] skillArr = new Skill[4];     // 기본 스킬 4종 (빨강, 노랑, 파랑, 하양)
     public PaintSkillData currentSkill;        // 현재 사용하는 스킬
     public ThemeSkillData themeSkill;   // 현재 사용하는 테마 스킬
+    public ActionType actionType = ActionType.none;
 
     [Header("Target")]
-    public List<ITurn> targets = new List<ITurn>();    // 공격 타겟
+    public List<IUnit> targets = new List<IUnit>();    // 공격 타겟
     // 스플래쉬 공격에 경우 모든 적에게 타겟팅해야함.
     // 버프 스킬의 경우 아군이 타겟팅되어야함.
 
@@ -57,6 +63,7 @@ public class Player : MonoBehaviour, ITurn
         storageManager = GameManager.instance.storageManager;   // 스크립트 가져오기
         storageManager.Initialize();    // storageManager 강제 초기화
 
+        actionType = ActionType.none;
         currentSkill = null;
     }
 
@@ -75,21 +82,21 @@ public class Player : MonoBehaviour, ITurn
     }
 
     // 특정 스테이터스 값 확인
-    public int GetStatus(string status)
+    public int GetStatus(StatusInfo status)
     {
         int value = 0;
 
         switch (status)
         {
             // HP 값 반환
-            case "HP":
+            case StatusInfo.health:
                 value = health;
                 break;
             // MaxHP 값 반환
-            case "MaxHP":
+            case StatusInfo.maxHealth:
                 value = maxHealth;
                 break;
-            case "Shield":
+            case StatusInfo.shield:
                 value = shield;
                 break;
         }
@@ -119,7 +126,7 @@ public class Player : MonoBehaviour, ITurn
                 targets.Add(turnManager.enemies[0]);
                 break;
             case PaintSkillData.SkillType.SplashAtk:
-                targets = new List<ITurn>(turnManager.enemies);
+                targets = new List<IUnit>(turnManager.enemies);
                 break;
             case PaintSkillData.SkillType.BounceAtk:
                 // 랜덤 적 타겟팅
@@ -131,19 +138,28 @@ public class Player : MonoBehaviour, ITurn
                 }
                 break;
             case PaintSkillData.SkillType.SingleSup:
-                targets.Add(turnManager.player);
+                targets.Add(this);
                 break;
             case PaintSkillData.SkillType.SplashSup:
-                targets = new List<ITurn>(turnManager.allies);
+                targets = new List<IUnit>(turnManager.allies);
                 break;
         }
+    }
+
+    // 현재 행동 정보 초기화
+    public void ClearActionInfo()
+    {
+        targets.Clear();
+        actionType = ActionType.none;
+        currentSkill = null;
+        themeSkill = null;
     }
 
     // 스킬 발동 로직
     public void ExecutePaintSkill(int subPaint)
     {
         DamageInfo damageInfo = new DamageInfo { amount = 0, isIgnoreShield = false };  // 데미지 정보 저장
-        StatusEffectInfo statusEffectInfo = new StatusEffectInfo { effectDatas = currentSkill.effectDatas, effects = new List<int>()};
+        StatusEffectInfo statusEffectInfo = new StatusEffectInfo { effectDatas = currentSkill.effectDatas, effects = new List<int>() };
         int count = 0;              // 스킬 타수
 
         // 공격 type에 따른 분류    (targets는 turnManager로부터 받음)
@@ -182,7 +198,8 @@ public class Player : MonoBehaviour, ITurn
         }
 
         // 스킬 스탯 집합
-        ActionInfo actionInfo = new ActionInfo {
+        ActionInfo actionInfo = new ActionInfo
+        {
             damageInfo = damageInfo,
             heal = currentSkill.heal + (currentSkill.perHeal * subPaint),
             shield = currentSkill.shield + (currentSkill.perShield * subPaint),
@@ -199,6 +216,8 @@ public class Player : MonoBehaviour, ITurn
         }
 
         targets.Clear();
+
+        actionType = ActionType.none;
         currentSkill = null;
     }
 
@@ -214,34 +233,34 @@ public class Player : MonoBehaviour, ITurn
         }
 
         // 실제 데미지 적용
-            if (damageInfo.isIgnoreShield)
+        if (damageInfo.isIgnoreShield)
+        {
+            health -= damageInfo.amount;
+            if (health < 0)
             {
-                health -= damageInfo.amount;
-                if (health < 0)
-                {
-                    health = 0;
-                    GameManager.instance.turnManager.CheckBattleEndConditions();
-                }
+                health = 0;
+                GameManager.instance.turnManager.CheckBattleEndConditions();
+            }
+        }
+        else
+        {
+            if (shield > damageInfo.amount)
+            {
+                shield -= damageInfo.amount;
             }
             else
             {
-                if (shield > damageInfo.amount)
-                {
-                    shield -= damageInfo.amount;
-                }
-                else
-                {
-                    damageInfo.amount -= shield;
-                    shield = 0;
-                    health -= damageInfo.amount;
-                    if (health < 0) health = 0;
-                }
+                damageInfo.amount -= shield;
+                shield = 0;
+                health -= damageInfo.amount;
+                if (health < 0) health = 0;
             }
+        }
 
         hud.UpdateHUD();        // HUD의 HP 변화
         Debug.Log($"플레이어가 {damageInfo.amount} 데미지를 받았습니다! 남은 체력: {health}");
 
-        BattleEventRouter.RaiseOnHit();      // '플레이어 피격 시' 이벤트 시행
+        BattleEventManager.TriggerUnitDamaged(this, damageInfo.amount);      // '플레이어 피격 시' 이벤트 시행
     }
 
     // 회복 시 연산

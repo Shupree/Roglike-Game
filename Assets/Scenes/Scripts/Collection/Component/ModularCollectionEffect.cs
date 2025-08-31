@@ -19,20 +19,20 @@ public class ModularCollectionEffect : CollectionEffect
     [SerializeReference, SubclassSelector]
     public List<CollectionAction> actions = new List<CollectionAction>();
 
-    public override void OnCombatStart(GameObject target)
+    public override void OnBattleStart(IUnit target)
     {
-        trigger?.OnCombatStart(target);
+        trigger?.OnBattleStart(target);
         trigger?.Register(ExecuteEffect);
-        conditions.ForEach(c => c.OnCombatStart(target));
-        actions.ForEach(a => a.OnCombatStart(target));
+        conditions.ForEach(c => c.OnBattleStart(target));
+        actions.ForEach(a => a.OnBattleStart(target));
     }
 
-    public override void OnCombatEnd(GameObject target)
+    public override void OnBattleEnd(IUnit target)
     {
         trigger?.Unregister();
-        trigger?.OnCombatEnd();
-        conditions.ForEach(c => c.OnCombatEnd());
-        actions.ForEach(a => a.OnCombatEnd());
+        trigger?.OnBattleEnd();
+        conditions.ForEach(c => c.OnBattleEnd());
+        actions.ForEach(a => a.OnBattleEnd());
     }
 
     private void ExecuteEffect(EffectContext context)

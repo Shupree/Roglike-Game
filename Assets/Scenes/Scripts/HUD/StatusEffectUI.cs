@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class StatusEffectUI : MonoBehaviour
 {
     [Header("target")]
-    public ITurn unit;  // HUD 대상
+    public IUnit unit;  // HUD 대상
     
     [Header ("UI Scripts")]
     private Image[] UIArr = new Image[12];   // 상태이상 UI 배열 (stateUI)

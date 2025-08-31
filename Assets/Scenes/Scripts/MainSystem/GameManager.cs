@@ -48,13 +48,13 @@ public class GameManager : MonoBehaviour
 
         // TurnManager & GetObject 초기화
         turnManager.Initialize();       // TurnManager 초기화 메서드 호출
-        getObject.Initialize();    
-        hudPoolManager.Initialize();
-        enemyPoolManager.Initialize();     
+        getObject.Initialize();
+        hudPoolManager.InitializePool();
+        enemyPoolManager.Initialize();
         spawnManager.Initialize();
 
         // Player HUD 활성화
-        GameObject hud = gameObject.GetComponent<HUDPoolManager>().GetHUD();
+        GameObject hud = gameObject.GetComponent<HUDPoolManager>().Get();
         if (hud != null)
         {
             hud.GetComponent<RectTransform>().SetParent(GameObject.Find("Canvas").GetComponent<RectTransform>(), false);  // Screen Space Canvas 기준으로 배치

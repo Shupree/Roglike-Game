@@ -17,7 +17,7 @@ public class MPManager : MonoBehaviour
     private MasterPieceData MPData;         // 현재 사용 중인 걸작
 
     [Header("Target")]
-    public List<ITurn> targets = new List<ITurn>();            // 공격 타겟
+    public List<IUnit> targets = new List<IUnit>();            // 공격 타겟
 
     [Header("Figure")]
     public int stack;           // 걸작 사용을 위한 스택
@@ -41,12 +41,6 @@ public class MPManager : MonoBehaviour
     public MasterPieceData GetMPData()
     {
         return MPData;
-    }
-
-    // 걸작스킬 변경
-    void ConvertMasterPiece()
-    {
-
     }
 
     // 걸작스킬 조건 확인
@@ -78,9 +72,9 @@ public class MPManager : MonoBehaviour
                 break;
 
             case MasterPieceData.ConditionType.Health:
-                addValue = turnManager.allies[0].GetStatus("HP") / MPData.perNeed;     // 중첩 값 연산
+                addValue = turnManager.allies[0].GetStatus(StatusInfo.health) / MPData.perNeed;     // 중첩 값 연산
                 // HP가 0이 되는 경우 방지 
-                if (turnManager.allies[0].GetStatus("HP") % MPData.perNeed <= 0)
+                if (turnManager.allies[0].GetStatus(StatusInfo.health) % MPData.perNeed <= 0)
                 {
                     addValue--;
                 }
@@ -134,7 +128,7 @@ public class MPManager : MonoBehaviour
                 break;
 
             case MasterPieceData.ConditionType.Gold:
-                addValue = turnManager.player.gold / MPData.perNeed;
+                addValue = GameManager.instance.player.gold / MPData.perNeed;
                 if (addValue > MPData.maxStack)
                 {
                     addValue = MPData.maxStack;
@@ -144,7 +138,7 @@ public class MPManager : MonoBehaviour
                     Debug.Log("걸작 사용에 사용할 골드가 부족합니다.");     // 골드 부족 시 사용 불가능
                     return false;
                 }
-                turnManager.player.gold -= MPData.perNeed * addValue;    // 골드 수 감소
+                GameManager.instance.player.gold -= MPData.perNeed * addValue;    // 골드 수 감소
                 ClearStack();
                 break;
         }
@@ -198,9 +192,9 @@ public class MPManager : MonoBehaviour
         int shield = MPData.shield + (MPData.perShield * addValue);
         int heal = MPData.heal + (MPData.perHeal * addValue);
         List<int> effect = new List<int>();
-        for (int i = 0; i < MPData.effect.Count; i++)
+        for (int i = 0; i < MPData.effects.Count; i++)
         {
-            effect.Add(MPData.effect[i] + (MPData.perEffect[i] * addValue));
+            effect.Add(MPData.effects[i] + (MPData.perEffects[i] * addValue));
         }
 
         // 데미지 연산
@@ -228,10 +222,10 @@ public class MPManager : MonoBehaviour
                 }
 
                 // 상태이상 부여
-                for (int n = 0; n < MPData.effectData.Count; n++)
+                for (int n = 0; n < MPData.effectDatas.Count; n++)
                 {
-                    targets[c].AddStatusEffect(MPData.effectData[n], effect[n]);
-                    Debug.Log($"{targets[c]}은 {MPData.effectData[n].effectName}을 {effect[n]}만큼 받았다.");
+                    targets[c].AddStatusEffect(MPData.effectDatas[n], effect[n]);
+                    Debug.Log($"{targets[c]}은 {MPData.effectDatas[n].effectName}을 {effect[n]}만큼 받았다.");
                 }
             }
         }

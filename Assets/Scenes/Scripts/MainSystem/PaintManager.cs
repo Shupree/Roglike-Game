@@ -79,8 +79,9 @@ public class PaintManager : MonoBehaviour
         else
         {
             // 처음 페인트 추가 시 스킬 지정
-            if (paletteOrder == 0 && player.themeSkill == null)
+            if (player.actionType == ActionType.none)
             {
+                player.actionType = ActionType.paintSkill;
                 player.currentSkill = player.storageManager.GetSkillData(paintSc.colorType);   // 스킬 정보 가져오기
                 Debug.Log(player.currentSkill.name);
                 player.SetTarget(player.currentSkill.skillType, player.currentSkill.count);

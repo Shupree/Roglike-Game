@@ -4,14 +4,19 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public interface ITurn
+public enum StatusInfo
+{
+    health, maxHealth, shield
+}
+
+public interface IUnit
 {
     List<StatusEffect> statusEffects { get; }
 
     void TakeTurn();
     bool IsDead();      // 사망여부 확인
 
-    int GetStatus(string status);   // 스테이터스 값 가져오기 (HP, MaxHP, Shield)
+    int GetStatus(StatusInfo status);   // 스테이터스 값 가져오기 (HP, maxHP, shield)
     int GetStatusEffectStack(StatusEffectData effectData); // 상태이상 데이터 가져오기 (Burn, Poison, Freezen ...)
 
     void TakeDamage(DamageInfo damageInfo, bool onBeingHit);     // 데미지를 받는 메서드
@@ -25,21 +30,21 @@ public interface ITurn
 
 public class TurnManager : MonoBehaviour
 {
-    public enum State
+    public enum TurnState
     {
-        rest, turnStart, playerAct, allyTurn, enemyTurn, useMP, victory, defeat
+        rest, turnStart, playerAct, allyTurn, enemyTurn, victory, defeat
     }
 
     [Header("State")]
-    private State state;    // 현재 진행 상황
+    private TurnState state;    // 현재 진행 상황
 
     [Header("Reference")]
     // 아군, 적 구분하여 List<ITurn> 생성
-    public List<ITurn> allies = new List<ITurn>();
-    public List<ITurn> enemies = new List<ITurn>();
+    public List<IUnit> allies = new List<IUnit>();
+    public List<IUnit> enemies = new List<IUnit>();
 
     [HideInInspector]
-    public Player player;                       // 플레이어
+    private Player player;                       // 플레이어
     private PaintManager paintManager;          // 페인트 매니저
     private StageManager stageManager;          // 스테이지 매니저
     private StorageManager storageManager;      // 스토리지 매니저
@@ -56,23 +61,25 @@ public class TurnManager : MonoBehaviour
     public void Initialize()
     {
         // 초기화
-        state = State.rest;
+        state = TurnState.rest;
 
         paintManager = GameManager.instance.paintManager;
         stageManager = GameManager.instance.stageManager;
         storageManager = GameManager.instance.storageManager;
         player = GameManager.instance.player;
+
+        gameObject.GetComponent<PlayerActionHandler>().Initialize();
     }
 
     // 아군 개체 추가
-    public void RegisterAlly(ITurn ally)
+    public void RegisterAlly(IUnit ally)
     {
         allies.Add(ally);
         Debug.Log(ally + "아군 정보 등록 완료!");
     }
 
     // 적 개체 추가
-    public void RegisterEnemy(ITurn enemy)
+    public void RegisterEnemy(IUnit enemy)
     {
         enemies.Add(enemy);
         Debug.Log(enemy + "적군 정보 등록 완료!");
@@ -81,7 +88,7 @@ public class TurnManager : MonoBehaviour
     // 전투 시작
     public void BattleStart()
     {
-        state = State.turnStart;
+        state = TurnState.turnStart;
 
         lootInfoTuple.Item2 = true;     // 스킬 보상 활성화
 
@@ -90,13 +97,15 @@ public class TurnManager : MonoBehaviour
 
         // 전투 시작 시 애니메이션 추가
 
+        BattleEventManager.TriggerBattleStart();
+
         StartTurns();   // 다음 턴 시작
     }
 
     // 턴 시작
     public void StartTurns()
     {
-        if (state == State.victory || state == State.defeat) return;    // 전투 종료 시 함수 끊기
+        if (state == TurnState.victory || state == TurnState.defeat) return;    // 전투 종료 시 함수 끊기
         totalTurns++;       // 턴 수 증가
         Debug.Log($"총 경과 턴: {totalTurns}");      // Log : 경과 턴
 
@@ -129,14 +138,15 @@ public class TurnManager : MonoBehaviour
 
         // 플레이어 턴 잡기
         Debug.Log("아군의 턴입니다.");
-        
-        BattleEventRouter.RaiseTurnStarted();            // '턴 시작 시' 이벤트 시행
+
+        BattleEventManager.TriggerTurnStart();            // '턴 시작 시' 이벤트 시행
 
         // ----- 턴 시작 / 플레이어 턴 변경 시점 -----
 
         // 플레이어 턴 시작
 
-        BattleEventRouter.RaisePlayerTurnStarted();         // 플레이어 턴 시작 이벤트
+
+        BattleEventManager.TriggerPlayerTurnStart();         // 플레이어 턴 시작 이벤트
 
         // 플레이어의 턴 시작 시 상태이상 로직 발동 (OnTurnStart)
         List<StatusEffect> effectsToProcess = new List<StatusEffect>(player.statusEffects);
@@ -149,7 +159,7 @@ public class TurnManager : MonoBehaviour
             Debug.Log("플레이어 빙결!!");
             player.DecStatusEffect(frozenEffect, 1);
 
-            state = State.allyTurn;
+            state = TurnState.allyTurn;
             StartCoroutine(AllyTurn());
             Debug.Log("아군의 턴입니다.");
         }
@@ -162,9 +172,10 @@ public class TurnManager : MonoBehaviour
             // 물감 & 걸작스킬 & 테마스킬 기능 On
             paintManager.canUsePaint = true;
 
-            state = State.playerAct;        // 아군의 턴 시작 + 플레이어 행동
+            state = TurnState.playerAct;        // 아군의 턴 시작 + 플레이어 행동
             Debug.Log("플레이어가 행동할 차례입니다.");
         }
+
 
         // 플레이어가 행동 결정 시 (공격버튼 클릭 시) 다음 스탭으로
     }
@@ -175,18 +186,18 @@ public class TurnManager : MonoBehaviour
         // 플레이어가 사망했는지 확인 (패배 조건)
         if (player.IsDead())
         {
-            state = State.defeat;
+            state = TurnState.defeat;
             StopAllCoroutines();        // 모든 코루틴 종료
 
             paintManager.canUsePaint = false;               // 물감 & 걸작스킬 & 테마스킬 기능 Off
-            
+
             Debug.Log("플레이어가 사망했습니다. 게임 오버!");
         }
 
         // 적군이 모두 제거되었는지 확인 (승리 조건)
         if (enemies.Count == 0)
         {
-            state = State.victory;      // 승리
+            state = TurnState.victory;      // 승리
             StopAllCoroutines();        // 모든 코루틴 종료
 
             paintManager.canUsePaint = false;               // // 물감 & 걸작스킬 & 테마스킬 기능 Off
@@ -210,119 +221,32 @@ public class TurnManager : MonoBehaviour
         lootInfoTuple = (0, false);     // 전리품 정보 초기화
     }
 
-    // 지우기 버튼
-    public void ClickEraseBtn()
-    {
-        player.targets.Clear();
-
-        for (int i = 0; i < 4; i++)
-        {
-            paintManager.ReturnPaint();
-        }
-
-        paintManager.ClearPaint();
-
-        player.currentSkill = null;
-        player.themeSkill = null;
-    }
-
-    // 플레이어 공격 버튼 클릭 시
-    public void ClickAttackBtn()
-    {
-        if (state == State.playerAct)
-        {
-            // 물감 선택X 시    (물감이 없어서 스킬을 사용 못할때에 예외 처리 필요)
-            if (paintManager.paletteOrder == 0)
-            {
-                return;
-            }
-
-            state = State.allyTurn;
-
-            // 물감 & 걸작스킬 & 테마스킬 기능 Off
-            paintManager.canUsePaint = false;
-
-            // 공격 단계로
-            StartCoroutine(PlayerAttack());
-        }
-        else if (state == State.useMP)
-        {
-            state = State.allyTurn;
-
-            // 걸작 스킬 실행
-            StartCoroutine(ExecuteMasterPiece());
-        }
-    }
-
-    // 걸작 버튼
-    public void ClickMasterPieceBtn()
-    {
-        // 버튼이 계속 눌리는 거 방지하기 위함
-        if (state != State.playerAct || !storageManager._MPManager.CheckCondition())
-        {
-            return;
-        }
-        state = State.useMP;
-
-        ClickEraseBtn();        // 사용 중이던 스킬 해제
-
-        paintManager.canUsePaint = false;               // 물감 & 걸작스킬 & 테마스킬 기능 On
-
-        paintManager.SetSkillImg(storageManager._MPManager.GetMPData().icon);
-        player.SetTarget(storageManager._MPManager.GetMPData().skillType, storageManager._MPManager.GetMPData().count);     // 타겟팅 설정
-    }
-
-    // 테마스킬 버튼
-    public void ClickThemeSkillBtn(int num)
-    {
-        // 버튼이 계속 눌리는 거 방지하기 위함
-        if (state != State.playerAct)
-        {
-            return;
-        }
-
-        ClickEraseBtn();        // 사용 중이던 스킬 해제
-
-        ThemeSkillData themeSkill = storageManager.themeManager.GetThemeData().skillList[num];
-        player.themeSkill = themeSkill;                 // 사용 중인 스킬 변경
-
-        paintManager.SetSkillImg(themeSkill.icon);      // 스킬 아이콘 변경
-        player.SetTarget(themeSkill.skillType, themeSkill.count);                // 타겟팅 설정
-
-        // 테마스킬이 요구하는 페인트 추가
-        foreach (PaintManager.ColorType colorType in themeSkill.colorTypeList)
-        {
-            paintManager.ClickPaintBtn(paintManager.paintScArr[(int)colorType]);
-        }
-    }
-
     // 걸작 실행
-    private IEnumerator ExecuteMasterPiece()
+    public IEnumerator ExecuteMasterPiece()
     {
         // 걸작 스킬 사용
         storageManager._MPManager.targets = player.targets;
         storageManager._MPManager.ExecuteMPSkill();
 
         player.targets.Clear();
+        player.actionType = ActionType.none;
 
         yield return null;
 
         paintManager.canUsePaint = true;               // 물감 & 걸작스킬 & 테마스킬 기능 On
 
         // 플레이어에게 턴 제공
-        state = State.playerAct;
+        state = TurnState.playerAct;
     }
 
     // 플레이어의 공격 진행
-    private IEnumerator PlayerAttack()
+    public IEnumerator PlayerAttack()
     {
         // 테마 스킬 사용 시
-        if (player.themeSkill != null)
+        if (player.actionType == ActionType.themeSkill)
         {
             storageManager.themeManager.targets = player.targets;      // 타겟 넘기기
             storageManager.themeManager.CalculateSkillAbility(player.themeSkill);    // 테마 스킬 발동
-
-            player.themeSkill = null;   // 초기화
         }
         // 일반 스킬 사용 시
         else
@@ -336,16 +260,19 @@ public class TurnManager : MonoBehaviour
         playerEffects.ForEach(effect => effect.logic.OnTurnEnd(player, effect));
 
         yield return null;
-        
+
         usedPaintNum = paintManager.paletteOrder;
         storageManager._MPManager.AddStack(usedPaintNum);     // 사용한 물감 수만큼 스택 적립
 
-        BattleEventRouter.RaiseOnAttack();          // '플레이어 공격 시' 이벤트 시행
+        BattleEventManager.TriggerPlayerAttack();          // '플레이어 공격 시' 이벤트 시행
 
         paintManager.ClearPaint();      // 페인트 & 팔레트 초기화
 
-        player.targets.Clear();                // 타겟팅 초기화
+        player.ClearActionInfo();       // 플레이어 스킬 정보 초기화
 
+        BattleEventManager.TriggerPlayerTurnEnd();      // 플레이어 턴 종료 이벤트
+
+        state = TurnState.allyTurn;
         StartCoroutine(AllyTurn());
     }
 
@@ -358,7 +285,7 @@ public class TurnManager : MonoBehaviour
         yield return ExecuteTurn(allies);   // 아군 행동
 
         Debug.Log("적군의 턴입니다.");
-        state = State.enemyTurn;
+        state = TurnState.enemyTurn;
         StartCoroutine(EnemyTurn());
     }
 
@@ -371,15 +298,15 @@ public class TurnManager : MonoBehaviour
 
         yield return null;  // 프레임 동기화
 
-        state = State.turnStart;
+        state = TurnState.turnStart;
         StartTurns();       // 다음 턴 시작
     }
 
     // 아군 혹은 적의 턴 중 행동 진행
-    private IEnumerator ExecuteTurn(List<ITurn> participants)
+    private IEnumerator ExecuteTurn(List<IUnit> participants)
     {
         // 반복 중 리스트를 수정하면 문제가 발생하므로 복사본을 사용
-        var currentParticipants = new List<ITurn>(participants);    // 플레이어 제외
+        var currentParticipants = new List<IUnit>(participants);    // 플레이어 제외
         if (currentParticipants.Exists(n => n == allies[0]))
         {
             currentParticipants.Remove(currentParticipants.Find(n => n == allies[0]));
@@ -392,7 +319,7 @@ public class TurnManager : MonoBehaviour
             // 리스트 복사본을 만들어 순회 중 리스트 변경으로 인한 오류 방지
             List<StatusEffect> effectsToProcess = new List<StatusEffect>(participant.statusEffects);
             effectsToProcess.ForEach(effect => effect.logic.OnTurnStart(participant, effect));
-            
+
             // 행동 전 HP가 0인지 확인
             if (participant.IsDead())
             {
@@ -421,7 +348,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public void RemoveDeadUnit(ITurn unit, string unitType)
+    public void RemoveDeadUnit(IUnit unit, string unitType)
     {
         // 적 유닛이 처치된 경우
         if (unitType == "Enemy")
@@ -442,7 +369,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public State GetState()
+    public TurnState GetState()
     {
         return state;
     }

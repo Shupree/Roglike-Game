@@ -24,7 +24,7 @@ public class ThemeManager : MonoBehaviour
     public bool isIgnoreShield;   // 고정데미지인가?
 
     [Header("Target")]
-    public List<ITurn> targets = new List<ITurn>();            // 공격 타겟
+    public List<IUnit> targets = new List<IUnit>();            // 공격 타겟
 
     public void Initialize()
     {
@@ -86,7 +86,7 @@ public class ThemeManager : MonoBehaviour
         Debug.Log($"{skillData.skillName}테마 스킬 발동! 타겟:{targets}");
 
         List<ActionInfo> actionInfos = new List<ActionInfo>();     // 유닛별 조건 충족 수치
-        List<ITurn> conditionTargets = new List<ITurn>();       // 조건별 적용 대상
+        List<IUnit> conditionTargets = new List<IUnit>();       // 조건별 적용 대상
         int addValue = 0;       // 개별 적용값
 
         // 조건 확인 코드
@@ -103,11 +103,11 @@ public class ThemeManager : MonoBehaviour
             case ConditionType.playerHealth:
                 // 가능한 높은 중첩값 산정
                 addValue = Mathf.Min(
-                    player.GetStatus("HP") / skillData.condition_HP.valuePerApply,
+                    player.GetStatus(StatusInfo.health) / skillData.condition_HP.valuePerApply,
                     skillData.condition_HP.maxApplyCount
                     );
                 // HP가 0이 되는 경우 방지 
-                if (player.GetStatus("HP") % skillData.condition_HP.valuePerApply <= 0)
+                if (player.GetStatus(StatusInfo.health) % skillData.condition_HP.valuePerApply <= 0)
                 {
                     addValue--;
                 }
@@ -247,10 +247,15 @@ public class ThemeManager : MonoBehaviour
                 BattleLogic.ActionLogic(player, targets[a], actionInfos[a]);
             }
         }
-        // 유물 : 걸작 사용 시 효과
+
+        // 유물 : 테마스킬 사용 시 효과
         //GameManager.instance._ArtifactManager.ArtifactFunction(ArtifactData.TriggerSituation.UseMP);
+
+        player.actionType = ActionType.none;
+        player.themeSkill = null;
     }
 
+    // 각종 스킬 정보 취합 => ActionInfo
     private ActionInfo CalculateActionInfo(ThemeSkillData skillData, int addValue)
     {
         DamageInfo damageInfo = new DamageInfo { amount = skillData.damage + (skillData.perDamage * addValue), isIgnoreShield = false };
@@ -262,8 +267,9 @@ public class ThemeManager : MonoBehaviour
             effects.Add(skillData.effects[e] + (skillData.perEffect[e] * addValue));
         }
         StatusEffectInfo statusEffectInfo = new StatusEffectInfo { effectDatas = skillData.effectDatas, effects = effects };
-        
-        ActionInfo actionInfo = new ActionInfo { 
+
+        ActionInfo actionInfo = new ActionInfo
+        {
             damageInfo = damageInfo,
             statusEffectInfo = statusEffectInfo,
             heal = heal,

@@ -7,8 +7,7 @@ public class PlayerHasNoBlockCondition : CollectionCondition
 {
     public override bool IsMet(EffectContext context)
     {
-        var character = context.Owner.GetComponent<Character>();
-        return character != null && character.currentBlock <= 0;
+        return owner != null && owner.GetStatus(StatusInfo.shield) <= 0;
     }
     public override string GetDescription() => "보호막이 없다면";
 }
