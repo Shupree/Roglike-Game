@@ -13,7 +13,7 @@ public class MPManager : MonoBehaviour
     public Image slider;
 
     [Header("MasterPiece Data")]
-    public MasterPieceData[] MPDataArr;     // 모든 걸작스킬 저장소
+    public List<MasterPieceData> MPDatas = new List<MasterPieceData>();     // 모든 걸작스킬 저장소
     private MasterPieceData MPData;         // 현재 사용 중인 걸작
 
     [Header("Target")]
@@ -31,7 +31,7 @@ public class MPManager : MonoBehaviour
         paintManager = GameManager.instance.paintManager;
 
         // 테스트용 임시 스킬
-        MPData = MPDataArr[0];
+        MPData = MPDatas[0];
 
         maxStack = MPData.maxCost;
         slider.fillAmount = stack / (float)maxStack;    // 걸작스킬 UI Bar 업데이트

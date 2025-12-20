@@ -81,7 +81,7 @@ public class ThemeManager : MonoBehaviour
     /// <summary>
     /// 테마 스킬을 실행하는 범용 메서드
     /// </summary>
-    public void CalculateSkillAbility(ThemeSkillData skillData)
+    public void ExcuteThemeSkill(ThemeSkillData skillData)
     {
         Debug.Log($"{skillData.skillName}테마 스킬 발동! 타겟:{targets}");
 

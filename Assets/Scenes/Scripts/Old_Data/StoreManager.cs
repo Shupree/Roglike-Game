@@ -10,7 +10,6 @@ public class StoreManager : MonoBehaviour
 {
     [Header("Managers")]
     private Player player;
-    private CollectionManager collectionManager;
     private StorageManager storageManager;
     private StageManager stageManager;
 
@@ -26,12 +25,6 @@ public class StoreManager : MonoBehaviour
     private List<PaintSkillData> skillProducts = new List<PaintSkillData>();
     private List<int> skillPrices = new List<int>();
 
-    [Header("Collection Products")]
-    [Tooltip("수집품 슬롯 UI 게임 오브젝트 목록 (3개)")]
-    [SerializeField] private List<GameObject> collectionSlots = new List<GameObject>(3);
-    private List<CollectionData> collectionProducts = new List<CollectionData>();
-    private List<int> collectionPrices = new List<int>();
-
     [Header("Masterpiece Product")]
     [Tooltip("걸작 슬롯 UI 게임 오브젝트")]
     [SerializeField] private GameObject masterpieceSlot;
@@ -40,14 +33,12 @@ public class StoreManager : MonoBehaviour
 
     // 판매 상태 추적
     private bool[] isSkillSold;
-    private bool[] isCollectionSold;
     private bool isMasterpieceSold;
 
     void Start()
     {
         // GameManager를 통해 참조 가져오기
         if (player == null) player = GameManager.instance.player;
-        if (collectionManager == null) collectionManager = GameManager.instance.storageManager.collectionManager;
         if (storageManager == null) storageManager = GameManager.instance.storageManager;
         if (stageManager == null) stageManager = GameManager.instance.stageManager;
 
@@ -76,11 +67,9 @@ public class StoreManager : MonoBehaviour
     {
         // 판매 상태 초기화
         isSkillSold = new bool[skillSlots.Count];
-        isCollectionSold = new bool[collectionSlots.Count];
         isMasterpieceSold = false;
 
         skillProducts.Clear();
-        collectionProducts.Clear();
 
         // 1. 물감 스킬 설정
         for (int i = 0; i < skillSlots.Count; i++)
@@ -94,19 +83,14 @@ public class StoreManager : MonoBehaviour
         }
 
         // 2. 수집품 설정
-        // 등급 0 (Common) 수집품을 무작위로 지정 수만큼 가져옵니다.
-        collectionProducts = collectionManager.PickRandomCollection(CollectionRarity.Common, collectionSlots.Count);
-        for (int i = 0; i < collectionSlots.Count; i++)
-        {
-            collectionPrices.Add(GetCollectionPrice(collectionProducts[i].rarity));
-            UpdateSlotUI(collectionSlots[i], collectionProducts[i].icon, collectionPrices[i]);
-        }
+
 
         // 3. 걸작 설정
         masterpieceProduct = storageManager.PickRandomMasterPiece();
         UpdateSlotUI(masterpieceSlot, masterpieceProduct.icon, masterpiecePrice);
     }
 
+    /*
     private int GetCollectionPrice(CollectionRarity rate)
     {
         switch (rate)
@@ -118,6 +102,7 @@ public class StoreManager : MonoBehaviour
             default: return 80;
         }
     }
+    */
 
     private void UpdateSlotUI(GameObject slot, Sprite icon, int price)
     {
@@ -156,25 +141,6 @@ public class StoreManager : MonoBehaviour
         }
     }
 
-    public void BuyCollection(int slotIndex)
-    {
-        if (slotIndex < 0 || slotIndex >= collectionProducts.Count || isCollectionSold[slotIndex]) return;
-
-        if (player.gold >= collectionPrices[slotIndex])
-        {
-            player.gold -= collectionPrices[slotIndex];
-            collectionManager.AddCollection(collectionProducts[slotIndex]);
-
-            MarkAsSold(collectionSlots[slotIndex]);
-            isCollectionSold[slotIndex] = true;
-        }
-        else
-        {
-            Debug.Log("골드가 부족하여 수집품을 구매할 수 없습니다.");
-            // TODO: 골드 부족 알림 UI 표시
-        }
-    }
-
     public void BuyMasterpiece()
     {
         if (isMasterpieceSold) return;
@@ -199,9 +165,6 @@ public class StoreManager : MonoBehaviour
     {
         skillProducts.Clear();
         skillPrices.Clear();
-
-        collectionProducts.Clear();
-        collectionPrices.Clear();
 
         masterpieceProduct = null;
         masterpiecePrice = 150;

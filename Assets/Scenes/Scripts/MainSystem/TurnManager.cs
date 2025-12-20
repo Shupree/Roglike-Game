@@ -246,7 +246,7 @@ public class TurnManager : MonoBehaviour
         if (player.actionType == ActionType.themeSkill)
         {
             storageManager.themeManager.targets = player.targets;      // 타겟 넘기기
-            storageManager.themeManager.CalculateSkillAbility(player.themeSkill);    // 테마 스킬 발동
+            storageManager.themeManager.ExcuteThemeSkill(player.themeSkill);    // 테마 스킬 발동
         }
         // 일반 스킬 사용 시
         else

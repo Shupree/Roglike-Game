@@ -14647,7 +14647,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 499733693}
-  MPDataArr:
+  MPDatas:
   - {fileID: 11400000, guid: 341cc5ea4b9fd334babae43ee693f5c6, type: 2}
   - {fileID: 11400000, guid: 276841ce37615a243aa8f3af72fb8828, type: 2}
   - {fileID: 11400000, guid: 4c0e3fe15a9054a41915583428e3e118, type: 2}
@@ -17488,15 +17488,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 271288374e5604d448822a21ccb3784b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paletteObjArr:
-  - {fileID: 224839211}
-  - {fileID: 1490384797}
-  - {fileID: 1648386810}
-  - {fileID: 1983305430}
-  - {fileID: 701338222}
   usedPaints: 
   maxPalette: 0
   paletteOrder: 0
+  paletteImgArr:
+  - {fileID: 224839213}
+  - {fileID: 1490384799}
+  - {fileID: 1648386812}
+  - {fileID: 1983305432}
+  - {fileID: 701338224}
   skillIconUI: {fileID: 71378648}
   paintScArr:
   - {fileID: 1359008123}

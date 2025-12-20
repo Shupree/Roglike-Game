@@ -21,12 +21,13 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 4238201314249277440
       type: {class: OnTurnEndTrigger, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 4238201317798969347
       type: {class: PlayerHasNoBlockCondition, ns: , asm: Assembly-CSharp}
-      data: 
     - rid: 4238201317798969348
       type: {class: GainBlockAction, ns: , asm: Assembly-CSharp}
       data:

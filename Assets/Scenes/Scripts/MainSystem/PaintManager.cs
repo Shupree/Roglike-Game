@@ -17,8 +17,6 @@ public class PaintManager : MonoBehaviour
     private TurnManager turnManager;
     private Player player;
 
-    public GameObject[] paletteObjArr = new GameObject[5];      // 팔레트별 PaletteUI
-
     [Header("Figure")]
     public List<ColorType> usedPaints = new List<ColorType>();  // 사용 중인 색상별 물감 수
 
@@ -26,7 +24,7 @@ public class PaintManager : MonoBehaviour
     public int paletteOrder = 0;       // 현재 팔레트 순서
 
     [Header("Image Script")]
-    private Image[] paletteImgArr = new Image[5];       // 팔레트별 PaletteImage 스크립트
+    public Image[] paletteImgArr = new Image[5];       // 팔레트별 Image 스크립트
 
     public Image skillIconUI;                         // 메인 스킬 Image 스크립트
 
@@ -43,11 +41,6 @@ public class PaintManager : MonoBehaviour
         player = GameManager.instance.player;
 
         usedPaints.Clear();
-
-        for (int i = 0; i < 5; i++)
-        {
-            paletteImgArr[i] = paletteObjArr[i].GetComponent<Image>();
-        }
 
         paletteOrder = 0;
         maxPalette = 3;     // 임의 설정값 : 사용가능한 팔레트 수

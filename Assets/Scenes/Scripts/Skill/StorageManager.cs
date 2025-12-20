@@ -10,7 +10,6 @@ public class StorageManager : MonoBehaviour
     [Header("Reference")]
     public MPManager _MPManager;
     public ThemeManager themeManager;
-    public CollectionManager collectionManager;
 
     [Header("UI Object")]
     private GameObject UIObject;
@@ -31,7 +30,6 @@ public class StorageManager : MonoBehaviour
         // 하위 스크립트 초기화
         _MPManager.Initialize();
         themeManager.Initialize();
-        collectionManager.Initialize();
 
         UIObject = transform.GetChild(1).gameObject;    // StorageUI 오브젝트 받아오기
         UIObject.SetActive(false);                      // UI 비활성화
@@ -101,7 +99,7 @@ public class StorageManager : MonoBehaviour
 
         if (skillList.Count > 0)
         {
-            int randomNum = Random.Range(0, skillList.Count);    // 랜덤 색상 1개 추첨
+            int randomNum = Random.Range(0, skillList.Count);    // 난수 추첨
             PaintSkillData randomSkill = skillList[randomNum];
 
             return randomSkill;
@@ -116,7 +114,12 @@ public class StorageManager : MonoBehaviour
 
     public MasterPieceData PickRandomMasterPiece()  // 무작위 걸작 뽑기
     {
-        MasterPieceData masterPieceData = null;
-        return masterPieceData;
+        List<MasterPieceData> MPList = _MPManager.MPDatas.ToList();
+        MPList.Remove(_MPManager.GetMPData());              // 현재 보유 걸작 제외 리스트 생성
+
+        int randomNum = Random.Range(0, MPList.Count);      // 난수 추첨
+        MasterPieceData resultData = MPList[randomNum];
+
+        return resultData;
     }
 }
